@@ -9,231 +9,333 @@
 
 .header h1 {
   font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .header p {
   color: var(--muted);
 }
 
-.controls {
+.tabContainer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  gap: 2rem;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  width: fit-content;
+  margin-bottom: 3rem;
 }
 
-.searchBar {
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.activeTab {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.controls {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.searchBox {
   flex: 1;
   position: relative;
 }
 
-.searchBar svg {
+.searchBox svg {
   position: absolute;
-  left: 1.25rem;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--muted-foreground);
 }
 
-.searchBar input {
+.searchBox input {
   width: 100%;
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  padding: 1rem 1rem 1rem 3.5rem;
+  padding: 0.8rem 1rem 0.8rem 2.8rem;
   border-radius: 100px;
   color: white;
-  font-size: 1rem;
-}
-
-.filters {
-  display: flex;
-  gap: 0.75rem;
 }
 
 .filterBtn {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  color: var(--muted);
-  padding: 0.6rem 1.25rem;
-  border-radius: 100px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.activeFilter {
-  background: var(--primary);
   color: white;
-  border-color: var(--primary);
-}
-
-.aiBanner {
-  background: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.1));
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  padding: 1rem 2rem;
-  border-radius: var(--radius-md);
-  margin-bottom: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 100px;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  color: white;
-}
-
-.aiText {
-  flex: 1;
-  font-size: 0.95rem;
-}
-
-.aiText strong {
-  color: var(--primary);
-}
-
-.aiAction {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 0.5rem 1.25rem;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
+  gap: 0.5rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.projectGrid {
+.grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
-.projectCard {
+/* Vehicle Card */
+.vehicleCard {
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.projectCard:hover {
-  transform: translateY(-10px);
-  border-color: var(--primary);
-}
-
-.imageContainer {
-  height: 200px;
+.cardImage {
   position: relative;
+  height: 180px;
 }
 
-.imageContainer img {
+.cardImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.matchBadge {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  background: var(--secondary);
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 100px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-}
-
-.saveBtn {
+.priceTag {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--primary);
   color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.cardContent {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vehicleInfo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.projectContent {
-  padding: 2rem;
-}
-
-.category {
+  gap: 0.5rem;
   font-size: 0.75rem;
-  font-weight: 700;
   color: var(--primary);
-  text-transform: uppercase;
+  font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
-.projectContent h3 {
-  font-size: 1.4rem;
-  margin-bottom: 0.25rem;
+.vehicleCard h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
 }
 
-.vehicleName {
+.category {
+  font-size: 0.8rem;
   color: var(--muted);
-  font-weight: 500;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+/* Client Card */
+.clientCard {
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.clientHeader {
+  display: flex;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.meta {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.metaItem span {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
-  text-transform: uppercase;
-  margin-bottom: 0.25rem;
-}
-
-.metaItem strong {
-  font-size: 1.1rem;
+.avatar {
+  width: 42px;
+  height: 42px;
+  background: var(--primary);
   color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
 }
 
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+.clientHeader h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
 }
 
-.detailsBtn, .proposalBtn {
-  padding: 0.75rem;
-  border-radius: var(--radius-md);
+.matchBadge {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--secondary);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+}
+
+.clientBody {
+  flex: 1;
+}
+
+.clientCard h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.clientCard p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.budgetRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
   font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.budgetRow svg {
+  color: var(--secondary);
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.tag {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+/* Shared Footer */
+.cardFooter {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.viewBtn, .actionBtn, .proposalBtn {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
 
-.detailsBtn {
-  background: var(--glass);
+.viewBtn {
+  background: transparent;
   border: 1px solid var(--glass-border);
+  color: var(--muted);
+}
+
+.actionBtn {
+  background: var(--primary);
   color: white;
+  border: none;
 }
 
 .proposalBtn {
   background: var(--primary);
-  border: none;
   color: white;
+  border: none;
+  width: 100%;
 }
 
-.proposalBtn:hover {
-  filter: brightness(1.1);
+.searchSection {
+  margin-bottom: 3rem;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--glass-border);
+}
+
+.filterBar {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.filterGroup label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.filterGroup select {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.applyBtn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filterBtnActive {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
 }

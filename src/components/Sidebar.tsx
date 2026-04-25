@@ -15,7 +15,9 @@ import {
   BarChart2,
   Settings,
   LogOut,
-  MessageSquare
+  MessageSquare,
+  Briefcase,
+  Sparkles
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -27,7 +29,8 @@ export default function Sidebar() {
 
   const menuItems = [
     { icon: Home, label: 'Home', href: basePath },
-    { icon: FileText, label: isAgency ? 'Briefings' : 'Propostas', href: `${basePath}/briefings` },
+    { icon: FileText, label: isAgency ? 'Meus Briefings' : isClient ? 'Minhas Necessidades' : 'Propostas', href: `${basePath}/briefings` },
+    { icon: Briefcase, label: 'Propostas Recebidas', href: `${basePath}/proposals`, hidden: !isAgency && !isClient },
     { icon: MessageSquare, label: 'Mensagens', href: `${basePath}/messages` },
     { icon: Video, label: 'Reuniões', href: `${basePath}/meetings` },
     { icon: ShoppingBag, label: 'Marketplace', href: `${basePath}/marketplace` },
@@ -46,7 +49,7 @@ export default function Sidebar() {
 
       <nav className={styles.nav}>
         <div className={styles.sectionLabel}>Menu Principal</div>
-        {menuItems.map((item) => {
+        {menuItems.filter(item => !item.hidden).map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link 
@@ -62,7 +65,7 @@ export default function Sidebar() {
       </nav>
 
       <div className={styles.footer}>
-        <Link href="/dashboard/settings" className={styles.navLink}>
+        <Link href={`${basePath}/settings/team`} className={styles.navLink}>
           <Settings size={20} />
           <span>Configurações</span>
         </Link>
