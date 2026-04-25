@@ -1,12 +1,33 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FileText, Search, Filter, MessageSquare, CheckCircle, XCircle, Clock, Building2, ExternalLink, X, Target, Users, MapPin, DollarSign, Zap } from 'lucide-react';
+import { 
+  FileText, 
+  Search, 
+  Filter, 
+  MessageSquare, 
+  CheckCircle, 
+  XCircle, 
+  Clock, 
+  Building2, 
+  ExternalLink, 
+  X, 
+  Target, 
+  Users, 
+  MapPin, 
+  DollarSign, 
+  Zap,
+  Edit3,
+  Send,
+  History
+} from 'lucide-react';
 import styles from './page.module.css';
 
 export default function ProposalsPage() {
   const [selectedProposal, setSelectedProposal] = useState<any>(null);
   const [showBriefing, setShowBriefing] = useState(false);
+  const [isEditingCost, setIsEditingCost] = useState(false);
+  const [counterPrice, setCounterPrice] = useState('');
 
   const proposals = [
     {
@@ -47,6 +68,15 @@ export default function ProposalsPage() {
     }
   ];
 
+  const handleSendCounter = () => {
+    // In a real app, this would update the backend
+    if (selectedProposal) {
+      selectedProposal.budget = counterPrice;
+      selectedProposal.status = "Contra-Proposta Enviada";
+      setIsEditingCost(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -74,7 +104,11 @@ export default function ProposalsPage() {
               <div 
                 key={p.id} 
                 className={`${styles.proposalItem} ${selectedProposal?.id === p.id ? styles.activeItem : ''}`}
-                onClick={() => setSelectedProposal(p)}
+                onClick={() => {
+                  setSelectedProposal(p);
+                  setCounterPrice(p.budget);
+                  setIsEditingCost(false);
+                }}
               >
                 <div className={styles.itemIcon}>
                   <Building2 size={24} />
@@ -97,7 +131,18 @@ export default function ProposalsPage() {
             <div className={styles.detailCard}>
               <div className={styles.detailHeader}>
                 <h2>Detalhes da Proposta</h2>
-                <span className={styles.budgetValue}>{selectedProposal.budget}</span>
+                {isEditingCost ? (
+                  <div className={styles.editCostWrapper}>
+                    <input 
+                      type="text" 
+                      className={styles.costInput}
+                      value={counterPrice}
+                      onChange={(e) => setCounterPrice(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <span className={styles.budgetValue}>{selectedProposal.budget}</span>
+                )}
               </div>
 
               <div className={styles.infoBlock}>
@@ -115,18 +160,36 @@ export default function ProposalsPage() {
               </div>
 
               <div className={styles.actions}>
-                <button className={styles.acceptBtn}>
-                  <CheckCircle size={18} />
-                  Aceitar Proposta
-                </button>
-                <button className={styles.chatBtn}>
-                  <MessageSquare size={18} />
-                  Abrir Chat
-                </button>
-                <button className={styles.rejectBtn}>
-                  <XCircle size={18} />
-                  Recusar
-                </button>
+                {isEditingCost ? (
+                  <>
+                    <button className={styles.primaryAction} onClick={handleSendCounter}>
+                      <Send size={18} />
+                      Enviar Contra-Proposta
+                    </button>
+                    <button className={styles.cancelBtn} onClick={() => setIsEditingCost(false)}>
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button className={styles.acceptBtn}>
+                      <CheckCircle size={18} />
+                      Aceitar Proposta
+                    </button>
+                    <button className={styles.counterBtn} onClick={() => setIsEditingCost(true)}>
+                      <Edit3 size={18} />
+                      Alterar Custo
+                    </button>
+                    <button className={styles.chatBtn}>
+                      <MessageSquare size={18} />
+                      Abrir Chat
+                    </button>
+                    <button className={styles.rejectBtn}>
+                      <XCircle size={18} />
+                      Recusar
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ) : (

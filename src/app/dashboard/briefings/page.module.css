@@ -417,3 +417,60 @@
   color: var(--muted);
   text-align: center;
 }
+
+.editCostWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.costInput {
+  background: var(--glass);
+  border: 1px solid var(--primary);
+  color: var(--secondary);
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  width: 200px;
+  outline: none;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.counterBtn {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.primaryAction {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+}

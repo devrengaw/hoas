@@ -1,11 +1,28 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Briefcase, Search, Filter, MessageSquare, CheckCircle, Clock, Building2, User, Target, DollarSign, ArrowRight } from 'lucide-react';
+import { 
+  Briefcase, 
+  Search, 
+  Filter, 
+  MessageSquare, 
+  CheckCircle, 
+  Clock, 
+  Building2, 
+  User, 
+  Target, 
+  DollarSign, 
+  ArrowRight,
+  Edit3,
+  Send,
+  XCircle
+} from 'lucide-react';
 import styles from './page.module.css';
 
 export default function AgencyProposalsPage() {
   const [selectedProposal, setSelectedProposal] = useState<any>(null);
+  const [isEditingCost, setIsEditingCost] = useState(false);
+  const [counterPrice, setCounterPrice] = useState('');
 
   const proposals = [
     {
@@ -31,6 +48,14 @@ export default function AgencyProposalsPage() {
       objective: "Performance / Vendas",
     }
   ];
+
+  const handleSendCounter = () => {
+    if (selectedProposal) {
+      selectedProposal.budget = counterPrice;
+      selectedProposal.status = "Proposta Enviada";
+      setIsEditingCost(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -59,7 +84,11 @@ export default function AgencyProposalsPage() {
               <div 
                 key={p.id} 
                 className={`${styles.proposalItem} ${selectedProposal?.id === p.id ? styles.activeItem : ''}`}
-                onClick={() => setSelectedProposal(p)}
+                onClick={() => {
+                  setSelectedProposal(p);
+                  setCounterPrice(p.budget);
+                  setIsEditingCost(false);
+                }}
               >
                 <div className={styles.itemIcon}>
                   <Building2 size={24} />
@@ -82,7 +111,18 @@ export default function AgencyProposalsPage() {
             <div className={styles.detailCard}>
               <div className={styles.detailHeader}>
                 <h2>Detalhes da Solicitação</h2>
-                <span className={styles.budgetValue}>{selectedProposal.budget}</span>
+                {isEditingCost ? (
+                  <div className={styles.editCostWrapper}>
+                    <input 
+                      type="text" 
+                      className={styles.costInput}
+                      value={counterPrice}
+                      onChange={(e) => setCounterPrice(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <span className={styles.budgetValue}>{selectedProposal.budget}</span>
+                )}
               </div>
 
               <div className={styles.infoGrid}>
@@ -102,17 +142,32 @@ export default function AgencyProposalsPage() {
               </div>
 
               <div className={styles.actions}>
-                <button className={styles.primaryBtn}>
-                  <CheckCircle size={18} />
-                  Aceitar e Criar Briefing HOAS
-                </button>
-                <button className={styles.chatBtn}>
-                  <MessageSquare size={18} />
-                  Falar com Cliente
-                </button>
-                <button className={styles.outlineBtn}>
-                  Ver Histórico da Marca
-                </button>
+                {isEditingCost ? (
+                  <>
+                    <button className={styles.primaryAction} onClick={handleSendCounter}>
+                      <Send size={18} />
+                      Enviar Contra-Proposta ao Cliente
+                    </button>
+                    <button className={styles.cancelBtn} onClick={() => setIsEditingCost(false)}>
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button className={styles.primaryBtn}>
+                      <CheckCircle size={18} />
+                      Aceitar e Criar Briefing
+                    </button>
+                    <button className={styles.counterBtn} onClick={() => setIsEditingCost(true)}>
+                      <Edit3 size={18} />
+                      Ajustar Valor / Proposta
+                    </button>
+                    <button className={styles.chatBtn}>
+                      <MessageSquare size={18} />
+                      Falar com Cliente
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ) : (

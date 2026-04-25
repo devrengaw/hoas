@@ -89,6 +89,7 @@
 
 .proposalItem:hover {
   border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .activeItem {
@@ -135,21 +136,22 @@
   border-radius: 100px;
 }
 
-.new {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--secondary);
+.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
 }
 
-.analyzing {
+.negotiating {
   background: rgba(99, 102, 241, 0.1);
   color: #6366f1;
 }
 
+/* Detail Section */
 .detailSection {
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  padding: 2rem;
+  padding: 2.5rem;
   height: fit-content;
   position: sticky;
   top: 100px;
@@ -168,32 +170,203 @@
   color: var(--secondary);
 }
 
-.infoGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+.infoBlock {
   margin-bottom: 2rem;
 }
 
 .infoBlock label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.infoBlock p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.docLinkBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--glass);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  color: white;
+  width: 100%;
+  font-size: 0.9rem;
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.docLinkBtn:hover {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.modal {
+  background: #0a0f1e;
+  border: 1px solid var(--glass-border);
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: white;
+}
+
+.modalHeader {
+  padding: 3rem 3rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.modalHeader .badge {
+  display: inline-block;
+  background: var(--secondary);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+
+.modalHeader h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.brandName {
+  color: var(--muted);
+}
+
+.brandName strong {
+  color: var(--primary);
+}
+
+.modalGrid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  padding: 3rem;
+}
+
+.modalMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.modalSection h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.modalSection p {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.modalAside {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.asideCard {
+  background: var(--glass);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+}
+
+.asideCard label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.7rem;
   text-transform: uppercase;
-  color: var(--muted-foreground);
   font-weight: 700;
+  color: var(--muted-foreground);
   margin-bottom: 0.5rem;
 }
 
-.infoBlock p {
-  font-size: 0.95rem;
+.asideCard span {
+  font-size: 1.1rem;
+  font-weight: 700;
   color: white;
 }
 
-.description {
-  color: var(--muted) !important;
-  line-height: 1.6;
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.modalFooter {
+  padding: 2rem 3rem;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.primaryAction {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .actions {
@@ -203,35 +376,35 @@
   margin-top: 3rem;
 }
 
-.primaryBtn, .chatBtn, .outlineBtn {
+.acceptBtn, .chatBtn, .rejectBtn {
   width: 100%;
-  padding: 1rem;
-  border-radius: var(--radius-md);
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.primaryBtn {
-  background: var(--primary);
+.acceptBtn {
+  background: var(--secondary);
   color: white;
   border: none;
 }
 
 .chatBtn {
-  background: var(--glass);
+  background: var(--primary);
   color: white;
-  border: 1px solid var(--glass-border);
+  border: none;
 }
 
-.outlineBtn {
+.rejectBtn {
   background: transparent;
-  border: 1px solid var(--glass-border);
-  color: var(--muted);
+  border: 1px solid #ef4444;
+  color: #ef4444;
 }
 
 .emptyDetails {
@@ -243,4 +416,61 @@
   height: 400px;
   color: var(--muted);
   text-align: center;
+}
+
+.editCostWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.costInput {
+  background: var(--glass);
+  border: 1px solid var(--primary);
+  color: var(--secondary);
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  width: 200px;
+  outline: none;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.counterBtn {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.primaryAction {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
 }
