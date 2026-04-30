@@ -17,7 +17,8 @@ import {
   LogOut,
   MessageSquare,
   Briefcase,
-  Sparkles
+  Sparkles,
+  User
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -65,10 +66,19 @@ export default function Sidebar() {
       </nav>
 
       <div className={styles.footer}>
-        <Link href={`${basePath}/settings/team`} className={styles.navLink}>
-          <Settings size={20} />
-          <span>Configurações</span>
-        </Link>
+        {/* Simulação de verificação de cargo (Admin) - No futuro virá do AuthContext */}
+        {true && ( // isAdmin
+          <>
+            <Link href={`${basePath}/settings/profile`} className={styles.navLink}>
+              <User size={20} />
+              <span>Meu Perfil</span>
+            </Link>
+            <Link href={`${basePath}/settings/team`} className={styles.navLink}>
+              <Settings size={20} />
+              <span>Configurações</span>
+            </Link>
+          </>
+        )}
         <button className={styles.logoutBtn}>
           <LogOut size={20} />
           <span>Sair</span>

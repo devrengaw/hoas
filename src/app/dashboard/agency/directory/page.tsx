@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Search, Filter } from 'lucide-react';
 import ProfileCard from '@/components/ProfileCard';
 import styles from './page.module.css';
@@ -31,6 +32,16 @@ export default function VehicleDirectory() {
       </div>
 
       <div className={styles.grid}>
+        <Link href="/dashboard/directory/picpay-ads" style={{ textDecoration: 'none' }}>
+          <ProfileCard 
+            name="PicPay Ads"
+            role="Veículo de Mídia"
+            company="Financial Media"
+            rating={98}
+            imageUrl="https://i.pravatar.cc/300?u=picpay"
+            tags={['Financial', 'Retail', 'In-app']}
+          />
+        </Link>
         {vehicles.map((person, i) => (
           <ProfileCard 
             key={i}

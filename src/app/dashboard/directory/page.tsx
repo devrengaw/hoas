@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Search, Filter } from 'lucide-react';
 import ProfileCard from '@/components/ProfileCard';
 import styles from './page.module.css';
@@ -31,15 +32,29 @@ export default function MediaDirectory() {
       </div>
 
       <div className={styles.grid}>
-        {mediaPros.map((person, i) => (
+        {/* Card do Veículo Criado */}
+        <Link href="/dashboard/directory/picpay-ads" style={{ textDecoration: 'none' }}>
           <ProfileCard 
-            key={i}
-            name={person.name}
-            role={person.role}
-            company={person.company}
-            rating={person.rating}
-            imageUrl={`https://i.pravatar.cc/300?u=${person.name}`}
+            name="PicPay Ads"
+            role="Veículo de Mídia"
+            company="Financial Media"
+            rating={98}
+            imageUrl="https://i.pravatar.cc/300?u=picpay"
+            tags={['Financial', 'Retail', 'In-app']}
           />
+        </Link>
+        
+        {/* Outros cards */}
+        {mediaPros.map((person, i) => (
+          <div key={i}>
+            <ProfileCard 
+              name={person.name}
+              role={person.role}
+              company={person.company}
+              rating={person.rating}
+              imageUrl={`https://i.pravatar.cc/300?u=${person.name}`}
+            />
+          </div>
         ))}
       </div>
     </div>
