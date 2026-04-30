@@ -93,13 +93,13 @@ export default function PicPayAdsProfile() {
             </p>
             <div className={styles.galleryGrid}>
               <div className={styles.galleryItem}>
-                <img src="/picpay/Audiência.JPG" alt="Audiência com 100% de atenção" />
+                <img src="/picpay/audiencia.jpg" alt="Audiência com 100% de atenção" />
               </div>
               <div className={styles.galleryItem}>
-                <img src="/picpay/Crescimento Pix.JPG" alt="Semana do Consumidor - Crescimento de pagamentos" />
+                <img src="/picpay/crescimento-pix.jpg" alt="Semana do Consumidor - Crescimento de pagamentos" />
               </div>
               <div className={styles.galleryItem}>
-                <img src="/picpay/Crescimento Transações.JPG" alt="Semana do Consumidor - Transações" />
+                <img src="/picpay/crescimento-transacoes.jpg" alt="Semana do Consumidor - Transações" />
               </div>
             </div>
           </section>
