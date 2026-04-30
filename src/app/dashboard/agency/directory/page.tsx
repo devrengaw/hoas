@@ -38,7 +38,7 @@ export default function VehicleDirectory() {
             role="Veículo de Mídia"
             company="Financial Media"
             rating={98}
-            imageUrl="https://i.pravatar.cc/300?u=picpay"
+            imageUrl="/picpay/perfil.jpg"
             tags={['Financial', 'Retail', 'In-app']}
           />
         </Link>
