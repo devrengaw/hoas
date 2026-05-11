@@ -1,40 +1,55 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Video, Calendar, Clock, ChevronRight, Zap, CheckCircle, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Video, Calendar, Clock, ChevronRight, Zap, CheckCircle, FileText, X } from 'lucide-react';
 import styles from './page.module.css';
+import { getMeetings } from '@/lib/database';
 
 export default function MeetingsPage() {
   const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [meetings, setMeetings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const meetings = [
-    { 
-      id: 1, 
-      title: 'Apresentação Projeto Verão', 
-      with: 'Mariana Silva (Agência Global)', 
-      time: '14:00 - 15:00', 
-      status: 'upcoming',
-      date: 'Hoje'
-    },
-    { 
-      id: 2, 
-      title: 'Discussão de Budget Q3', 
-      with: 'Roberto Costa (Cliente Varejo)', 
-      time: '16:30 - 17:30', 
-      status: 'upcoming',
-      date: 'Hoje'
-    },
-    { 
-      id: 3, 
-      title: 'Follow-up Campanha Natal', 
-      with: 'Equipe Mídia SQUAD A', 
-      time: '10:00 - 11:00', 
-      status: 'completed',
-      date: 'Ontem',
-      hasSummary: true
-    },
-  ];
+  // Mock Company ID for MVP
+  const COMPANY_ID = '00000000-0000-0000-0000-000000000000';
+
+  React.useEffect(() => {
+    fetchMeetings();
+  }, []);
+
+  const showSuccess = (msg: string) => {
+    setSuccessMessage(msg);
+    setIsSuccessModalOpen(true);
+  };
+
+  const fetchMeetings = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getMeetings(COMPANY_ID);
+      const mapped = data.map((m: any) => {
+        const d = new Date(m.scheduled_at);
+        return {
+          id: m.id,
+          title: m.title,
+          with: m.guest_name || 'Participante Externo',
+          time: d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          date: d.toISOString().split('T')[0],
+          status: m.status,
+          hasSummary: !!m.ai_summary?.insights,
+          summary: m.ai_summary
+        };
+      });
+      setMeetings.apply(null, [mapped]); // Using setMeetings(mapped)
+      setMeetings(mapped);
+    } catch (error) {
+      console.error('Error fetching meetings:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleTranscribe = () => {
     setIsTranscribing(true);
@@ -59,10 +74,19 @@ export default function MeetingsPage() {
           <h1>Reuniões</h1>
           <p>Gerencie suas chamadas e utilize a IA para gerar atas automáticas.</p>
         </div>
-        <button className={styles.primaryBtn}>
-          <Video size={18} />
-          <span>Agendar Nova Reunião</span>
-        </button>
+        <div className={styles.headerActions}>
+          <button className={styles.secondaryBtn} onClick={() => {
+            navigator.clipboard.writeText('https://hoas.com.br/book/lucas-wagner');
+            showSuccess('Seu link de agendamento foi copiado!');
+          }}>
+            <Calendar size={18} />
+            <span>Link de Agendamento</span>
+          </button>
+          <button className={styles.primaryBtn}>
+            <Video size={18} />
+            <span>Agendar Nova Reunião</span>
+          </button>
+        </div>
       </header>
 
       <div className={styles.content}>
@@ -144,6 +168,22 @@ export default function MeetingsPage() {
           )}
         </div>
       </div>
+
+      {/* Success Modal */}
+      {isSuccessModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setIsSuccessModalOpen(false)}>
+          <div className={styles.successModal} onClick={e => e.stopPropagation()}>
+            <div className={styles.successIconWrapper}>
+              <CheckCircle size={40} />
+            </div>
+            <h2>Sucesso!</h2>
+            <p>{successMessage}</p>
+            <button className={styles.primaryBtn} onClick={() => setIsSuccessModalOpen(false)}>
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,12 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { 
   Home, 
   FileText, 
   Users, 
-  Video, 
   ShoppingBag, 
   Wallet, 
   Calendar, 
@@ -17,23 +16,47 @@ import {
   LogOut,
   MessageSquare,
   Briefcase,
-  Sparkles,
-  User
+  User,
+  Target,
+  ShieldCheck,
+  UserPlus
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
+import { currentUser } from '@/lib/mockData';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  
+  const handleLogout = () => {
+    // Em um cenário real, chamaria supabase.auth.signOut()
+    router.push('/login');
+  };
+
+  const isPlatformAdmin = pathname.startsWith('/dashboard/platform-admin');
   const isAgency = pathname.includes('/agency');
   const isClient = pathname.includes('/client');
-  const basePath = isAgency ? '/dashboard/agency' : isClient ? '/dashboard/client' : '/dashboard';
+  
+  let basePath = '/dashboard';
+  if (isPlatformAdmin) basePath = '/dashboard/platform-admin';
+  else if (isAgency) basePath = '/dashboard/agency';
+  else if (isClient) basePath = '/dashboard/client';
 
-  const menuItems = [
+  // Role-based menu items
+  const menuItems = isPlatformAdmin ? [
+    { icon: Home, label: 'Dashboard Admin', href: '/dashboard/platform-admin' },
+    { icon: UserPlus, label: 'Gestão de Usuários', href: '/dashboard/platform-admin/users' },
+    { icon: BarChart2, label: 'Pipeline', href: '/dashboard/platform-admin/pipeline' },
+    { icon: Wallet, label: 'Carteira', href: '/dashboard/platform-admin/wallet' },
+    { icon: Calendar, label: 'Agenda', href: '/dashboard/platform-admin/calendar' },
+    { icon: Calendar, label: 'Eventos', href: '/dashboard/platform-admin/events' },
+    { icon: Heart, label: 'HOAS Care', href: '/dashboard/platform-admin/care' },
+  ] : [
     { icon: Home, label: 'Home', href: basePath },
     { icon: FileText, label: isAgency ? 'Meus Briefings' : isClient ? 'Minhas Necessidades' : 'Propostas', href: `${basePath}/briefings` },
     { icon: Briefcase, label: 'Propostas Recebidas', href: `${basePath}/proposals`, hidden: !isAgency && !isClient },
     { icon: MessageSquare, label: 'Mensagens', href: `${basePath}/messages` },
-    { icon: Video, label: 'Reuniões', href: `${basePath}/meetings` },
+    { icon: Calendar, label: 'Agenda', href: `${basePath}/meetings` },
     { icon: ShoppingBag, label: 'Marketplace', href: `${basePath}/marketplace` },
     { icon: Users, label: isAgency ? 'Veículos' : 'Mídias', href: `${basePath}/directory` },
     { icon: Wallet, label: 'Carteira', href: `${basePath}/wallet` },
@@ -45,11 +68,13 @@ export default function Sidebar() {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
-        <span className={styles.logoText}>HOAS</span>
+        <img src="/identidade visual/hoas_png.png" alt="HOAS Logo" className={styles.sidebarLogo} />
       </div>
 
       <nav className={styles.nav}>
-        <div className={styles.sectionLabel}>Menu Principal</div>
+        <div className={styles.sectionLabel}>
+          {isPlatformAdmin ? 'Administração Global' : 'Menu Principal'}
+        </div>
         {menuItems.filter(item => !item.hidden).map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -66,20 +91,23 @@ export default function Sidebar() {
       </nav>
 
       <div className={styles.footer}>
-        {/* Simulação de verificação de cargo (Admin) - No futuro virá do AuthContext */}
-        {true && ( // isAdmin
+        {isPlatformAdmin && (
+          <div className={styles.adminBadge}>
+            <ShieldCheck size={14} />
+            <span>Platform Admin</span>
+          </div>
+        )}
+        
+        {!isPlatformAdmin && (
           <>
-            <Link href={`${basePath}/settings/profile`} className={styles.navLink}>
-              <User size={20} />
-              <span>Meu Perfil</span>
-            </Link>
             <Link href={`${basePath}/settings/team`} className={styles.navLink}>
               <Settings size={20} />
               <span>Configurações</span>
             </Link>
           </>
         )}
-        <button className={styles.logoutBtn}>
+        
+        <button className={styles.logoutBtn} onClick={handleLogout}>
           <LogOut size={20} />
           <span>Sair</span>
         </button>

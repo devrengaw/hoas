@@ -1,14 +1,30 @@
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  display: flex;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+  background: #050811;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.withSidebar {
+  padding-right: 1rem;
 }
 
 .header {
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .header h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: white;
 }
 
 .header p {
@@ -17,14 +33,15 @@
 
 .controls {
   display: flex;
-  justify-content: space-between;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
 .searchBox {
-  flex: 1;
   position: relative;
+  width: 100%;
+  max-width: 600px;
 }
 
 .searchBox svg {
@@ -32,39 +49,316 @@
   left: 1.25rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--muted-foreground);
+  color: var(--muted);
 }
 
 .searchBox input {
   width: 100%;
-  background: var(--glass);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--glass-border);
-  padding: 1rem 1rem 1rem 3.5rem;
+  padding: 1rem 1.25rem 1rem 3.5rem;
   border-radius: 100px;
   color: white;
   font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
 }
 
-.filterBtn {
-  background: var(--glass);
+.filterGroup {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filterTag {
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--glass-border);
-  color: white;
-  padding: 0 1.5rem;
+  color: var(--muted);
+  padding: 0.6rem 1.5rem;
   border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.activeTag {
+  background: var(--primary) !important;
+  color: white !important;
+  border-color: var(--primary) !important;
+}
+
+.compactGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.compactCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.connectedCard {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.02);
+}
+
+.cardAvatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+}
+
+.avatarInitial {
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: white;
+}
+
+.connIndicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: #10b981;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #050811;
+}
+
+.cardName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.25rem;
+}
+
+.cardCompany {
+  font-size: 0.8rem;
+  color: var(--muted);
   font-weight: 600;
+}
+
+.quickActions {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s;
+}
+
+.compactCard:hover .quickActions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quickActions button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2.5rem;
+/* Details Sidebar */
+.detailsSidebar {
+  width: 400px;
+  background: #0a0f1e;
+  border-left: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  padding: 3rem 2rem 5rem 2rem;
+  position: relative;
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
 }
 
-.cardWrapper {
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.closeSidebar {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sidebarHeader {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.largeAvatar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1.5rem;
+}
+
+.sidebarInitial {
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+}
+
+.ratingLabel {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #f59e0b;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sidebarHeader h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.sidebarRole {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.sidebarCompany {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.sidebarActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.mainChatBtn, .secondarySidebarBtn {
+  padding: 0.9rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.mainChatBtn {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.secondarySidebarBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  color: white;
+}
+
+.sidebarInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.infoSection label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.infoSection p {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+.sidebarTags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sidebarTag {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: white;
+  font-weight: 600;
+}
+
+.viewFullProfileBtn {
+  margin-top: 4rem;
+  width: 100%;
+  background: white;
+  color: black;
+  border: none;
+  padding: 1.1rem;
+  border-radius: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
 }

@@ -1,4 +1,5 @@
 .container {
+  padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -6,16 +7,39 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 3rem;
 }
 
 .header h1 {
-  font-size: 2rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
 }
 
 .header p {
   color: var(--muted);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.masterIndicator {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f59e0b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .primaryBtn {
@@ -23,304 +47,596 @@
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
+  text-decoration: none;
 }
 
+/* Match Section */
 .matchSection {
   margin-bottom: 4rem;
 }
 
-.sectionHeader h2 {
+.sectionHeader {
+  margin-bottom: 2rem;
+}
+
+.titleWithIcon {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 1.5rem;
   margin-bottom: 0.5rem;
+}
+
+.zapIcon {
+  color: #f59e0b;
+}
+
+.sectionHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
 }
 
 .sectionHeader p {
   color: var(--muted);
-  margin-bottom: 2rem;
+  font-size: 0.9rem;
 }
 
 .matchGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
 .matchCard {
-  background: var(--card-bg);
+  background: var(--glass);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  border-radius: 24px;
+  padding: 2rem;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.3s;
 }
 
 .matchCard:hover {
-  border-color: var(--secondary);
-  background: rgba(16, 185, 129, 0.02);
+  transform: translateY(-4px);
+  border-color: var(--primary);
 }
 
 .matchBadge {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: var(--secondary);
-  color: white;
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 0.25rem 0.6rem;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  padding: 0.25rem 0.75rem;
   border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .agencyHeader {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: var(--muted);
   font-size: 0.75rem;
-  color: var(--primary);
   font-weight: 700;
-  text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
 
 .matchCard h3 {
   font-size: 1.2rem;
+  font-weight: 800;
+  color: white;
   margin-bottom: 1rem;
 }
 
 .matchCard p {
-  font-size: 0.85rem;
   color: var(--muted);
+  font-size: 0.9rem;
   line-height: 1.5;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .matchFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid var(--glass-border);
-  padding-top: 1.25rem;
 }
 
 .budgetValue {
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: white;
+  font-weight: 800;
+  color: #10b981;
 }
 
 .proposalBtn {
-  background: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
   color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   font-size: 0.8rem;
+  font-weight: 700;
   cursor: pointer;
 }
 
-.divider {
-  height: 1px;
-  background: var(--glass-border);
-  margin-bottom: 3rem;
+/* Vehicles Directory */
+.vehiclesSection {
+  margin-bottom: 4rem;
 }
 
-.controls {
+.directoryControls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-}
-
-.tabs {
-  display: flex;
   gap: 2rem;
-  border-bottom: 1px solid var(--glass-border);
-  width: fit-content;
 }
 
-.tab {
-  background: transparent;
-  border: none;
+.searchBox {
+  flex: 1;
+  max-width: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchBox svg {
+  position: absolute;
+  left: 1rem;
   color: var(--muted);
-  padding: 1rem 0;
+}
+
+.searchBox input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  padding: 0.8rem 1rem 0.8rem 3rem;
+  border-radius: 12px;
+  color: white;
+  outline: none;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.filterTag {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  position: relative;
+  transition: all 0.2s;
 }
 
-.activeTab {
-  color: var(--primary);
-}
-
-.activeTab::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--primary);
-}
-
-.viewSwitch {
-  display: flex;
-  background: var(--glass);
-  padding: 0.25rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--glass-border);
-}
-
-.switchBtn {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  padding: 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.activeSwitch {
+.activeTag {
   background: var(--primary);
   color: white;
-}
-
-/* Grid Layout */
-.projectGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.projectCard {
-  background: var(--card-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: transform 0.3s ease;
-}
-
-.projectCard:hover {
-  transform: translateY(-5px);
   border-color: var(--primary);
 }
 
-.projectImage {
-  height: 180px;
-  background: var(--glass);
+.vehicleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.vehicleCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+}
+
+.vehicleCard:hover {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.vehicleHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.vehicleType {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.connectionBadge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #10b981;
+}
+
+.vehicleMain {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.vehicleAvatar {
+  width: 56px;
+  height: 56px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 auto 1rem;
+}
+
+.vehicleMain h3 {
+  font-size: 1.1rem;
+  color: white;
+  margin-bottom: 0.25rem;
+}
+
+.reachInfo {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.vehicleFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.category {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.viewProfileBtn {
+  background: transparent;
+  color: var(--primary);
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.connectBtn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Modals Overlay */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.closeBtn {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  background: transparent; border: none; color: var(--muted); cursor: pointer;
+  z-index: 10;
+}
+
+/* Standard Profile (PicPay Ads Design) */
+.standardProfile {
+  background: #0a0f1e;
+  border: 1px solid var(--glass-border);
+  border-radius: 32px;
+  width: 100%;
+  max-width: 950px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.standardCover {
+  height: 200px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.coverTitle {
+  font-size: 4rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.1);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.standardHeader {
+  padding: 0 3rem;
+  margin-top: -50px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.standardLogo {
+  width: 120px;
+  height: 120px;
+  background: var(--card-bg);
+  border: 6px solid #0a0f1e;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.standardHeaderInfo {
+  flex: 1;
+  padding-bottom: 0.5rem;
+}
+
+.standardHeaderInfo h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  margin: 0.25rem 0;
+}
+
+.categoryTag {
+  background: var(--primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.standardActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.primaryContactBtn {
+  background: #11C76F;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.primaryContactBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(17, 199, 111, 0.3);
+}
+
+.standardGrid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 4rem;
+  padding: 0 3rem 3rem;
+}
+
+.standardSection {
+  margin-bottom: 3rem;
+}
+
+.standardSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.standardSection p {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.featureIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(17, 199, 111, 0.1);
+  color: #11C76F;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.projectImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.featureItem span {
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
-.projectInfo {
-  padding: 1.5rem;
+.standardGallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
 }
 
-.projectInfo h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
-}
-
-.categoryBadge {
-  font-size: 0.75rem;
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--primary);
-  padding: 0.25rem 0.75rem;
-  border-radius: 100px;
-  font-weight: 600;
-}
-
-.projectMetrics {
-  margin-top: 1.5rem;
+.galleryPlaceholder {
+  height: 160px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--glass-border);
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.metric {
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
+  justify-content: center;
+  gap: 1rem;
   color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
-.projectActions {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--glass-border);
+.sideWidget {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  padding: 2rem;
+  border-radius: 24px;
+  margin-bottom: 1.5rem;
+}
+
+.sideWidget h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.statRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
-.actionBtn {
-  background: transparent;
-  border: 1px solid var(--glass-border);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-weight: 500;
+.statRow span { color: var(--muted); }
+.statRow strong { color: white; }
+
+.formatCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
 }
 
-.deleteBtn {
-  background: transparent;
+.formatTag {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.downloadBtnFull {
+  width: 100%;
+  background: white;
+  color: black;
   border: none;
-  color: var(--accent);
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.deleteBtn:hover {
-  opacity: 1;
-}
-
-/* List Layout */
-.projectList {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.projectListItem {
-  background: var(--card-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  padding: 1rem 1.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 800;
   display: flex;
   align-items: center;
-  gap: 2rem;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
 }
 
-.projectListItem .projectImage {
-  width: 60px;
-  height: 60px;
-  border-radius: var(--radius-sm);
+/* Success Modal */
+.successIconWrapper {
+  width: 80px;
+  height: 80px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
 }
 
-.projectListItem .projectInfo {
-  flex: 1;
-  padding: 0;
+.primaryBtn {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
-.projectListItem .projectMetrics {
-  margin-top: 0.25rem;
-  flex-direction: row;
-  gap: 2rem;
+/* Briefing Specifics */
+.modalIconWrapper {
+  width: 56px; height: 56px; background: rgba(99, 102, 241, 0.1); color: var(--primary); border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;
 }
+.modalHeader { text-align: center; margin-bottom: 2.5rem; }
+.modalHeader h2 { font-size: 1.8rem; color: white; margin-bottom: 0.5rem; }
+.modalHeader p { color: var(--muted); font-size: 0.9rem; }
+
+.briefingDetails { display: flex; flex-direction: column; gap: 1.5rem; padding: 0 1rem; }
+.detailRow { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.detailItem label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 0.5rem; }
+.detailItem strong { display: block; font-size: 1.1rem; color: white; }
+.highlight { color: #10b981 !important; }
+
+.descriptionBox { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 12px; }
+.descriptionBox label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--muted); margin-bottom: 0.75rem; }
+.descriptionBox p { color: white; line-height: 1.6; font-size: 0.95rem; }
+
+.sendProposalBtn { background: linear-gradient(135deg, var(--primary), #818cf8); color: white; border: none; padding: 1.25rem; border-radius: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 0.75rem; cursor: pointer; box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3); width: 100%; margin-top: 1.5rem; }
+
+.divider { height: 1px; background: var(--glass-border); margin: 3rem 0; }
+.clickableAgency { color: var(--primary); cursor: pointer; text-decoration: underline; }
+.inlineIcon { margin-left: 0.5rem; opacity: 0.5; }

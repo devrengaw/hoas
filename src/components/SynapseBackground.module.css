@@ -1,0 +1,21 @@
+.container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.subtlePath {
+  stroke: rgba(255, 255, 255, 0.04);
+  stroke-width: 1.2;
+  fill: none;
+}

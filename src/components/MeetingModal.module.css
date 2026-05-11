@@ -1,0 +1,448 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 650px;
+  background: #0a0f1e;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modalHeader {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.headerTitle h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.meetingMainInfo {
+  padding: 2rem;
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.titleArea h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.25rem;
+}
+
+.titleArea p {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.statusTag {
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.upcoming { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.completed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.ongoing { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+.cancelled { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.requested { background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+.contactInfo {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.contactItem:hover {
+  color: var(--primary);
+}
+
+.transcriptionSection {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.transcriptionContainer {
+  margin-top: 1rem;
+}
+
+.inputWrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.transcriptionInput {
+  width: 100%;
+  min-height: 100px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  padding-bottom: 3.5rem;
+  color: white;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.uploadOverlay {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.uploadBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.uploadBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.generateBtn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s;
+}
+
+.generateBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+}
+
+.generateBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.verifiedBadge {
+  background: #10b981;
+  color: white;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeInfo {
+  display: flex;
+  gap: 2rem;
+}
+
+.timeItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.requestAlert {
+  margin: 0 2rem 1.5rem;
+  padding: 1.25rem;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alertContent {
+  display: flex;
+  gap: 1rem;
+  color: #a855f7;
+}
+
+.alertContent p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+.alertActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.approveBtn {
+  background: #a855f7;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.rejectBtn {
+  background: transparent;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #a855f7;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.scrollContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 2rem 2rem;
+}
+
+.section {
+  margin-top: 1.5rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--primary);
+}
+
+.sectionTitle h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: white;
+}
+
+.editBtn, .saveBtn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notesArea {
+  width: 100%;
+  min-height: 120px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  color: white;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.notesDisplay {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.emptyText {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.summarySection {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.summaryContent {
+  margin-top: 1.5rem;
+}
+
+.insights {
+  color: white;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--primary);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.summaryGrid h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.summaryGrid ul {
+  list-style: none;
+  padding: 0;
+}
+
+.summaryGrid li {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.summaryGrid li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+}
+
+.modalFooter {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.mainActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.rescheduleBtn, .cancelBtn, .exportBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rescheduleBtn { background: transparent; border: 1px solid var(--glass-border); color: white; }
+.cancelBtn { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; }
+.exportBtn { background: var(--primary); border: none; color: white; }
+
+.rescheduleForm {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.rescheduleForm input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-md);
+}
+
+.confirmReschedule {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cancelAction {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+}

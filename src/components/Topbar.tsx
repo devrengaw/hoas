@@ -11,7 +11,8 @@ export default function Topbar() {
   // Determine current role based on path for UI display
   const isAgency = pathname.includes('/dashboard/agency');
   const isClient = pathname.includes('/dashboard/client');
-  const roleName = isAgency ? 'Mídia (Agência)' : isClient ? 'Cliente' : 'Executivo de Veículo';
+  const isAdmin = pathname.includes('/dashboard/platform-admin');
+  const roleName = isAdmin ? 'Administrador HOAS' : isAgency ? 'Mídia (Agência)' : isClient ? 'Cliente' : 'Executivo de Veículo';
 
   return (
     <header className={styles.topbar}>
@@ -24,11 +25,6 @@ export default function Topbar() {
         />
       </div>
 
-      <div className={styles.roleSwitcher}>
-        <Link href="/dashboard" className={!isAgency && !isClient ? styles.activeRole : ''}>Veículo</Link>
-        <Link href="/dashboard/agency" className={isAgency ? styles.activeRole : ''}>Agência</Link>
-        <Link href="/dashboard/client" className={isClient ? styles.activeRole : ''}>Cliente</Link>
-      </div>
 
       <div className={styles.actions}>
         <div className={styles.aiStatus}>
@@ -41,13 +37,13 @@ export default function Topbar() {
           <span className={styles.badge} />
         </button>
 
-        <div className={styles.userProfile}>
+        <Link href={`${isAgency ? '/dashboard/agency' : isClient ? '/dashboard/client' : '/dashboard'}/settings/profile`} className={styles.userProfile}>
           <div className={styles.userInfo}>
             <span className={styles.userName}>Lucas Wagner</span>
             <span className={styles.userRole}>{roleName}</span>
           </div>
           <div className={styles.avatar}>LW</div>
-        </div>
+        </Link>
       </div>
     </header>
   );

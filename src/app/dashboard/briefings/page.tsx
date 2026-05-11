@@ -1,89 +1,99 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  FileText, 
-  Search, 
-  Filter, 
-  MessageSquare, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Building2, 
-  ExternalLink, 
-  X, 
-  Target, 
-  Users, 
-  MapPin, 
-  DollarSign, 
-  Zap,
-  Edit3,
-  Send,
-  History
+  FileText, Search, Filter, MessageSquare, CheckCircle, XCircle, 
+  Clock, Building2, ExternalLink, X, Target, Users, MapPin, 
+  DollarSign, Zap, Edit3, Send, UserPlus, ShieldAlert
 } from 'lucide-react';
 import styles from './page.module.css';
+import { mockProposals, Proposal, currentUser } from '@/lib/mockData';
 
 export default function ProposalsPage() {
-  const [selectedProposal, setSelectedProposal] = useState<any>(null);
+  // Access Control Logic
+  const isMaster = currentUser.role === 'MASTER';
+  
+  const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
   const [showBriefing, setShowBriefing] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isEditingCost, setIsEditingCost] = useState(false);
   const [counterPrice, setCounterPrice] = useState('');
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [showAssignModal, setShowAssignModal] = useState(false);
 
-  const proposals = [
-    {
-      id: 1,
-      agency: "Agência Global",
-      project: "Caminhos do Sol - Verão 2026",
-      date: "24/04/2026",
-      status: "Pendente",
-      budget: "R$ 450.000,00",
-      description: "Temos interesse em uma cota de patrocínio master para a marca Nike.",
-      contact: "Mariana Silva",
-      fullBriefing: {
-        brand: "Nike Brasil",
-        objective: "Lançamento da linha Summer Running 2026 com foco em sustentabilidade e performance litorânea.",
-        target: "Jovens 18-35 anos, corredores urbanos e entusiastas de outdoor.",
-        location: "Brasil (Nacional com foco em Capitais litorâneas)",
-        channels: ["Digital", "OOH", "Podcast", "Social Media"],
-        period: "Outubro a Dezembro 2026"
-      }
-    },
-    {
-      id: 2,
-      agency: "XYZ Media",
-      project: "Podcast Alpha Night",
-      date: "23/04/2026",
-      status: "Em Negociação",
-      budget: "R$ 80.000,00",
-      description: "Proposta para 12 inserções de 30s + Menção no início.",
-      contact: "Pedro Santos",
-      fullBriefing: {
-        brand: "Tech House",
-        objective: "Awareness para novo serviço de automação residencial via IA.",
-        target: "Público Classe AB, 25-50 anos, Early Adopters.",
-        location: "São Paulo e Curitiba",
-        channels: ["Podcast", "Youtube", "Programática"],
-        period: "Setembro 2026"
+  useEffect(() => {
+    // Logic: 
+    // 1. Only show connected opportunities (Matchmaking rule)
+    // 2. But if Master, show ALL briefings/proposals
+    // 3. If Team Member, show only assigned to them
+    
+    let filtered = mockProposals;
+
+    if (!isMaster) {
+      if (currentUser.role === 'TEAM_MEMBER') {
+        filtered = mockProposals.filter(p => p.assignedTo === currentUser.name);
+      } else if (currentUser.role === 'MEDIA_AGENCY') {
+        // Media users see only opportunities from connected vehicles
+        filtered = mockProposals.filter(p => p.hasConnection);
       }
     }
-  ];
+    
+    setProposals(filtered);
+  }, [isMaster]);
 
   const handleSendCounter = () => {
-    // In a real app, this would update the backend
     if (selectedProposal) {
-      selectedProposal.budget = counterPrice;
-      selectedProposal.status = "Contra-Proposta Enviada";
+      const updated = proposals.map(p => 
+        p.id === selectedProposal.id ? { ...p, budget: counterPrice, status: "Em Negociação" } : p
+      );
+      setProposals(updated);
+      setSelectedProposal({ ...selectedProposal, budget: counterPrice, status: "Em Negociação" });
       setIsEditingCost(false);
     }
+  };
+
+  const handleAcceptProposal = () => {
+    if (selectedProposal) {
+      setProposals(proposals.filter(p => p.id !== selectedProposal.id));
+      setSelectedProposal(null);
+      alert(`Proposta de ${selectedProposal.agency} aceita!`);
+    }
+  };
+
+  const handleAssign = (memberName: string) => {
+    if (selectedProposal) {
+      const updated = proposals.map(p => 
+        p.id === selectedProposal.id ? { ...p, assignedTo: memberName } : p
+      );
+      setProposals(updated);
+      setSelectedProposal({ ...selectedProposal, assignedTo: memberName });
+      setShowAssignModal(false);
+      alert(`Proposta direcionada para ${memberName}`);
+    }
+  };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMessage.trim()) return;
+    setChatMessages([...chatMessages, { id: Date.now(), sender: "Você", text: newMessage, time: "10:30" }]);
+    setNewMessage('');
   };
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <div>
-          <h1>Propostas Recebidas</h1>
-          <p>Gerencie as solicitações de mídia e parcerias enviadas pelas agências.</p>
+          <h1>{isMaster ? 'Briefings & Propostas (Master)' : 'Minhas Propostas'}</h1>
+          <p>{isMaster ? 'Visão global de todas as oportunidades da plataforma.' : 'Gerencie as solicitações direcionadas a você.'}</p>
         </div>
+        {isMaster && (
+          <div className={styles.masterBadge}>
+            <ShieldAlert size={16} />
+            <span>Acesso Master Ativo</span>
+          </div>
+        )}
       </header>
 
       <div className={styles.content}>
@@ -100,29 +110,42 @@ export default function ProposalsPage() {
           </div>
 
           <div className={styles.proposalList}>
-            {proposals.map((p) => (
-              <div 
-                key={p.id} 
-                className={`${styles.proposalItem} ${selectedProposal?.id === p.id ? styles.activeItem : ''}`}
-                onClick={() => {
-                  setSelectedProposal(p);
-                  setCounterPrice(p.budget);
-                  setIsEditingCost(false);
-                }}
-              >
-                <div className={styles.itemIcon}>
-                  <Building2 size={24} />
+            {proposals.length > 0 ? (
+              proposals.map((p) => (
+                <div 
+                  key={p.id} 
+                  className={`${styles.proposalItem} ${selectedProposal?.id === p.id ? styles.activeItem : ''} ${!p.hasConnection && isMaster ? styles.noConnection : ''}`}
+                  onClick={() => {
+                    setSelectedProposal(p);
+                    setCounterPrice(p.budget);
+                    setIsEditingCost(false);
+                  }}
+                >
+                  <div className={styles.itemIcon}>
+                    <Building2 size={24} />
+                  </div>
+                  <div className={styles.itemInfo}>
+                    <div className={styles.titleRow}>
+                      <h3>{p.agency}</h3>
+                      {!p.hasConnection && <span className={styles.matchBadge}><Zap size={10} /> IA: Novo Match</span>}
+                    </div>
+                    <p>Projeto: {p.project}</p>
+                    <div className={styles.assignmentInfo}>
+                      <span>{p.date} • {p.contact}</span>
+                      {p.assignedTo && <span className={styles.assignedBadge}><Users size={10} /> {p.assignedTo}</span>}
+                    </div>
+                  </div>
+                  <div className={`${styles.statusBadge} ${styles[p.status.toLowerCase().replace(/\s/g, '_')]}`}>
+                    {p.status}
+                  </div>
                 </div>
-                <div className={styles.itemInfo}>
-                  <h3>{p.agency}</h3>
-                  <p>Projeto: {p.project}</p>
-                  <span>{p.date} • {p.contact}</span>
-                </div>
-                <div className={`${styles.statusBadge} ${p.status === 'Pendente' ? styles.pending : styles.negotiating}`}>
-                  {p.status}
-                </div>
+              ))
+            ) : (
+              <div className={styles.emptyList}>
+                <CheckCircle size={40} color="#10b981" />
+                <p>Nenhuma proposta para exibir.</p>
               </div>
-            ))}
+            )}
           </div>
         </section>
 
@@ -131,18 +154,23 @@ export default function ProposalsPage() {
             <div className={styles.detailCard}>
               <div className={styles.detailHeader}>
                 <h2>Detalhes da Proposta</h2>
-                {isEditingCost ? (
-                  <div className={styles.editCostWrapper}>
-                    <input 
-                      type="text" 
-                      className={styles.costInput}
-                      value={counterPrice}
-                      onChange={(e) => setCounterPrice(e.target.value)}
-                    />
-                  </div>
-                ) : (
-                  <span className={styles.budgetValue}>{selectedProposal.budget}</span>
-                )}
+                <span className={styles.budgetValue}>{selectedProposal.budget}</span>
+              </div>
+
+              {isMaster && (
+                <div className={styles.masterActions}>
+                  <button className={styles.assignBtn} onClick={() => setShowAssignModal(true)}>
+                    <UserPlus size={16} />
+                    <span>{selectedProposal.assignedTo ? 'Redirecionar' : 'Direcionar para Equipe'}</span>
+                  </button>
+                </div>
+              )}
+
+              <div className={styles.infoBlock}>
+                <label>Status de Conexão</label>
+                <div className={`${styles.connStatus} ${selectedProposal.hasConnection ? styles.connected : styles.disconnected}`}>
+                  {selectedProposal.hasConnection ? '✓ Conexão Ativa' : '⚠ Sem Conexão Prévia (IA Match)'}
+                </div>
               </div>
 
               <div className={styles.infoBlock}>
@@ -154,109 +182,56 @@ export default function ProposalsPage() {
                 <label>Documentação</label>
                 <button onClick={() => setShowBriefing(true)} className={styles.docLinkBtn}>
                   <FileText size={16} />
-                  <span>Ver Briefing Completo</span>
+                  <span>Ver Proposta Completa</span>
                   <ExternalLink size={14} />
                 </button>
               </div>
 
               <div className={styles.actions}>
-                {isEditingCost ? (
-                  <>
-                    <button className={styles.primaryAction} onClick={handleSendCounter}>
-                      <Send size={18} />
-                      Enviar Contra-Proposta
-                    </button>
-                    <button className={styles.cancelBtn} onClick={() => setIsEditingCost(false)}>
-                      Cancelar
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button className={styles.acceptBtn}>
-                      <CheckCircle size={18} />
-                      Aceitar Proposta
-                    </button>
-                    <button className={styles.counterBtn} onClick={() => setIsEditingCost(true)}>
-                      <Edit3 size={18} />
-                      Alterar Custo
-                    </button>
-                    <button className={styles.chatBtn}>
-                      <MessageSquare size={18} />
-                      Abrir Chat
-                    </button>
-                    <button className={styles.rejectBtn}>
-                      <XCircle size={18} />
-                      Recusar
-                    </button>
-                  </>
-                )}
+                <button className={styles.acceptBtn} onClick={handleAcceptProposal}>Aceitar</button>
+                <button className={styles.chatBtn} onClick={() => setIsChatOpen(true)}>Abrir Chat</button>
+                <button className={styles.rejectBtn}>Recusar</button>
               </div>
             </div>
           ) : (
             <div className={styles.emptyDetails}>
               <Clock size={48} />
-              <p>Selecione uma proposta para visualizar os detalhes e iniciar a negociação.</p>
+              <p>Selecione uma proposta para visualizar os detalhes.</p>
             </div>
           )}
         </aside>
       </div>
 
-      {/* Briefing Modal */}
+      {/* Assignment Modal */}
+      {showAssignModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.smallModal}>
+            <h3>Direcionar Proposta</h3>
+            <p>Selecione um membro da equipe para gerenciar esta negociação.</p>
+            <div className={styles.teamList}>
+              {['Ana Oliveira', 'Pedro Santos', 'Juliana Lima'].map(name => (
+                <button key={name} className={styles.teamMemberBtn} onClick={() => handleAssign(name)}>
+                  <div className={styles.memberAvatar}>{name[0]}</div>
+                  <span>{name}</span>
+                </button>
+              ))}
+            </div>
+            <button className={styles.closeBtn} onClick={() => setShowAssignModal(false)}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Briefing Modal (simplified) */}
       {showBriefing && selectedProposal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <button className={styles.closeBtn} onClick={() => setShowBriefing(false)}>
-              <X size={24} />
-            </button>
-            
-            <div className={styles.modalHeader}>
-              <div className={styles.badge}>Briefing Estratégico</div>
-              <h1>{selectedProposal.project}</h1>
-              <p className={styles.brandName}>Marca: <strong>{selectedProposal.fullBriefing.brand}</strong></p>
-            </div>
-
-            <div className={styles.modalGrid}>
-              <div className={styles.modalMain}>
-                <div className={styles.modalSection}>
-                  <h3><Target size={18} /> Objetivo da Campanha</h3>
-                  <p>{selectedProposal.fullBriefing.objective}</p>
-                </div>
-
-                <div className={styles.modalSection}>
-                  <h3><Users size={18} /> Público-Alvo</h3>
-                  <p>{selectedProposal.fullBriefing.target}</p>
-                </div>
-
-                <div className={styles.modalSection}>
-                  <h3><MapPin size={18} /> Praças de Veiculação</h3>
-                  <p>{selectedProposal.fullBriefing.location}</p>
-                </div>
-              </div>
-
-              <aside className={styles.modalAside}>
-                <div className={styles.asideCard}>
-                  <label><DollarSign size={14} /> Budget Previsto</label>
-                  <span>{selectedProposal.budget}</span>
-                </div>
-                <div className={styles.asideCard}>
-                  <label><Clock size={14} /> Período</label>
-                  <span>{selectedProposal.fullBriefing.period}</span>
-                </div>
-                <div className={styles.asideCard}>
-                  <label><Zap size={14} /> Canais</label>
-                  <div className={styles.tagCloud}>
-                    {selectedProposal.fullBriefing.channels.map((c: string) => (
-                      <span key={c} className={styles.tag}>{c}</span>
-                    ))}
-                  </div>
-                </div>
-              </aside>
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button className={styles.primaryAction} onClick={() => setShowBriefing(false)}>
-                Fechar Visualização
-              </button>
+            <button className={styles.closeBtn} onClick={() => setShowBriefing(false)}><X size={24} /></button>
+            <h1>{selectedProposal.project}</h1>
+            <div className={styles.modalContent}>
+              <h3>Objetivo</h3>
+              <p>{selectedProposal.fullBriefing.objective}</p>
+              <h3>Público</h3>
+              <p>{selectedProposal.fullBriefing.target}</p>
             </div>
           </div>
         </div>

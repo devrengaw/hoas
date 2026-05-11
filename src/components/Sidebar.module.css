@@ -11,21 +11,22 @@
   top: 0;
   z-index: 100;
   backdrop-filter: blur(20px);
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .logo {
-  margin-bottom: 3rem;
-  padding-left: 1rem;
+  margin-bottom: 2.5rem;
 }
 
-.logoText {
-  font-family: var(--font-heading);
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: -0.05em;
-  background: linear-gradient(to right, #fff, var(--primary));
-  -webkit-background-clip: text;
-  -webkit-fill-color: transparent;
+.sidebarLogo {
+  max-width: 160px;
+  height: auto;
 }
 
 .sectionLabel {

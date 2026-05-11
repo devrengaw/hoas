@@ -1,5 +1,6 @@
 .container {
-  max-width: 1200px;
+  padding: 2rem;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -7,233 +8,318 @@
   margin-bottom: 2.5rem;
 }
 
-.header h1 {
-  font-size: 2rem;
+.headerTitle h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
 }
 
-.header p {
+.headerTitle p {
   color: var(--muted);
+}
+
+.topActions {
+  margin-bottom: 2rem;
+}
+
+.tabContainer {
+  display: flex;
+  gap: 1rem;
+  background: var(--glass);
+  padding: 0.5rem;
+  border-radius: 12px;
+  width: fit-content;
+  border: 1px solid var(--glass-border);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.activeTab {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.searchSection {
+  margin-bottom: 3rem;
 }
 
 .controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
   gap: 2rem;
 }
 
-.searchBar {
-  flex: 1;
+.searchBox {
   position: relative;
+  flex: 1;
+  max-width: 500px;
 }
 
-.searchBar svg {
+.searchBox svg {
   position: absolute;
-  left: 1.25rem;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--muted-foreground);
+  color: var(--muted);
 }
 
-.searchBar input {
+.searchBox input {
   width: 100%;
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  padding: 1rem 1rem 1rem 3.5rem;
+  padding: 0.8rem 1rem 0.8rem 2.75rem;
   border-radius: 100px;
   color: white;
-  font-size: 1rem;
+  outline: none;
 }
 
-.filters {
+.filterGroup {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
-.filterBtn {
+.filterTag {
   background: var(--glass);
   border: 1px solid var(--glass-border);
   color: var(--muted);
-  padding: 0.6rem 1.25rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 100px;
-  cursor: pointer;
+  font-size: 0.85rem;
   font-weight: 600;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.activeFilter {
+.activeTag {
   background: var(--primary);
   color: white;
   border-color: var(--primary);
 }
 
-.aiBanner {
-  background: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.1));
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  padding: 1rem 2rem;
-  border-radius: var(--radius-md);
-  margin-bottom: 3rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  color: white;
-}
-
-.aiText {
-  flex: 1;
-  font-size: 0.95rem;
-}
-
-.aiText strong {
-  color: var(--primary);
-}
-
-.aiAction {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 0.5rem 1.25rem;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.projectGrid {
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
-.projectCard {
-  background: var(--card-bg);
+.vehicleCard, .agencyCard {
+  background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: transform 0.3s ease;
-}
-
-.projectCard:hover {
-  transform: translateY(-10px);
-  border-color: var(--primary);
-}
-
-.imageContainer {
-  height: 200px;
-  position: relative;
-}
-
-.imageContainer img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.matchBadge {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  background: var(--secondary);
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 100px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-}
-
-.saveBtn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.projectContent {
   padding: 2rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
-.category {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--primary);
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
+.connectedCard {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.05);
 }
 
-.projectContent h3 {
-  font-size: 1.4rem;
-  margin-bottom: 0.25rem;
-}
-
-.vehicleName {
-  color: var(--muted);
-  font-weight: 500;
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 1.5rem;
 }
 
-.meta {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.metaItem span {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
+.typeTag {
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
-  margin-bottom: 0.25rem;
+  color: var(--primary);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
 }
 
-.metaItem strong {
-  font-size: 1.1rem;
-  color: white;
+.connBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.detailsBtn, .proposalBtn {
-  padding: 0.75rem;
-  border-radius: var(--radius-md);
-  font-weight: 700;
+.vehicleAvatar {
+  width: 64px;
+  height: 64px;
+  background: var(--primary);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 1rem;
 }
 
-.detailsBtn {
-  background: var(--glass);
+.cardBody h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.reachInfo {
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.categoryTag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.35rem 1rem;
+  border-radius: 6px;
+}
+
+.cardFooter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.viewBtn, .primaryActionBtn, .proposalBtn {
+  padding: 0.75rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewBtn {
+  background: transparent;
   border: 1px solid var(--glass-border);
   color: white;
 }
 
-.proposalBtn {
+.primaryActionBtn {
   background: var(--primary);
   border: none;
   color: white;
 }
 
-.proposalBtn:hover {
-  filter: brightness(1.1);
+/* Agency Card Specific */
+.aiMatchBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--primary);
+  color: white;
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-bottom-left-radius: 12px;
+}
+
+.agencyHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.ratingInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: #f59e0b;
+  font-weight: 800;
+}
+
+.agencyBody h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.75rem;
+}
+
+.agencyBody p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.projectCount {
+  font-size: 0.85rem;
+  color: white;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.tagCloud {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.tag {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: white;
+  font-weight: 600;
+}
+
+.proposalBtn {
+  grid-column: span 2;
+  background: white;
+  color: black;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
 }

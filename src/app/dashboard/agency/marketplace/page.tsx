@@ -1,31 +1,69 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, Filter, ShoppingBag, Sparkles, Building2, Target, DollarSign, ArrowRight, Star, MapPin, Eye, ExternalLink, SlidersHorizontal } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { 
+  Search, Filter, ShoppingBag, Sparkles, Building2, Target, 
+  DollarSign, ArrowRight, Star, MapPin, Eye, ExternalLink, 
+  SlidersHorizontal, CheckCircle, Zap, ShieldAlert, X,
+  Users, Globe, Award, BarChart3, Briefcase, Calendar, FileText, CheckCircle2,
+  MessageSquare, Info, Smartphone
+} from 'lucide-react';
 import styles from './page.module.css';
+import { mockVehicles, mockProposals, currentUser, mockOrganizations } from '@/lib/mockData';
 
 export default function AgencyMarketplacePage() {
   const [activeTab, setActiveTab] = useState<'vehicles' | 'clients'>('vehicles');
-  const [showFilters, setShowFilters] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const vehicleProjects = [
-    {
-      id: 1,
-      title: "Caminhos do Sol - Verão 2026",
-      vehicle: "TV Alpha",
-      category: "Digital / OOH",
-      price: "R$ 50k",
-      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=300"
-    },
-    {
-      id: 2,
-      title: "Podcast Night Show",
-      vehicle: "Rede Audio",
-      category: "Podcast / Digital",
-      price: "R$ 15k",
-      image: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&q=80&w=300"
+  // Modals state
+  const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
+  const [selectedClientNeed, setSelectedClientNeed] = useState<any>(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isClientNeedModalOpen, setIsClientNeedModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const isMaster = currentUser.role === 'MASTER';
+
+  const handleOpenProfile = (vehicle: any) => {
+    setSelectedVehicle(vehicle);
+    setIsProfileModalOpen(true);
+  };
+
+  const handleOpenClientNeed = (need: any) => {
+    setSelectedClientNeed(need);
+    setIsClientNeedModalOpen(true);
+  };
+
+  const showSuccess = (msg: string) => {
+    setSuccessMessage(msg);
+    setIsSuccessModalOpen(true);
+  };
+
+  const handleAction = (action: string) => {
+    if (action === 'download') showSuccess('Download do material iniciado com sucesso!');
+    if (action === 'contact') showSuccess('Solicitação de contato enviada! Aguarde retorno.');
+    if (action === 'proposal') {
+      setIsClientNeedModalOpen(false);
+      showSuccess('Proposta estratégica enviada com sucesso para o anunciante!');
     }
-  ];
+  };
+
+  // Logic: Prioritize connected vehicles for the agency
+  const filteredVehicles = mockVehicles
+    .filter(v => {
+      const matchesSearch = v.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            v.type.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || v.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (a.connected && !b.connected) return -1;
+      if (!a.connected && b.connected) return 1;
+      return 0;
+    });
 
   const clientNecessities = [
     {
@@ -33,28 +71,38 @@ export default function AgencyMarketplacePage() {
       client: "Coca-Cola Brasil",
       title: "Campanha Natal Mágico 2026",
       budget: "R$ 1M - 2M",
-      description: "Buscamos agência para experiência imersiva de Natal em 15 capitais.",
+      description: "Buscamos agência para experiência imersiva de Natal em 15 capitais. Foco em ativações físicas integradas com social media e gamificação em pontos de venda.",
       match: 98,
-      tags: ["Digital", "OOH"]
+      tags: ["Digital", "OOH"],
+      period: "Novembro - Dezembro 2026"
     },
     {
       id: 2,
       client: "Samsung Brasil",
       title: "Lançamento Galaxy S27",
       budget: "R$ 500k - 1M",
-      description: "Foco em tecnologia e grandes eventos de lançamento simultâneos.",
+      description: "Foco em tecnologia e grandes eventos de lançamento simultâneos em São Paulo, Rio de Janeiro e Curitiba. Estratégia multimeios com forte presença em portais tech.",
       match: 85,
-      tags: ["PR", "Social Media"]
+      tags: ["PR", "Social Media"],
+      period: "Agosto - Setembro 2026"
     }
   ];
+
+  const vehicleCategories = ['All', 'Televisão', 'Rádio', 'Out of Home', 'Digital'];
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <div>
-          <h1>Marketplace Unificado</h1>
-          <p>Explore projetos de veículos ou atenda necessidades diretas de anunciantes.</p>
+        <div className={styles.headerTitle}>
+          <h1>Marketplace de Oportunidades</h1>
+          <p>Encontre projetos de veículos ou atenda necessidades diretas de anunciantes.</p>
         </div>
+        {isMaster && (
+          <div className={styles.masterBadge}>
+            <ShieldAlert size={16} />
+            <span>Visão Administrativa</span>
+          </div>
+        )}
       </header>
 
       <div className={styles.topActions}>
@@ -80,103 +128,49 @@ export default function AgencyMarketplacePage() {
         <div className={styles.controls}>
           <div className={styles.searchBox}>
             <Search size={18} />
-            <input type="text" placeholder={`Buscar no marketplace de ${activeTab === 'vehicles' ? 'veículos' : 'clientes'}...`} />
+            <input 
+              type="text" 
+              placeholder={`Buscar em ${activeTab === 'vehicles' ? 'veículos' : 'clientes'}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-          <button 
-            className={`${styles.filterBtn} ${showFilters ? styles.filterBtnActive : ''}`}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <SlidersHorizontal size={18} /> 
-            Filtros
-          </button>
+          <div className={styles.filterGroup}>
+            {activeTab === 'vehicles' && vehicleCategories.map(cat => (
+              <button 
+                key={cat} 
+                className={`${styles.filterTag} ${selectedCategory === cat ? styles.activeTag : ''}`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
-
-        {showFilters && (
-          <div className={styles.filterBar + " animate-fade-in"}>
-            {activeTab === 'vehicles' ? (
-              <>
-                <div className={styles.filterGroup}>
-                  <label>Tipo de Mídia</label>
-                  <select>
-                    <option>Todos</option>
-                    <option>TV / Vídeo</option>
-                    <option>Digital</option>
-                    <option>OOH</option>
-                    <option>Podcast / Audio</option>
-                  </select>
-                </div>
-                <div className={styles.filterGroup}>
-                  <label>Investimento</label>
-                  <select>
-                    <option>Todos</option>
-                    <option>Até R$ 10k</option>
-                    <option>R$ 10k - R$ 50k</option>
-                    <option>Acima de R$ 50k</option>
-                  </select>
-                </div>
-                <div className={styles.filterGroup}>
-                  <label>Praça / Região</label>
-                  <select>
-                    <option>Nacional</option>
-                    <option>Sudeste</option>
-                    <option>Sul</option>
-                    <option>Nordeste</option>
-                  </select>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={styles.filterGroup}>
-                  <label>Objetivo</label>
-                  <select>
-                    <option>Todos</option>
-                    <option>Branding</option>
-                    <option>Lançamento</option>
-                    <option>Performance</option>
-                  </select>
-                </div>
-                <div className={styles.filterGroup}>
-                  <label>Match IA</label>
-                  <select>
-                    <option>Acima de 90%</option>
-                    <option>Acima de 70%</option>
-                    <option>Todos</option>
-                  </select>
-                </div>
-                <div className={styles.filterGroup}>
-                  <label>Segmento do Cliente</label>
-                  <select>
-                    <option>Bens de Consumo</option>
-                    <option>Tecnologia</option>
-                    <option>Varejo</option>
-                  </select>
-                </div>
-              </>
-            )}
-            <button className={styles.applyBtn}>Aplicar</button>
-          </div>
-        )}
       </div>
 
       {activeTab === 'vehicles' ? (
         <div className={styles.grid}>
-          {vehicleProjects.map((p) => (
-            <div key={p.id} className={styles.vehicleCard}>
-              <div className={styles.cardImage}>
-                <img src={p.image} alt={p.title} />
-                <div className={styles.priceTag}>{p.price}</div>
+          {filteredVehicles.map((v) => (
+            <div key={v.id} className={`${styles.vehicleCard} ${v.connected ? styles.connectedCard : ''}`}>
+              <div className={styles.cardHeader}>
+                <div className={styles.typeTag}>{v.type}</div>
+                {v.connected && <span className={styles.connBadge}><CheckCircle size={14} /> Conectado</span>}
               </div>
-              <div className={styles.cardContent}>
-                <div className={styles.vehicleInfo}>
-                  <Building2 size={14} />
-                  <span>{p.vehicle}</span>
-                </div>
-                <h3>{p.title}</h3>
-                <span className={styles.category}>{p.category}</span>
-                <div className={styles.cardFooter}>
-                  <button className={styles.viewBtn}>Ver Detalhes</button>
-                  <button className={styles.actionBtn}>Reservar Cota</button>
-                </div>
+              <div className={styles.cardBody}>
+                <div className={styles.vehicleAvatar}>{v.name[0]}</div>
+                <h3>{v.name}</h3>
+                <div className={styles.reachInfo}><Users size={14} /> {v.reach} de alcance</div>
+                <div className={styles.categoryTag}>{v.category}</div>
+              </div>
+              <div className={styles.cardFooter}>
+                <button className={styles.viewBtn} onClick={() => handleOpenProfile(v)}>Ver Perfil</button>
+                <button 
+                  className={v.connected ? styles.primaryActionBtn : styles.connectBtn}
+                  onClick={() => v.connected ? showSuccess('Solicitação de cota enviada para ' + v.name) : showSuccess('Solicitação de conexão enviada!')}
+                >
+                  {v.connected ? 'Solicitar Cota' : 'Solicitar Conexão'}
+                </button>
               </div>
             </div>
           ))}
@@ -185,32 +179,157 @@ export default function AgencyMarketplacePage() {
         <div className={styles.grid}>
           {clientNecessities.map((n) => (
             <div key={n.id} className={styles.clientCard}>
+              <div className={styles.aiMatchBadge}><Zap size={14} /> {n.match}% Match IA</div>
               <div className={styles.clientHeader}>
                 <div className={styles.avatar}>{n.client[0]}</div>
                 <div>
                   <h4>{n.client}</h4>
-                  <div className={styles.matchBadge}>{n.match}% Match IA</div>
+                  <p>Necessidade Publicada</p>
                 </div>
               </div>
               <div className={styles.clientBody}>
                 <h3>{n.title}</h3>
                 <p>{n.description}</p>
-                <div className={styles.budgetRow}>
-                  <DollarSign size={14} />
-                  <span>Investimento: {n.budget}</span>
+                <div className={styles.budgetInfo}>
+                  <DollarSign size={16} />
+                  <span>Investimento: <strong>{n.budget}</strong></span>
                 </div>
                 <div className={styles.tagCloud}>
                   {n.tags.map(t => <span key={t} className={styles.tag}>{t}</span>)}
                 </div>
               </div>
               <div className={styles.cardFooter}>
-                <button className={styles.proposalBtn}>
-                  Enviar Proposta Estratégica
+                <button className={styles.proposalBtn} onClick={() => handleOpenClientNeed(n)}>
+                  Ver Detalhes do Briefing
                   <ArrowRight size={16} />
                 </button>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Vehicle Profile Modal (Standard Design) */}
+      {isProfileModalOpen && selectedVehicle && (
+        <div className={styles.modalOverlay} onClick={() => setIsProfileModalOpen(false)}>
+          <div className={`${styles.modal} ${styles.standardProfile}`} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setIsProfileModalOpen(false)}><X size={24} /></button>
+            
+            <div className={styles.standardCover}>
+              <h1 className={styles.coverTitle}>{selectedVehicle.name}</h1>
+            </div>
+
+            <div className={styles.standardHeader}>
+              <div className={styles.standardLogo}>{selectedVehicle.name[0]}</div>
+              <div className={styles.standardHeaderInfo}>
+                <div className={styles.categoryTag}>{selectedVehicle.type}</div>
+                <h2>{selectedVehicle.name}</h2>
+                <p>{selectedVehicle.category} • {selectedVehicle.reach} alcance</p>
+              </div>
+              <div className={styles.standardActions}>
+                <button className={styles.primaryContactBtn} onClick={() => handleAction('contact')}>
+                  <MessageSquare size={18} /> Entrar em Contato
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.standardGrid}>
+              <div className={styles.standardLeftCol}>
+                <section className={styles.standardSection}>
+                  <h3 className={styles.standardSectionTitle}><Info size={18} color="#11C76F" /> Sobre o Veículo</h3>
+                  <p>Líder em audiência na categoria {selectedVehicle.category}, oferecendo soluções integradas de mídia com alto impacto e conversão. Especialista em entregas customizadas.</p>
+                </section>
+
+                <section className={styles.standardSection}>
+                  <h3 className={styles.standardSectionTitle}><Target size={18} color="#11C76F" /> Diferenciais</h3>
+                  <div className={styles.featureList}>
+                    <div className={styles.featureItem}>
+                      <div className={styles.featureIcon}><Smartphone size={18} /></div>
+                      <span>Mídia com alto nível de atenção e engajamento.</span>
+                    </div>
+                    <div className={styles.featureItem}>
+                      <div className={styles.featureIcon}><BarChart3 size={18} /></div>
+                      <span>Segmentação qualificada baseada em comportamento.</span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <div className={styles.standardRightCol}>
+                <div className={styles.sideWidget}>
+                  <h3>Métricas HOAS</h3>
+                  <div className={styles.statRow}><span>Alcance</span><strong>{selectedVehicle.reach}</strong></div>
+                  <div className={styles.statRow}><span>Match</span><strong>94%</strong></div>
+                </div>
+
+                <div className={styles.sideWidget}>
+                  <h3>Media Kit</h3>
+                  <button className={styles.downloadBtnFull} onClick={() => handleAction('download')}>
+                    <FileText size={16} /> Download PDF
+                  </button>
+                </div>
+                <Link 
+                  href={`/dashboard/directory/${selectedVehicle.name.toLowerCase().replace(/ /g, '-')}`} 
+                  className={styles.viewFullProfileLink}
+                >
+                  <ExternalLink size={16} /> Ver Perfil Completo
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Client Need Modal (Briefing) */}
+      {isClientNeedModalOpen && selectedClientNeed && (
+        <div className={styles.modalOverlay} onClick={() => setIsClientNeedModalOpen(false)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setIsClientNeedModalOpen(false)}><X size={24} /></button>
+            <div className={styles.modalHeaderCenter}>
+              <div className={styles.modalIconWrapper}><FileText size={24} /></div>
+              <h2>Oportunidade de Anunciante</h2>
+              <p>Publicada por <strong>{selectedClientNeed.client}</strong></p>
+            </div>
+            
+            <div className={styles.briefingDetails}>
+              <div className={styles.detailRow}>
+                <div className={styles.detailItem}>
+                  <label><Target size={14} /> Campanha</label>
+                  <strong>{selectedClientNeed.title}</strong>
+                </div>
+                <div className={styles.detailItem}>
+                  <label><DollarSign size={14} /> Investimento</label>
+                  <strong className={styles.highlight}>{selectedClientNeed.budget}</strong>
+                </div>
+              </div>
+              
+              <div className={styles.detailItem}>
+                <label><Calendar size={14} /> Cronograma</label>
+                <strong>{selectedClientNeed.period}</strong>
+              </div>
+
+              <div className={styles.descriptionBox}>
+                <label>Briefing & Requisitos</label>
+                <p>{selectedClientNeed.description}</p>
+              </div>
+
+              <button className={styles.sendProposalBtn} onClick={() => handleAction('proposal')}>
+                <Zap size={18} /> Enviar Proposta Estratégica
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {isSuccessModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setIsSuccessModalOpen(false)}>
+          <div className={styles.modal} style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div className={styles.successIconWrapper}><CheckCircle2 size={40} /></div>
+            <h2>Operação Concluída</h2>
+            <p>{successMessage}</p>
+            <button className={styles.primaryBtn} onClick={() => setIsSuccessModalOpen(false)}>Entendido</button>
+          </div>
         </div>
       )}
     </div>

@@ -193,6 +193,54 @@
   color: white;
 }
 
+.activeIcon {
+  background: var(--primary) !important;
+  color: white !important;
+}
+
+.moreWrapper {
+  position: relative;
+}
+
+.moreMenu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: #0a0f1e;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  width: 200px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 100;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+}
+
+.moreMenu button {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.moreMenu button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.moreMenu .danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
 .messages {
   flex: 1;
   overflow-y: auto;
@@ -290,6 +338,72 @@
   box-shadow: 0 0 15px var(--primary-glow);
 }
 
+.confirmBox {
+  background: #0a0f1e;
+  border: 1px solid var(--glass-border);
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+  color: white;
+}
+
+.confirmHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.confirmHeader h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.confirmBox p {
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.confirmActions button {
+  flex: 1;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.confirmBtn {
+  background: var(--primary);
+  color: white;
+}
+
+.confirmBtn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.cancelBtn {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 1px solid var(--glass-border) !important;
+}
+
+.cancelBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* Context Sidebar */
 .contextSidebar {
   border-left: 1px solid var(--glass-border);
@@ -333,10 +447,24 @@
 
 .badge {
   font-size: 0.7rem;
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
+  font-weight: 600;
+}
+
+.pendingBadge {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.negotiatingBadge {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.rejectedBadge {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .price {
@@ -367,6 +495,241 @@
   color: white;
   padding: 0.8rem;
   border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.piModal {
+  background: white;
+  color: #1a1a1a;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.piHeader {
+  padding: 2rem;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.piBrand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.piLogo {
+  width: 40px;
+  height: 40px;
+  background: #6366f1;
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+
+.piBrand h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #111;
+}
+
+.piBrand p {
+  font-size: 0.8rem;
+  margin: 0;
+  color: #666;
+}
+
+.piDocInfo {
+  text-align: right;
+}
+
+.piDocInfo h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.25rem 0;
+  color: #6366f1;
+}
+
+.piDocInfo p {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.piDocInfo span {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.piBody {
+  padding: 2rem;
+  flex: 1;
+}
+
+.piSection {
+  margin-bottom: 2rem;
+}
+
+.piSection h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #6366f1;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.piGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.piGrid label {
+  display: block;
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.piGrid p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.piTable {
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.piRowHeader {
+  background: #f9f9f9;
+  padding: 0.75rem 1rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #666;
+}
+
+.piRow {
+  padding: 0.75rem 1rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+  font-size: 0.85rem;
+  border-top: 1px solid #eee;
+}
+
+.piTotal {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.piTotalRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  width: 300px;
+}
+
+.piTotalRow label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.piTotalRow span {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.grandTotal {
+  border-top: 2px solid #6366f1;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.grandTotal span {
+  font-size: 1.1rem;
+  color: #6366f1;
+  font-weight: 800;
+}
+
+.piFooter {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  padding-bottom: 2rem;
+}
+
+.piSign {
+  text-align: center;
+}
+
+.piSignLine {
+  border-top: 1px solid #ccc;
+  margin-bottom: 0.5rem;
+}
+
+.piSign p {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+}
+
+.piActions {
+  padding: 1.5rem 2rem;
+  background: #f9f9f9;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.printBtn {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.closePIBtn {
+  background: #eee;
+  color: #666;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
 }

@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Camera, Image as ImageIcon, Save, CheckCircle } from 'lucide-react';
+import { Camera, Image as ImageIcon, Save, CheckCircle, Globe, Briefcase, BarChart, Layout, Target, MapPin, Plus, Trash2, ExternalLink, Video, Mail } from 'lucide-react';
 import styles from './page.module.css';
+import { supabase } from '@/lib/supabase';
 
 export default function ProfilePage() {
+  const [activeSection, setActiveSection] = useState('identidade');
   const [formData, setFormData] = useState({
     name: 'Grupo Bandeirantes',
     slogan: 'A emoção de viver o Brasil',
@@ -13,6 +15,8 @@ export default function ProfilePage() {
     audienceType: 'B2C - Público Geral',
     monthlyReach: '45.000.000',
     regions: 'Nacional',
+    website: 'www.band.com.br',
+    location: 'São Paulo, SP'
   });
 
   const [formats, setFormats] = useState({
@@ -34,160 +38,344 @@ export default function ProfilePage() {
   };
 
   const [isSaved, setIsSaved] = useState(false);
+  const [connectedApps, setConnectedApps] = useState<string[]>([]);
+  const [connectingApp, setConnectingApp] = useState<string | null>(null);
+
+  const handleConnect = async (app: string) => {
+    if (connectedApps.includes(app)) {
+      // Logic for disconnect (would involve clearing tokens in DB)
+      setConnectedApps(prev => prev.filter(a => a !== app));
+      return;
+    }
+
+    if (app === 'google') {
+      setConnectingApp('google');
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+          scopes: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly',
+          redirectTo: `${window.location.origin}/dashboard/settings/profile`
+        }
+      });
+      
+      if (error) {
+        console.error('Error connecting Google:', error);
+        setConnectingApp(null);
+      }
+      return;
+    }
+
+    // For Zoom and Teams, we simulate for now or redirect to custom OAuth
+    setConnectingApp(app);
+    setTimeout(() => {
+      setConnectedApps(prev => [...prev, app]);
+      setConnectingApp(null);
+    }, 1500);
+  };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate save
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   };
 
+  const navItems = [
+    { id: 'identidade', label: 'Identidade Visual', icon: <ImageIcon size={18} /> },
+    { id: 'info', label: 'Informações Básicas', icon: <Briefcase size={18} /> },
+    { id: 'audiencia', label: 'Audiência & Alcance', icon: <Target size={18} /> },
+    { id: 'portfolio', label: 'Portfólio & Cases', icon: <Layout size={18} /> },
+    { id: 'conexoes', label: 'Conexões & Apps', icon: <Globe size={18} /> },
+  ];
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <div>
-          <h1>Meu Perfil (Media Kit)</h1>
-          <p>Preencha as informações que serão exibidas para agências e clientes no Marketplace.</p>
+        <div className={styles.headerInfo}>
+          <div className={styles.badge}>Master Account</div>
+          <h1>Meu Perfil Profissional</h1>
+          <p>Personalize como sua marca é vista por todo o ecossistema HOAS.</p>
         </div>
-        <button className={styles.saveBtn} onClick={handleSave}>
-          {isSaved ? <CheckCircle size={18} /> : <Save size={18} />}
-          <span>{isSaved ? 'Salvo!' : 'Salvar Alterações'}</span>
-        </button>
+        <div className={styles.headerActions}>
+          <button className={styles.previewBtn}>
+            <ExternalLink size={18} />
+            <span>Ver Media Kit Público</span>
+          </button>
+          <button className={`${styles.saveBtn} ${isSaved ? styles.saved : ''}`} onClick={handleSave}>
+            {isSaved ? <CheckCircle size={18} /> : <Save size={18} />}
+            <span>{isSaved ? 'Alterações Salvas' : 'Salvar Perfil'}</span>
+          </button>
+        </div>
       </header>
 
-      <div className={styles.content}>
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Identidade Visual</h2>
-          
-          <div className={styles.coverUpload}>
-            <ImageIcon size={32} />
-            <p>Clique para enviar a imagem de capa (1200x400px)</p>
-          </div>
+      <div className={styles.layout}>
+        <aside className={styles.sidebar}>
+          {navItems.map(item => (
+            <button 
+              key={item.id}
+              className={`${styles.navItem} ${activeSection === item.id ? styles.activeNav : ''}`}
+              onClick={() => setActiveSection(item.id)}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </aside>
 
-          <div className={styles.logoUploadContainer}>
-            <div className={styles.logoUpload}>
-              <Camera size={24} />
-              <span>Logo</span>
-            </div>
-            <div className={styles.logoHelp}>
-              Recomendado: 400x400px, fundo transparente (PNG)
-            </div>
-          </div>
-        </section>
+        <main className={styles.mainContent}>
+          {activeSection === 'identidade' && (
+            <section className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <ImageIcon size={20} />
+                <h2>Identidade Visual</h2>
+              </div>
+              
+              <div className={styles.uploadGroup}>
+                <label>Imagem de Capa (Media Kit)</label>
+                <div className={styles.coverUpload}>
+                  <div className={styles.coverPreview}>
+                    <ImageIcon size={48} />
+                    <p>Arraste ou clique para enviar sua capa institucional</p>
+                    <span>Tamanho recomendado: 1920x600px</span>
+                  </div>
+                </div>
+              </div>
 
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Informações Básicas</h2>
-          
-          <div className={styles.grid}>
-            <div className={styles.field}>
-              <label>Nome do Veículo / Empresa</label>
-              <input 
-                type="text" 
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-              />
-            </div>
-            <div className={styles.field}>
-              <label>Slogan (Opcional)</label>
-              <input 
-                type="text" 
-                value={formData.slogan}
-                onChange={(e) => setFormData({...formData, slogan: e.target.value})}
-              />
-            </div>
-            <div className={styles.field}>
-              <label>Categoria Principal</label>
-              <select 
-                value={formData.category}
-                onChange={(e) => setFormData({...formData, category: e.target.value})}
-              >
-                <option>TV / Vídeo</option>
-                <option>Digital</option>
-                <option>OOH</option>
-                <option>Audio / Rádio</option>
-                <option>Impresso</option>
-                <option>Retail Media</option>
-              </select>
-            </div>
-          </div>
+              <div className={styles.uploadGroup}>
+                <label>Logo da Empresa</label>
+                <div className={styles.logoRow}>
+                  <div className={styles.logoCircle}>
+                    <Camera size={24} />
+                  </div>
+                  <div className={styles.logoInfo}>
+                    <button className={styles.uploadMiniBtn}>Alterar Logo</button>
+                    <p>PNG com fundo transparente, min. 400x400px.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
 
-          <div className={styles.field} style={{ marginTop: '1.5rem' }}>
-            <label>Sobre a Empresa</label>
-            <textarea 
-              value={formData.description}
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
-              placeholder="Descreva o foco, a história e os diferenciais do seu veículo..."
-            />
-            <span>Aparecerá na página principal do seu Media Kit.</span>
-          </div>
-        </section>
+          {activeSection === 'info' && (
+            <section className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <Briefcase size={20} />
+                <h2>Informações Básicas</h2>
+              </div>
+              
+              <div className={styles.formGrid}>
+                <div className={styles.field}>
+                  <label>Razão Social / Nome Fantasia</label>
+                  <input 
+                    type="text" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Slogan Estratégico</label>
+                  <input 
+                    type="text" 
+                    value={formData.slogan}
+                    onChange={(e) => setFormData({...formData, slogan: e.target.value})}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Website Oficial</label>
+                  <div className={styles.inputWithIcon}>
+                    <Globe size={16} />
+                    <input 
+                      type="text" 
+                      value={formData.website}
+                      onChange={(e) => setFormData({...formData, website: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className={styles.field}>
+                  <label>Sede Principal</label>
+                  <div className={styles.inputWithIcon}>
+                    <MapPin size={16} />
+                    <input 
+                      type="text" 
+                      value={formData.location}
+                      onChange={(e) => setFormData({...formData, location: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
 
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Audiência e Alcance</h2>
-          
-          <div className={styles.grid}>
-            <div className={styles.field}>
-              <label>Público-Alvo Principal</label>
-              <select
-                value={formData.audienceType}
-                onChange={(e) => setFormData({...formData, audienceType: e.target.value})}
-              >
-                <option>B2C - Público Geral</option>
-                <option>B2C - Classes A/B</option>
-                <option>B2C - Classes C/D</option>
-                <option>B2B - Executivos e Empresas</option>
-                <option>Nicho (Especifique na descrição)</option>
-              </select>
-            </div>
-            <div className={styles.field}>
-              <label>Alcance Mensal Estimado</label>
-              <input 
-                type="text" 
-                value={formData.monthlyReach}
-                onChange={(e) => setFormData({...formData, monthlyReach: e.target.value})}
-                placeholder="Ex: 10.000.000 de impactos"
-              />
-            </div>
-            <div className={styles.field}>
-              <label>Região de Cobertura</label>
-              <select
-                value={formData.regions}
-                onChange={(e) => setFormData({...formData, regions: e.target.value})}
-              >
-                <option>Nacional</option>
-                <option>Sudeste</option>
-                <option>Sul</option>
-                <option>Nordeste</option>
-                <option>Centro-Oeste</option>
-                <option>Norte</option>
-                <option>Foco Estadual / Regional</option>
-              </select>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Formatos de Mídia Oferecidos</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-            Selecione os formatos que seu veículo comercializa para que as agências possam encontrar você pelos filtros corretos.
-          </p>
-
-          <div className={styles.tagsGrid}>
-            {Object.entries(formats).map(([format, isSelected]) => (
-              <label 
-                key={format} 
-                className={`${styles.tagCheckbox} ${isSelected ? styles.active : ''}`}
-              >
-                <input 
-                  type="checkbox" 
-                  checked={isSelected}
-                  onChange={() => handleFormatChange(format)}
+              <div className={styles.field} style={{ marginTop: '2rem' }}>
+                <label>Bio / Sobre a Operação</label>
+                <textarea 
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={5}
                 />
-                <span>{format}</span>
-              </label>
-            ))}
-          </div>
-        </section>
+              </div>
+
+              <div className={styles.formatsGroup}>
+                <label>Formatos & Canais de Atuação</label>
+                <div className={styles.tagsGrid}>
+                  {Object.entries(formats).map(([format, isSelected]) => (
+                    <button 
+                      key={format} 
+                      className={`${styles.formatTag} ${isSelected ? styles.formatActive : ''}`}
+                      onClick={() => handleFormatChange(format)}
+                    >
+                      {format}
+                    </button>
+                  ))}
+                  <button className={styles.addTagBtn}>
+                    <Plus size={14} />
+                    Outro
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeSection === 'audiencia' && (
+            <section className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <Target size={20} />
+                <h2>Audiência & Alcance</h2>
+              </div>
+              
+              <div className={styles.statsEditorGrid}>
+                <div className={styles.field}>
+                  <label>Alcance Mensal (Impactos/Views)</label>
+                  <div className={styles.statInput}>
+                    <BarChart size={18} />
+                    <input 
+                      type="text" 
+                      value={formData.monthlyReach}
+                      onChange={(e) => setFormData({...formData, monthlyReach: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className={styles.field}>
+                  <label>Perfil do Público</label>
+                  <select
+                    value={formData.audienceType}
+                    onChange={(e) => setFormData({...formData, audienceType: e.target.value})}
+                  >
+                    <option>B2C - Público Geral</option>
+                    <option>B2C - High End (A/B)</option>
+                    <option>B2B - Corporativo</option>
+                    <option>Nicho Específico</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.field} style={{ marginTop: '2rem' }}>
+                <label>Foco Geográfico</label>
+                <div className={styles.regionsGrid}>
+                  {['Nacional', 'São Paulo', 'Rio de Janeiro', 'Sul', 'Nordeste'].map(r => (
+                    <div key={r} className={styles.regionItem}>
+                      <input type="checkbox" checked={formData.regions === r} readOnly />
+                      <span>{r}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeSection === 'portfolio' && (
+            <section className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <Layout size={20} />
+                <h2>Portfólio & Cases de Sucesso</h2>
+              </div>
+              
+              <div className={styles.portfolioEmpty}>
+                <div className={styles.emptyIcon}>
+                  <Briefcase size={32} />
+                </div>
+                <h3>Seu portfólio está vazio</h3>
+                <p>Adicione cases, fotos de campanhas ou PDF do seu Media Kit completo para atrair mais parceiros.</p>
+                <button className={styles.addPortfolioBtn}>
+                  <Plus size={18} />
+                  <span>Adicionar Primeiro Case</span>
+                </button>
+              </div>
+            </section>
+          )}
+
+          {activeSection === 'conexoes' && (
+            <section className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <Globe size={20} />
+                <h2>Conexões & Aplicativos Externos</h2>
+              </div>
+              <p className={styles.sectionDescription}>
+                Conecte suas contas para que o HOAS possa gerar links de reunião, sincronizar calendários e automatizar fluxos de trabalho.
+              </p>
+
+              <div className={styles.integrationsGrid}>
+                <div className={styles.integrationCard}>
+                  <div className={styles.integrationInfo}>
+                    <div className={styles.integrationIcon} style={{ background: '#4285F4' }}>
+                      <Globe size={20} color="white" />
+                    </div>
+                    <div>
+                      <h3>Google Meet & Calendar</h3>
+                      <p>Sincronize sua agenda e gere links do Meet automaticamente.</p>
+                    </div>
+                  </div>
+                  <button 
+                    className={`${styles.connectBtn} ${connectedApps.includes('google') ? styles.connected : ''}`}
+                    onClick={() => handleConnect('google')}
+                    disabled={connectingApp === 'google'}
+                  >
+                    {connectingApp === 'google' ? 'Conectando...' : connectedApps.includes('google') ? 'Conectado' : 'Conectar'}
+                  </button>
+                </div>
+
+                <div className={styles.integrationCard}>
+                  <div className={styles.integrationInfo}>
+                    <div className={styles.integrationIcon} style={{ background: '#2D8CFF' }}>
+                      <Video size={20} color="white" />
+                    </div>
+                    <div>
+                      <h3>Zoom Meetings</h3>
+                      <p>Conecte sua conta Zoom para agendamentos diretos pelo HOAS.</p>
+                    </div>
+                  </div>
+                  <button 
+                    className={`${styles.connectBtn} ${connectedApps.includes('zoom') ? styles.connected : ''}`}
+                    onClick={() => handleConnect('zoom')}
+                    disabled={connectingApp === 'zoom'}
+                  >
+                    {connectingApp === 'zoom' ? 'Conectando...' : connectedApps.includes('zoom') ? 'Conectado' : 'Conectar'}
+                  </button>
+                </div>
+
+                <div className={styles.integrationCard}>
+                  <div className={styles.integrationInfo}>
+                    <div className={styles.integrationIcon} style={{ background: '#0078D4' }}>
+                      <Mail size={20} color="white" />
+                    </div>
+                    <div>
+                      <h3>Microsoft Teams</h3>
+                      <p>Integre com o ecossistema Office 365 para reuniões corporativas.</p>
+                    </div>
+                  </div>
+                  <button 
+                    className={`${styles.connectBtn} ${connectedApps.includes('teams') ? styles.connected : ''}`}
+                    onClick={() => handleConnect('teams')}
+                    disabled={connectingApp === 'teams'}
+                  >
+                    {connectingApp === 'teams' ? 'Conectando...' : connectedApps.includes('teams') ? 'Conectado' : 'Conectar'}
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
+        </main>
       </div>
     </div>
   );

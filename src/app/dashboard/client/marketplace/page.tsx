@@ -1,112 +1,172 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Filter, Bookmark, Send, Info, Zap, Star } from 'lucide-react';
+import { 
+  Search, Filter, ShoppingBag, Sparkles, Building2, Target, 
+  DollarSign, ArrowRight, Star, MapPin, Eye, ExternalLink, 
+  SlidersHorizontal, CheckCircle, Zap, ShieldAlert, Users
+} from 'lucide-react';
 import styles from './page.module.css';
+import { mockVehicles, currentUser } from '@/lib/mockData';
 
-const projects = [
-  {
-    id: 1,
-    title: "Caminhos do Sol - Verão 2026",
-    vehicle: "TV Alpha",
-    category: "TV / Digital",
-    reach: "2.5M+",
-    budget: "R$ 300k - 500k",
-    match: 98,
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=400"
-  },
-  {
-    id: 2,
-    title: "Podcast: Futuro Sustentável",
-    vehicle: "Rede Audio",
-    category: "Podcast / Audio",
-    reach: "500k+",
-    budget: "R$ 50k - 100k",
-    match: 85,
-    image: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=400"
-  },
-  {
-    id: 3,
-    title: "Circuito Premium OOH SP",
-    vehicle: "Alpha Outdoor",
-    category: "OOH",
-    reach: "10M+",
-    budget: "R$ 800k+",
-    match: 92,
-    image: "https://images.unsplash.com/photo-1542744094-24638eff58bb?auto=format&fit=crop&q=80&w=400"
-  }
-];
+export default function ClientMarketplacePage() {
+  const [activeTab, setActiveTab] = useState<'vehicles' | 'agencies'>('vehicles');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
-export default function AgencyMarketplace() {
-  const [activeFilter, setActiveFilter] = useState('All');
+  // Logic: Prioritize connected vehicles
+  const filteredVehicles = mockVehicles
+    .filter(v => {
+      const matchesSearch = v.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || v.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (a.connected && !b.connected) return -1;
+      if (!a.connected && b.connected) return 1;
+      return 0;
+    });
+
+  const agencies = [
+    {
+      id: 1,
+      name: "Agência Global",
+      specialty: "Marketing de Influência & OOH",
+      match: 98,
+      rating: 4.9,
+      projects: 142,
+      tags: ["High ROI", "Premium Partners"]
+    },
+    {
+      id: 2,
+      name: "XYZ Media",
+      specialty: "Performance & Data Analytics",
+      match: 92,
+      rating: 4.7,
+      projects: 85,
+      tags: ["Retail Focus", "Data Driven"]
+    },
+    {
+      id: 3,
+      name: "Creative Co",
+      specialty: "Branding & Social Ads",
+      match: 88,
+      rating: 4.8,
+      projects: 64,
+      tags: ["Awards Winner", "Gen Z Expert"]
+    }
+  ];
+
+  const vehicleCategories = ['All', 'Televisão', 'Rádio', 'Out of Home', 'Digital'];
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <div>
-          <h1>Marketplace de Projetos</h1>
-          <p>Encontre os melhores projetos comerciais e oportunidades para seus clientes.</p>
+        <div className={styles.headerTitle}>
+          <h1>Marketplace de Mídia</h1>
+          <p>Descubra os melhores veículos e agências para potencializar sua marca.</p>
         </div>
       </header>
 
-      <div className={styles.controls}>
-        <div className={styles.searchBar}>
-          <Search size={20} />
-          <input type="text" placeholder="Buscar por palavra-chave, veículo ou vertical..." />
+      <div className={styles.topActions}>
+        <div className={styles.tabContainer}>
+          <button 
+            className={`${styles.tab} ${activeTab === 'vehicles' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('vehicles')}
+          >
+            <ShoppingBag size={18} />
+            <span>Veículos em Destaque</span>
+          </button>
+          <button 
+            className={`${styles.tab} ${activeTab === 'agencies' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('agencies')}
+          >
+            <Users size={18} />
+            <span>Agências Recomendadas</span>
+          </button>
         </div>
-        <div className={styles.filters}>
-          {['All', 'Digital', 'TV', 'OOH', 'Audio'].map(f => (
-            <button 
-              key={f} 
-              className={`${styles.filterBtn} ${activeFilter === f ? styles.activeFilter : ''}`}
-              onClick={() => setActiveFilter(f)}
-            >
-              {f}
-            </button>
+      </div>
+
+      <div className={styles.searchSection}>
+        <div className={styles.controls}>
+          <div className={styles.searchBox}>
+            <Search size={18} />
+            <input 
+              type="text" 
+              placeholder={`Buscar ${activeTab === 'vehicles' ? 'veículos' : 'agências'}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className={styles.filterGroup}>
+            {activeTab === 'vehicles' && vehicleCategories.map(cat => (
+              <button 
+                key={cat} 
+                className={`${styles.filterTag} ${selectedCategory === cat ? styles.activeTag : ''}`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {activeTab === 'vehicles' ? (
+        <div className={styles.grid}>
+          {filteredVehicles.map((v) => (
+            <div key={v.id} className={`${styles.vehicleCard} ${v.connected ? styles.connectedCard : ''}`}>
+              <div className={styles.cardHeader}>
+                <div className={styles.typeTag}>{v.type}</div>
+                {v.connected && <span className={styles.connBadge}><CheckCircle size={14} /> Parceiro Ativo</span>}
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.vehicleAvatar}>{v.name[0]}</div>
+                <h3>{v.name}</h3>
+                <div className={styles.reachInfo}><Users size={14} /> {v.reach} de alcance</div>
+                <div className={styles.categoryTag}>{v.category}</div>
+              </div>
+              <div className={styles.cardFooter}>
+                <button className={styles.viewBtn}>Ver Media Kit</button>
+                <button className={styles.primaryActionBtn}>
+                  Solicitar Contato
+                </button>
+              </div>
+            </div>
           ))}
         </div>
-      </div>
-
-      <div className={styles.aiBanner}>
-        <Zap size={24} fill="currentColor" />
-        <div className={styles.aiText}>
-          <strong>IA de Recomendação Ativa:</strong> Baseado no seu briefing "Verão 2026", o projeto <strong>"Caminhos do Sol"</strong> é a melhor escolha.
+      ) : (
+        <div className={styles.grid}>
+          {agencies.map((a) => (
+            <div key={a.id} className={styles.agencyCard}>
+              <div className={styles.aiMatchBadge}><Zap size={14} /> {a.match}% Match</div>
+              <div className={styles.agencyHeader}>
+                <div className={styles.avatar}>{a.name[0]}</div>
+                <div>
+                  <h4>{a.name}</h4>
+                  <div className={styles.ratingInfo}><Star size={12} fill="#f59e0b" color="#f59e0b" /> <span>{a.rating}</span></div>
+                </div>
+              </div>
+              <div className={styles.agencyBody}>
+                <h3>{a.specialty}</h3>
+                <p>Agência com sólida experiência em campanhas de alto impacto e performance comprovada.</p>
+                <div className={styles.projectCount}>
+                  <strong>{a.projects}</strong> projetos entregues via HOAS
+                </div>
+                <div className={styles.tagCloud}>
+                  {a.tags.map(t => <span key={t} className={styles.tag}>{t}</span>)}
+                </div>
+              </div>
+              <div className={styles.cardFooter}>
+                <button className={styles.proposalBtn}>
+                  Ver Portfólio & Cases
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-        <button className={styles.aiAction}>Ver Match</button>
-      </div>
-
-      <div className={styles.projectGrid}>
-        {projects.map((p) => (
-          <div key={p.id} className={styles.projectCard}>
-            <div className={styles.imageContainer}>
-              <img src={p.image} alt={p.title} />
-              <div className={styles.matchBadge}>{p.match}% Match</div>
-              <button className={styles.saveBtn}><Bookmark size={18} /></button>
-            </div>
-            <div className={styles.projectContent}>
-              <div className={styles.category}>{p.category}</div>
-              <h3>{p.title}</h3>
-              <p className={styles.vehicleName}>{p.vehicle}</p>
-              
-              <div className={styles.meta}>
-                <div className={styles.metaItem}>
-                  <span>Alcance</span>
-                  <strong>{p.reach}</strong>
-                </div>
-                <div className={styles.metaItem}>
-                  <span>Budget</span>
-                  <strong>{p.budget}</strong>
-                </div>
-              </div>
-
-              <div className={styles.actions}>
-                <button className={styles.detailsBtn}><Info size={16} /> Detalhes</button>
-                <button className={styles.proposalBtn}><Send size={16} /> Solicitar Proposta</button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      )}
     </div>
   );
 }

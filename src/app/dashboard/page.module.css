@@ -6,17 +6,54 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 3rem;
+  align-items: center;
+  margin-bottom: 2.5rem;
 }
 
-.header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+.headerLeft h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
 }
 
-.header p {
-  color: var(--muted);
+.headerLeft p {
+  color: var(--muted-foreground);
+  font-size: 1rem;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.viewToggle {
+  background: var(--glass);
+  padding: 0.25rem;
+  border-radius: 0.75rem;
+  display: flex;
+  border: 1px solid var(--glass-border);
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggleBtn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
 .dateDisplay {
@@ -30,36 +67,291 @@
   text-transform: capitalize;
 }
 
+.goalsRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.goalCard {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.goalHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.goalHeader span:first-of-type {
+  flex: 1;
+  font-weight: 700;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.goalProgress {
+  font-weight: 800;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.goalIcon {
+  color: var(--primary);
+}
+
+.progressBar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, #a855f7 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.goalFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.rankingHint {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+/* Modal Ranking */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1.5rem;
+}
+
+.rankingModal {
+  width: 100%;
+  max-width: 500px;
+  background: #0a0f1e;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modalTitle h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.rankingList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.rankingItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  transition: all 0.2s;
+}
+
+.rankingItem:first-child {
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.rankPosition {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--primary);
+  width: 30px;
+}
+
+.memberAvatar {
+  width: 36px;
+  height: 36px;
+  background: var(--primary-glow);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  border: 1px solid var(--primary);
+}
+
+.memberInfo {
+  flex: 1;
+}
+
+.memberName {
+  font-weight: 700;
+  color: white;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.memberProgress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.miniProgressBar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+
+.miniProgressFill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.memberProgress span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.memberValue {
+  font-weight: 800;
+  color: white;
+  font-size: 1rem;
+}
+
+.modalFooter {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+  text-align: center;
+}
+
 .statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .statCard {
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
   padding: 1.5rem;
-  border-radius: var(--radius-md);
+  border-radius: 1.25rem;
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  transition: transform 0.3s ease;
+  flex-direction: column;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .statCard:hover {
   transform: translateY(-5px);
   border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.statCard.active {
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.2);
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .statIcon {
   color: var(--primary);
   background: rgba(99, 102, 241, 0.1);
-  padding: 0.75rem;
-  border-radius: var(--radius-sm);
-  width: 48px;
-  height: 48px;
+  padding: 0.6rem;
+  border-radius: 0.75rem;
+  width: 40px;
+  height: 40px;
 }
 
 .statInfo {
@@ -72,11 +364,37 @@
   color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 700;
 }
 
 .statValue {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.statDetails {
+  border-top: 1px solid var(--glass-border);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  color: var(--muted-foreground);
+}
+
+.detailItem span:last-child {
+  color: white;
+  font-weight: 600;
 }
 
 .grid {
@@ -85,18 +403,139 @@
   gap: 3rem;
 }
 
-.sideSection {
+.mainSection {
   display: flex;
   flex-direction: column;
-  align-items: center;
+}
+
+.meetingBox {
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .sectionHeader {
-  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .sectionHeader h2 {
   font-size: 1.25rem;
+}
+
+.badge {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.meetingList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.meetingItem {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 1rem;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.meetingItem:hover {
+  border-color: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.meetingItem.completed {
+  border-left: 4px solid #10b981;
+}
+
+.meetingItem.cancelled {
+  opacity: 0.6;
+  border-left: 4px solid #ef4444;
+}
+
+.cancelLabel {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #ef4444;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.meetingItem.completed h3 {
+  text-decoration: line-through;
+}
+
+.meetingTime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 60px;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.meetingDetails {
+  flex: 1;
+}
+
+.meetingDetails h3 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.meetingDetails p {
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+}
+
+.checkBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.checkCircle {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--glass-border);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.checkBtn:hover .checkCircle {
+  border-color: var(--primary);
+}
+
+.emptyMeetings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: #10b981;
+}
+
+.emptyMeetings p {
+  color: var(--muted-foreground);
 }
 
 .aiInsightBox {
@@ -155,4 +594,10 @@
 .aiAction:hover {
   background: var(--primary);
   color: white;
+}
+
+.sideSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

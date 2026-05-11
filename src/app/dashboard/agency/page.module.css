@@ -1,44 +1,114 @@
 .container {
-  max-width: 1200px;
+  padding: 2rem;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
 .header {
-  margin-bottom: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
 }
 
 .header h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
 }
 
 .header p {
   color: var(--muted);
+  font-size: 1.1rem;
+}
+
+.headerRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.viewToggle {
+  background: var(--glass);
+  padding: 0.4rem;
+  border-radius: 100px;
+  display: flex;
+  gap: 0.5rem;
+  border: 1px solid var(--glass-border);
+}
+
+.toggleBtn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 100px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggleBtn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.dateDisplay {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
 .statsRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
 .statCard {
-  background: var(--card-bg);
+  background: var(--glass);
   border: 1px solid var(--glass-border);
   padding: 1.5rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.statCard.active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.statHeader {
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  transition: transform 0.3s ease;
 }
 
 .statIcon {
   color: var(--primary);
   background: rgba(99, 102, 241, 0.1);
   padding: 0.75rem;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   width: 48px;
   height: 48px;
 }
@@ -49,101 +119,256 @@
 }
 
 .statLabel {
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .statValue {
   font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+}
+
+.statDetails {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.detailItem span:first-child {
+  color: var(--muted);
+}
+
+.detailItem span:last-child {
+  color: white;
   font-weight: 700;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 3rem;
+  grid-template-columns: 1fr 350px;
+  gap: 2.5rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sectionHeader h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+}
+
+.seeAllBtn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
 }
 
 .categories {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .categoryCard {
   background: var(--glass);
   border: 1px solid var(--glass-border);
   padding: 1.5rem;
-  border-radius: var(--radius-md);
-  text-align: center;
+  border-radius: var(--radius-lg);
+  transition: all 0.2s;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .categoryCard:hover {
-  border-color: var(--primary);
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(255, 255, 255, 0.04);
+  transform: scale(1.02);
 }
 
-.categoryCard span {
-  display: block;
-  font-weight: 600;
-  margin: 0.75rem 0 0.25rem;
+.categoryIcon {
+  margin-bottom: 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.categoryCard p {
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
-.aiRecommendation {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(99, 102, 241, 0.05));
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  padding: 2rem;
-  border-radius: var(--radius-lg);
-  position: relative;
-}
-
-.aiTag {
-  display: inline-block;
-  background: var(--secondary);
-  color: white;
-  font-size: 0.7rem;
+.categoryCard h3 {
+  font-size: 1.1rem;
   font-weight: 700;
-  padding: 0.25rem 0.75rem;
-  border-radius: 100px;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-}
-
-.aiRecommendation h3 {
+  color: white;
   margin-bottom: 0.5rem;
 }
 
-.aiRecommendation p {
+.categoryCard p {
+  font-size: 0.85rem;
   color: var(--muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.secondaryBtn {
-  background: transparent;
-  border: 1px solid var(--secondary);
-  color: var(--secondary);
+.catAction {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+}
+
+.aiRecommendationBox {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.aiBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--primary);
+  color: white;
+  padding: 0.4rem 1.25rem;
+  border-bottom-left-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.aiContent {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.aiMatchScore {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: white;
+  min-width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.aiContent h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.aiContent p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.aiActionBtn {
+  margin-left: auto;
+  background: white;
+  color: black;
+  border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-weight: 600;
+  border-radius: 100px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  white-space: nowrap;
+  transition: all 0.2s;
 }
 
-.secondaryBtn:hover {
-  background: var(--secondary);
+.aiActionBtn:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.quickTasks {
+  margin-top: 2.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.quickTasks h3 {
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.05em;
+}
+
+.taskItem {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.taskItem:last-child {
+  border-bottom: none;
+}
+
+.taskIcon {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: var(--primary);
+}
+
+.taskText span {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
   color: white;
 }
 
-.sideSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.taskText p {
+  font-size: 0.75rem;
+  color: var(--muted);
 }
