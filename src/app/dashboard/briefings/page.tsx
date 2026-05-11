@@ -7,7 +7,7 @@ import {
   DollarSign, Zap, Edit3, Send, UserPlus, ShieldAlert
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockProposals, Proposal, currentUser } from '@/lib/mockData';
+import { mockProposals, Proposal, currentUser } from '../../../lib/mockData';
 
 export default function ProposalsPage() {
   // Access Control Logic

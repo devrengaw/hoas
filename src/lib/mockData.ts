@@ -65,10 +65,26 @@ export interface Vehicle {
 }
 
 // Initializing with empty arrays to transition to Supabase real-time data
+export const mockProposals: Proposal[] = [
+  {
+    id: 1,
+    title: 'Campanha Teste',
+    agency: 'Agência Global',
+    project: 'Caminhos do Sol',
+    company: 'Alpha Tech',
+    value: 'R$ 450.000',
+    budget: 'R$ 450.000',
+    status: 'Negociação',
+    date: '2026-05-11',
+    contact: 'Mariana Silva'
+  }
+];
 export const mockMeetings: Meeting[] = [];
 export const mockOrganizations: Organization[] = [];
-export const mockProposals: Proposal[] = [];
 export const mockVehicles: Vehicle[] = [];
+
+// Module Refresh
+export const _moduleVersion = "1.0.1";
 
 export const currentUser = {
   name: 'Admin HOAS',

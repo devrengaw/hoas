@@ -10,7 +10,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockProposals, mockVehicles, currentUser, Proposal, Vehicle, mockOrganizations } from '@/lib/mockData';
+import { mockProposals, mockVehicles, currentUser, Proposal, Vehicle, mockOrganizations } from '../../lib/mockData';
 import { supabase } from '@/lib/supabase';
 
 export default function MarketplacePage() {

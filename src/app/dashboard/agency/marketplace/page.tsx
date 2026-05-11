@@ -10,7 +10,7 @@ import {
   MessageSquare, Info, Smartphone
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockVehicles, mockProposals, currentUser, mockOrganizations } from '@/lib/mockData';
+import { mockVehicles, mockProposals, currentUser, mockOrganizations } from '../../../lib/mockData';
 
 export default function AgencyMarketplacePage() {
   const [activeTab, setActiveTab] = useState<'vehicles' | 'clients'>('vehicles');
