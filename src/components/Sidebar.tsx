@@ -22,14 +22,16 @@ import {
   UserPlus
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
-import { currentUser } from '@/lib/mockData';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { user, profile, signOut } = useAuth();
   
-  const handleLogout = () => {
-    // Em um cenário real, chamaria supabase.auth.signOut()
+  const handleLogout = async () => {
+    await signOut();
     router.push('/login');
   };
 
@@ -91,6 +93,14 @@ export default function Sidebar() {
       </nav>
 
       <div className={styles.footer}>
+        <div className={styles.userProfile}>
+          <div className={styles.userAvatar}>{profile?.full_name?.[0] || 'U'}</div>
+          <div className={styles.userInfo}>
+            <span className={styles.userName}>{profile?.full_name || 'Usuário'}</span>
+            <span className={styles.userRole}>{profile?.role || 'Visitante'}</span>
+          </div>
+        </div>
+
         {isPlatformAdmin && (
           <div className={styles.adminBadge}>
             <ShieldCheck size={14} />

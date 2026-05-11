@@ -34,6 +34,16 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
+  const formatCNPJ = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    return digits
+      .replace(/^(\d{2})(\d)/, '$1.$2')
+      .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/\.(\d{3})(\d)/, '.$1/$2')
+      .replace(/(\d{4})(\d)/, '$1-$2')
+      .substring(0, 18);
+  };
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -64,7 +74,23 @@ export default function RegisterPage() {
 
       if (signUpError) throw signUpError;
 
-      // In a real app, we might also create a profile entry in a custom table here
+      if (data.user) {
+        // Create profile entry
+        const { error: profileError } = await supabase.from('profiles').insert([
+          {
+            id: data.user.id,
+            full_name: formData.name,
+            company_name: formData.company,
+            cnpj: formData.cnpj,
+            role: role,
+            media_type: role === 'vehicle' ? formData.mediaType : null,
+            position: role === 'agency' ? formData.rolePosition : null,
+            objective: role === 'client' ? formData.objective : null
+          }
+        ]);
+        
+        if (profileError) console.error('Error creating profile:', profileError);
+      }
       
       // Redirect based on role
       if (role === 'agency') {
@@ -182,7 +208,14 @@ export default function RegisterPage() {
                 
                 <div className={styles.field}>
                   <label>CNPJ</label>
-                  <input type="text" placeholder="00.000.000/0000-00" value={formData.cnpj} onChange={e => setFormData({...formData, cnpj: e.target.value})} required />
+                  <input 
+                    type="text" 
+                    placeholder="00.000.000/0000-00" 
+                    value={formData.cnpj} 
+                    onChange={e => setFormData({...formData, cnpj: formatCNPJ(e.target.value)})} 
+                    maxLength={18}
+                    required 
+                  />
                 </div>
 
                 {role === 'vehicle' && (
@@ -250,7 +283,7 @@ export default function RegisterPage() {
         </div>
 
         <p className={styles.footer}>
-          Já tem uma conta? <Link href="/">Fazer login na plataforma</Link>
+          Já tem uma conta? <Link href="/login">Fazer login na plataforma</Link>
         </p>
       </div>
       

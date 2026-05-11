@@ -12,9 +12,12 @@ import { mockMeetings, Meeting } from '@/lib/mockData';
 import MeetingModal from '@/components/MeetingModal';
 import { getMeetings, createMeeting as createMeetingDB } from '@/lib/database';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 function MeetingsContent() {
   const searchParams = useSearchParams();
   const selectedId = searchParams.get('id');
+  const { profile } = useAuth();
   
   const [meetingsData, setMeetingsData] = useState<Meeting[]>([]);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
@@ -23,12 +26,11 @@ function MeetingsContent() {
   const [isAgendaPublic, setIsAgendaPublic] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mock Company ID for MVP
-  const COMPANY_ID = '00000000-0000-0000-0000-000000000000';
+  const COMPANY_ID = profile?.company_id || '00000000-0000-0000-0000-000000000000';
 
   useEffect(() => {
-    fetchMeetings();
-  }, []);
+    if (profile) fetchMeetings();
+  }, [profile]);
 
   const fetchMeetings = async () => {
     try {

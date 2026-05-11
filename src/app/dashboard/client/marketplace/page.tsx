@@ -7,27 +7,47 @@ import {
   SlidersHorizontal, CheckCircle, Zap, ShieldAlert, Users
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockVehicles, currentUser } from '@/lib/mockData';
+import { useMVPData } from '@/hooks/useMVPData';
 
 export default function ClientMarketplacePage() {
   const [activeTab, setActiveTab] = useState<'vehicles' | 'agencies'>('vehicles');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Logic: Prioritize connected vehicles
-  const filteredVehicles = mockVehicles
+  const { data: realVehicles } = useMVPData('profiles', { role: 'vehicle' });
+  const { data: realAgencies } = useMVPData('profiles', { role: 'agency' });
+
+  const vehicles = realVehicles?.map((v: any) => ({
+    id: v.id,
+    name: v.company_name || 'Veículo HOAS',
+    type: v.media_type || 'Digital',
+    category: 'Digital',
+    reach: '500k+',
+    connected: false,
+    rating: 4.8
+  })) || [];
+
+  const agencies = realAgencies?.map((a: any) => ({
+    id: a.id,
+    name: a.company_name || 'Agência HOAS',
+    specialty: a.position || 'Full Service',
+    rating: 4.9,
+    projects: 12,
+    tags: ['Estratégia', 'Mídia'],
+    match: 98
+  })) || [];
+
+  const filteredVehicles = vehicles
     .filter(v => {
       const matchesSearch = v.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || v.category === selectedCategory;
       return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (a.connected && !b.connected) return -1;
-      if (!a.connected && b.connected) return 1;
-      return 0;
     });
 
-  const agencies: any[] = [];
+  const filteredAgencies = agencies.filter(a => 
+    a.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    a.specialty.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const vehicleCategories = ['All', 'Televisão', 'Rádio', 'Out of Home', 'Digital'];
 
@@ -109,7 +129,7 @@ export default function ClientMarketplacePage() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {agencies.map((a) => (
+          {filteredAgencies.map((a) => (
             <div key={a.id} className={styles.agencyCard}>
               <div className={styles.aiMatchBadge}><Zap size={14} /> {a.match}% Match</div>
               <div className={styles.agencyHeader}>

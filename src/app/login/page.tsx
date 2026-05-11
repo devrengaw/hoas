@@ -31,18 +31,23 @@ export default function Home() {
         return;
       }
 
-      // If successful, determine path and THEN start loading animation
-      let path = '/dashboard';
+      // Fetch role from metadata
+      const user = data.user;
+      const role = user?.user_metadata?.role;
       const lowerEmail = email.toLowerCase();
+      
+      let path = '/dashboard';
       
       if (lowerEmail === 'contato@rengawdev.com') {
         path = '/dashboard/platform-admin';
-      } else if (lowerEmail.includes('admin')) {
-        path = '/dashboard/platform-admin';
-      } else if (lowerEmail.includes('agency') || lowerEmail.includes('agencia') || lowerEmail.includes('midia')) {
+      } else if (role === 'agency') {
         path = '/dashboard/agency';
-      } else if (lowerEmail.includes('client') || lowerEmail.includes('cliente') || lowerEmail.includes('anunciante')) {
+      } else if (role === 'client') {
         path = '/dashboard/client';
+      } else if (role === 'vehicle') {
+        path = '/dashboard';
+      } else if (role === 'platform-admin' || lowerEmail.includes('admin')) {
+        path = '/dashboard/platform-admin';
       }
       
       setPendingPath(path);

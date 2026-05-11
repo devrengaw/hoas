@@ -9,49 +9,52 @@ import {
 } from 'lucide-react';
 import styles from './page.module.css';
 
+import { useMVPData } from '@/hooks/useMVPData';
+
 export default function ClientDashboard() {
   const [viewMode, setViewMode] = useState<'personal' | 'team'>('team');
   const [expandedStat, setExpandedStat] = useState<string | null>(null);
+
+  const { data: briefings } = useMVPData('briefings');
+  const { data: meetings } = useMVPData('meetings');
 
   const stats = [
     { 
       id: 'campaigns', 
       label: 'Campanhas Ativas', 
-      value: '12', 
+      value: briefings?.length.toString() || '0', 
       icon: Target,
       details: [
-        { label: 'Em Veiculação', value: '8' },
-        { label: 'Em Aprovação', value: '4' }
+        { label: 'Em Veiculação', value: briefings?.filter((b: any) => b.status === 'active').length.toString() || '0' },
+        { label: 'Em Aprovação', value: briefings?.filter((b: any) => b.status === 'pending').length.toString() || '0' }
       ]
     },
     { 
       id: 'roi', 
-      label: 'ROI Estimado', 
-      value: '4.2x', 
-      icon: TrendingUp,
+      label: 'Agendamentos', 
+      value: meetings?.length.toString() || '0', 
+      icon: Calendar,
       details: [
-        { label: 'Conversão', value: '15%' },
-        { label: 'Custo por Lead', value: 'R$ 1.20' }
+        { label: 'Confirmados', value: meetings?.length.toString() || '0' }
       ]
     },
     { 
       id: 'budget', 
-      label: 'Budget Utilizado', 
-      value: 'R$ 2.4M', 
+      label: 'Budget Planejado', 
+      value: 'R$ 0', 
       icon: DollarSign,
       details: [
-        { label: 'Budget Total Q2', value: 'R$ 5.0M' },
-        { label: 'Disponível', value: 'R$ 2.6M' }
+        { label: 'Budget Total', value: 'R$ 0' },
+        { label: 'Disponível', value: 'R$ 0' }
       ]
     },
     { 
       id: 'ai_optim', 
       label: 'Economia IA', 
-      value: '18%', 
+      value: '0%', 
       icon: Zap,
       details: [
-        { label: 'Otimização OOH', value: '12%' },
-        { label: 'Eficiência TV', value: '6%' }
+        { label: 'Otimização OOH', value: '0%' }
       ]
     },
   ];

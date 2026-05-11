@@ -8,18 +8,21 @@ import {
   ChevronLeft, AlertCircle, RefreshCw, Save,
   AlignLeft, Tag, Mail
 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { createMeeting, getMeetings } from '@/lib/database';
 import styles from './page.module.css';
 
 export default function PlatformCalendar() {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [todos, setTodos] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [newTodo, setNewTodo] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [editingApp, setEditingApp] = useState<any>(null);
-  const [appToDelete, setAppToDelete] = useState<number | null>(null);
-  const [selectedDay, setSelectedDay] = useState(7);
+  const [appToDelete, setAppToDelete] = useState<string | number | null>(null);
+  const [selectedDay, setSelectedDay] = useState(new Date().getDate());
   
   const [formData, setFormData] = useState({
     title: '',
@@ -33,6 +36,40 @@ export default function PlatformCalendar() {
     category: 'GERAL',
     description: ''
   });
+
+  const COMPANY_ID = 'PLATFORM_ADMIN_CORP'; // Placeholder for MVP
+
+  React.useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const fetchAppointments = async () => {
+    try {
+      const data = await getMeetings(COMPANY_ID);
+      // Map DB fields to UI fields
+      const mapped = data.map((m: any) => {
+        const date = new Date(m.scheduled_at);
+        return {
+          id: m.id,
+          title: m.title,
+          startTime: m.scheduled_at.split('T')[1].substring(0, 5),
+          endTime: '10:00', // Mock end time
+          location: m.location,
+          with: m.guest_name || 'Participantes',
+          day: date.getDate(),
+          date: date.toLocaleDateString('pt-BR'),
+          type: 'REUNIÃO',
+          category: 'GERAL',
+          description: m.notes
+        };
+      });
+      setAppointments(mapped);
+    } catch (err) {
+      console.error('Error fetching meetings:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleTodo = (id: number) => {
     setTodos(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
@@ -73,27 +110,58 @@ export default function PlatformCalendar() {
     setIsModalOpen(true);
   };
 
-  const saveAppointment = () => {
+  const saveAppointment = async () => {
     if (!formData.title) return;
-    if (editingApp) {
-      setAppointments(prev => prev.map(a => a.id === editingApp.id ? { ...a, ...formData, with: formData.participants, day: selectedDay, date: `${selectedDay < 10 ? '0' + selectedDay : selectedDay}/05/2026` } : a));
-    } else {
-      setAppointments(prev => [...prev, { id: Date.now(), ...formData, with: formData.participants, day: selectedDay, date: `${selectedDay < 10 ? '0' + selectedDay : selectedDay}/05/2026`, status: 'Agendado' }]);
+    
+    try {
+      const scheduledAt = new Date();
+      scheduledAt.setDate(selectedDay);
+      const [hours, minutes] = formData.startTime.split(':');
+      scheduledAt.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+      if (editingApp) {
+        // Update logic (simplified for MVP)
+        await supabase.from('meetings').update({
+          title: formData.title,
+          scheduled_at: scheduledAt.toISOString(),
+          location: formData.location,
+          notes: formData.description
+        }).eq('id', editingApp.id);
+      } else {
+        await createMeeting({
+          company_id: COMPANY_ID,
+          creator_id: 'SYSTEM',
+          title: formData.title,
+          scheduled_at: scheduledAt.toISOString(),
+          location: formData.location,
+          guest_email: formData.guestEmail,
+          notes: formData.description
+        });
+      }
+      
+      await fetchAppointments();
+      setIsModalOpen(false);
+    } catch (err) {
+      alert('Erro ao salvar compromisso');
     }
-    setIsModalOpen(false);
   };
 
-  const confirmDelete = (id: number) => {
+  const confirmDelete = (id: string | number) => {
     setAppToDelete(id);
     setIsConfirmModalOpen(true);
   };
 
-  const executeDelete = () => {
+  const executeDelete = async () => {
     if (appToDelete) {
-      setAppointments(prev => prev.filter(a => a.id !== appToDelete));
-      setAppToDelete(null);
-      setIsConfirmModalOpen(false);
-      setIsModalOpen(false);
+      try {
+        await supabase.from('meetings').delete().eq('id', appToDelete);
+        await fetchAppointments();
+        setAppToDelete(null);
+        setIsConfirmModalOpen(false);
+        setIsModalOpen(false);
+      } catch (err) {
+        alert('Erro ao excluir compromisso');
+      }
     }
   };
 

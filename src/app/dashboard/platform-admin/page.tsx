@@ -8,10 +8,22 @@ import {
   Trash2, UserPlus, Save, Settings, TrendingUp, Target, BarChart3
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockOrganizations, Organization } from '@/lib/mockData';
 import { supabase } from '@/lib/supabase';
 
 type OrgType = 'AGENCY' | 'VEHICLE' | 'CLIENT';
+
+export type Organization = {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+  masterName: string;
+  masterEmail: string;
+  users: any[];
+  plan?: string;
+  paymentsCount?: number;
+  profile?: any;
+};
 
 export default function PlatformAdmin() {
   const [allOrgs, setAllOrgs] = useState<Organization[]>([]);

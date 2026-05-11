@@ -8,51 +8,45 @@ import {
   Tv, Radio, Newspaper, ChevronRight
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockMeetings, Meeting } from '@/lib/mockData';
+import { useMVPData } from '@/hooks/useMVPData';
 
 export default function AgencyDashboard() {
   const [viewMode, setViewMode] = useState<'personal' | 'team'>('team');
   const [expandedStat, setExpandedStat] = useState<string | null>(null);
 
+  const { data: briefings } = useMVPData('briefings');
+  const { data: meetings } = useMVPData('meetings');
+  const { data: vehicles } = useMVPData('profiles', { role: 'vehicle' });
+
   const stats = [
     { 
       id: 'briefings', 
       label: 'Briefings Ativos', 
-      value: '0', 
+      value: briefings?.length.toString() || '0', 
       icon: ShoppingBag,
       details: [
-        { label: 'Em Negociação', value: '0' },
-        { label: 'Aguardando Veículo', value: '0' }
+        { label: 'Em Negociação', value: briefings?.filter((b: any) => b.status === 'negotiating').length.toString() || '0' },
+        { label: 'Aguardando Veículo', value: briefings?.filter((b: any) => b.status === 'pending').length.toString() || '0' }
       ]
     },
     { 
       id: 'ai_matches', 
-      label: 'Matches da IA', 
-      value: '0', 
-      icon: Zap,
+      label: 'Agendamentos', 
+      value: meetings?.length.toString() || '0', 
+      icon: Calendar,
       details: [
-        { label: 'Alta Afinidade', value: '0' },
-        { label: 'Novos Veículos', value: '0' }
-      ]
-    },
-    { 
-      id: 'billing', 
-      label: 'Investimento Mês', 
-      value: 'R$ 0', 
-      icon: TrendingUp,
-      details: [
-        { label: 'Budget Total', value: 'R$ 0' },
-        { label: 'Economia via IA', value: 'R$ 0' }
+        { label: 'Hoje', value: '0' },
+        { label: 'Próximos', value: meetings?.length.toString() || '0' }
       ]
     },
     { 
       id: 'partners', 
       label: 'Veículos Conectados', 
-      value: '0', 
+      value: vehicles?.length.toString() || '0', 
       icon: Users,
       details: [
         { label: 'Favoritos', value: '0' },
-        { label: 'Em Auditoria', value: '0' }
+        { label: 'Ativos', value: vehicles?.length.toString() || '0' }
       ]
     },
   ];

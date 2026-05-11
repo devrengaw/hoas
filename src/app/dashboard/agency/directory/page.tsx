@@ -8,23 +8,30 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
-import { mockVehicles } from '@/lib/mockData';
+import { useMVPData } from '@/hooks/useMVPData';
 
 export default function AgencyDirectory() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
 
-  const filteredVehicles = mockVehicles
+  const { data: realVehicles } = useMVPData('profiles', { role: 'vehicle' });
+
+  const vehicles = realVehicles?.map((v: any) => ({
+    id: v.id,
+    name: v.company_name || 'Veículo HOAS',
+    type: v.media_type || 'Digital',
+    category: 'Digital',
+    reach: '500k+',
+    connected: false,
+    rating: 4.8
+  })) || [];
+
+  const filteredVehicles = vehicles
     .filter(v => {
       const matchesSearch = v.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || v.category === selectedCategory;
       return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (a.connected && !b.connected) return -1;
-      if (!a.connected && b.connected) return 1;
-      return 0;
     });
 
   const categories = ['All', 'Televisão', 'Rádio', 'Out of Home', 'Digital'];

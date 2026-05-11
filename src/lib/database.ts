@@ -27,6 +27,8 @@ export async function createMeeting(meetingData: {
   duration_minutes?: number;
   guest_email?: string;
   guest_name?: string;
+  location?: string;
+  meeting_url?: string;
   notes?: string;
 }) {
   const { data, error } = await supabase

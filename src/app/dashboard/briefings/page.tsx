@@ -7,14 +7,16 @@ import {
   DollarSign, Zap, Edit3, Send, UserPlus, ShieldAlert
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockProposals, Proposal, currentUser } from '@/lib/mockData';
+import { useMVPData } from '@/hooks/useMVPData';
+import { Proposal, currentUser } from '@/lib/mockData';
 
 export default function ProposalsPage() {
   // Access Control Logic
   const isMaster = currentUser.role === 'MASTER';
   
-  const [proposals, setProposals] = useState<Proposal[]>([]);
-  const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
+  const { data: realBriefings, loading } = useMVPData('briefings');
+  const [proposals, setProposals] = useState<any[]>([]);
+  const [selectedProposal, setSelectedProposal] = useState<any | null>(null);
   const [showBriefing, setShowBriefing] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isEditingCost, setIsEditingCost] = useState(false);
@@ -24,24 +26,25 @@ export default function ProposalsPage() {
   const [showAssignModal, setShowAssignModal] = useState(false);
 
   useEffect(() => {
-    // Logic: 
-    // 1. Only show connected opportunities (Matchmaking rule)
-    // 2. But if Master, show ALL briefings/proposals
-    // 3. If Team Member, show only assigned to them
-    
-    let filtered = mockProposals;
-
-    if (!isMaster) {
-      if (currentUser.role === 'TEAM_MEMBER') {
-        filtered = mockProposals.filter(p => p.assignedTo === currentUser.name);
-      } else if (currentUser.role === 'MEDIA_AGENCY') {
-        // Media users see only opportunities from connected vehicles
-        filtered = mockProposals.filter(p => p.hasConnection);
-      }
+    if (realBriefings) {
+      const mapped = realBriefings.map((b: any) => ({
+        id: b.id,
+        agency: b.agency_name || 'Agência Cliente',
+        project: b.title,
+        status: b.status || 'Pendente',
+        budget: b.budget || 'R$ 0',
+        date: new Date(b.created_at).toLocaleDateString('pt-BR'),
+        contact: 'Responsável',
+        description: b.description || 'Nenhuma descrição fornecida.',
+        hasConnection: true,
+        fullBriefing: {
+          objective: b.objective || 'N/A',
+          target: b.target_audience || 'N/A'
+        }
+      }));
+      setProposals(mapped);
     }
-    
-    setProposals(filtered);
-  }, [isMaster]);
+  }, [realBriefings]);
 
   const handleSendCounter = () => {
     if (selectedProposal) {

@@ -10,12 +10,17 @@ import {
   MessageSquare, Info, Smartphone
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockVehicles, mockProposals, currentUser, mockOrganizations } from '@/lib/mockData';
+import { useMVPData } from '@/hooks/useMVPData';
+import { mockProposals, currentUser, mockOrganizations } from '@/lib/mockData';
 
 export default function AgencyMarketplacePage() {
   const [activeTab, setActiveTab] = useState<'vehicles' | 'clients'>('vehicles');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // Modals state
+  const { data: realVehicles } = useMVPData('profiles', { role: 'vehicle' });
+  const { data: realClients } = useMVPData('profiles', { role: 'client' });
 
   // Modals state
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
@@ -24,6 +29,33 @@ export default function AgencyMarketplacePage() {
   const [isClientNeedModalOpen, setIsClientNeedModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Mapping DB to UI
+  const vehicles = realVehicles?.map((v: any) => ({
+    id: v.id,
+    name: v.company_name || 'Veículo HOAS',
+    type: v.media_type || 'Digital',
+    category: 'Digital',
+    reach: '500k+',
+    connected: false,
+    rating: 4.8,
+    tags: ['Brand Awareness', 'Performance'],
+    description: 'Veículo parceiro da plataforma HOAS.'
+  })) || [];
+
+  const clientNeeds = realClients?.map((c: any) => ({
+    id: c.id,
+    company: c.company_name || 'Anunciante',
+    client: c.company_name || 'Anunciante',
+    title: c.objective || 'Campanha Nacional',
+    objective: c.objective || 'Campanha Nacional',
+    budget: 'R$ 50k - 100k',
+    date: 'Junho 2026',
+    contact: c.full_name,
+    description: 'Busca parceiros para lançamento estratégico.',
+    match: 95,
+    tags: ['Brand Awareness', 'Performance']
+  })) || [];
 
   const isMaster = currentUser.role === 'MASTER';
 
@@ -52,20 +84,18 @@ export default function AgencyMarketplacePage() {
   };
 
   // Logic: Prioritize connected vehicles for the agency
-  const filteredVehicles = mockVehicles
+  const filteredVehicles = vehicles
     .filter(v => {
       const matchesSearch = v.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                             v.type.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || v.category === selectedCategory;
       return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (a.connected && !b.connected) return -1;
-      if (!a.connected && b.connected) return 1;
-      return 0;
     });
 
-  const clientNecessities: any[] = [];
+  const filteredClients = clientNeeds.filter(c => 
+    c.company.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    c.objective.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const vehicleCategories = ['All', 'Televisão', 'Rádio', 'Out of Home', 'Digital'];
 
@@ -156,7 +186,7 @@ export default function AgencyMarketplacePage() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {clientNecessities.map((n) => (
+          {filteredClients.map((n) => (
             <div key={n.id} className={styles.clientCard}>
               <div className={styles.aiMatchBadge}><Zap size={14} /> {n.match}% Match IA</div>
               <div className={styles.clientHeader}>

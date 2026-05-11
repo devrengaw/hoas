@@ -20,23 +20,45 @@ export default function TeamPage() {
     3: { proposals: false, meetings: true, messages: true, marketplace: false, analytics: false, finance: false }
   });
 
-  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Analista' });
+  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Analista', password: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAddUser = (e: React.FormEvent) => {
+  const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newId = users.length + 1;
-    const userToAdd = {
-      id: newId,
-      ...newUser,
-      status: 'Pendente'
-    };
-    setUsers([...users, userToAdd]);
-    setUserPermissions({
-      ...userPermissions,
-      [newId]: { proposals: false, meetings: false, messages: false, marketplace: false, analytics: false, finance: false }
-    });
-    setShowModal(false);
-    setNewUser({ name: '', email: '', role: 'Analista' });
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/admin/create-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newUser,
+          userType: 'agency',
+          companyId: 'AGENCY_ID' // In a real app, this comes from the current user's profile
+        })
+      });
+
+      const result = await response.json();
+
+      if (!result.success) throw new Error(result.error);
+
+      const userToAdd = {
+        id: users.length + 1,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        status: 'Ativo'
+      };
+
+      setUsers([...users, userToAdd]);
+      setShowModal(false);
+      setNewUser({ name: '', email: '', role: 'Analista', password: '' });
+      alert('Usuário cadastrado com sucesso!');
+    } catch (error: any) {
+      alert('Erro ao cadastrar usuário: ' + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleUserPermission = (userId: number, module: string) => {
@@ -304,9 +326,21 @@ export default function TeamPage() {
                   <option value="Analista">Analista / Operação</option>
                 </select>
               </div>
+              <div className={styles.field}>
+                <label>Senha Provisória</label>
+                <input 
+                  type="password" 
+                  placeholder="••••••••" 
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                  required 
+                />
+              </div>
               <div className={styles.modalFooter}>
-                <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)}>Cancelar</button>
-                <button type="submit" className={styles.submitBtn}>Salvar Usuário</button>
+                <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)} disabled={isSubmitting}>Cancelar</button>
+                <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                  {isSubmitting ? 'Salvando...' : 'Salvar Usuário'}
+                </button>
               </div>
             </form>
           </div>
