@@ -1,0 +1,66 @@
+.container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #020617;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.backgroundImage {
+  position: absolute;
+  inset: 0;
+  background-image: url('/identidade visual/login_background.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+  filter: saturate(1.2) brightness(0.8);
+  z-index: 1;
+}
+
+.shapesContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.pill {
+  position: absolute;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-radius: 1000px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  animation: floatVertical infinite ease-in-out;
+}
+
+@keyframes floatVertical {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(60px) scale(1.02);
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(2, 6, 23, 0.4) 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Grão sutil para combinar com o estilo da imagem */
+.container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  z-index: 4;
+  pointer-events: none;
+}

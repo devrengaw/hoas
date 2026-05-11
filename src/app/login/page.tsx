@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { Sparkles, ArrowRight, Mail, Lock } from "lucide-react";
 import LoadingScreen from '@/components/LoadingScreen';
-import PlexusBackground from '@/components/PlexusBackground';
+import LoginDynamicBackground from '@/components/LoginDynamicBackground';
 
 export default function Home() {
   const router = useRouter();
@@ -46,14 +46,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <PlexusBackground />
-      <div className={styles.animatedBg}>
-        <div className={styles.blob}></div>
-        <div className={styles.blob}></div>
-        <div className={styles.blob}></div>
-        <div className={styles.blob}></div>
-        <div className={styles.blob}></div>
-      </div>
+      <LoginDynamicBackground />
 
       <div className={styles.hero}>
         <div className={styles.badge + " animate-bounce-subtle"}>
