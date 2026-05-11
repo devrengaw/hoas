@@ -11,11 +11,11 @@
 .backgroundImage {
   position: absolute;
   inset: 0;
-  background-image: url('/identidade visual/login_background.png');
+  background-image: url('/identidade visual/Background Login.png');
   background-size: cover;
   background-position: center;
-  opacity: 0.6;
-  filter: saturate(1.2) brightness(0.8);
+  opacity: 0.8;
+  filter: saturate(1.1) brightness(0.9);
   z-index: 1;
 }
 

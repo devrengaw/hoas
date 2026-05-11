@@ -66,8 +66,8 @@ export default function ClientDashboard() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <h1>Olá, Mariana</h1>
-          <p>Seu portfólio de mídia está performando acima da média este mês.</p>
+          <h1>Olá</h1>
+          <p>Seu portfólio de mídia está sendo preparado.</p>
         </div>
 
         <div className={styles.headerRight}>
@@ -128,36 +128,14 @@ export default function ClientDashboard() {
           </div>
           
           <div className={styles.projectHealthGrid}>
-            {projects.map(p => (
-              <div key={p.id} className={styles.healthCard}>
-                <div className={styles.healthHeader}>
-                  <h3>{p.name}</h3>
-                  <span className={styles.statusBadge} style={{ background: `${p.color}20`, color: p.color }}>{p.status}</span>
-                </div>
-                <div className={styles.healthMetric}>
-                  <div className={styles.metricBar}>
-                    <div className={styles.metricFill} style={{ width: `${p.health}%`, backgroundColor: p.color }}></div>
-                  </div>
-                  <span>{p.health}% Eficiência</span>
-                </div>
-              </div>
-            ))}
+            <p className={styles.emptyProjects}>Nenhum projeto ativo no momento.</p>
           </div>
 
           <div className={styles.approvalBox}>
             <div className={styles.sectionHeader}>
               <h2>Aprovações Pendentes</h2>
             </div>
-            <div className={styles.approvalItem}>
-              <div className={styles.approvalInfo}>
-                <strong>Plano de Mídia - Outubro/25</strong>
-                <p>Agência Global • R$ 450.000,00</p>
-              </div>
-              <div className={styles.approvalActions}>
-                <button className={styles.viewBtn}>Ver Plano</button>
-                <button className={styles.approveBtn}>Aprovar PI</button>
-              </div>
-            </div>
+            <p className={styles.emptyApprovals}>Nenhuma aprovação pendente.</p>
           </div>
         </section>
 
@@ -165,21 +143,17 @@ export default function ClientDashboard() {
           <div className={styles.sectionHeader}>
             <h2>Seu Executivo de Contas</h2>
           </div>
-          <ProfileCard 
-            name="Roberto Lima"
-            role="Diretor de Atendimento"
-            company="Agência Global"
-            rating={95}
-            imageUrl="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=400"
-          />
+          <div className={styles.emptyCard}>
+             <Users2 size={40} opacity={0.2} />
+             <p>Aguardando atribuição</p>
+          </div>
 
           <div className={styles.aiInsightBox}>
             <div className={styles.aiHeader}>
               <Zap size={16} />
               <span>Otimização Sugerida</span>
             </div>
-            <p>Sugerimos realocar 10% do budget de Digital para OOH no projeto "Lançamento Verão". A IA prevê um aumento de 15% no alcance orgânico.</p>
-            <button className={styles.aiActionBtn}>Aplicar Otimização</button>
+            <p>Nenhuma sugestão de otimização disponível no momento.</p>
           </div>
         </aside>
       </div>

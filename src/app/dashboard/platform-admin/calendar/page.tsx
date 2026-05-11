@@ -6,22 +6,13 @@ import {
   CheckCircle2, Circle, Trash2, CalendarDays, MapPin, 
   Users, ChevronRight, Search, CheckSquare, X,
   ChevronLeft, AlertCircle, RefreshCw, Save,
-  AlignLeft, Tag
+  AlignLeft, Tag, Mail
 } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function PlatformCalendar() {
-  const [appointments, setAppointments] = useState([
-    { id: 1, title: 'Review Trimestral - Agência Global', startTime: '10:00', endTime: '11:30', date: '07/05/2026', day: 7, with: 'Diretoria Executiva', location: 'Meet Global', description: 'Revisão estratégica do primeiro trimestre.', type: 'REUNIÃO', category: 'ESTRATÉGICO', status: 'Agendado' },
-    { id: 2, title: 'Treinamento Novos Masters', startTime: '14:00', endTime: '16:00', date: '07/05/2026', day: 7, with: 'Equipe de Onboarding', location: 'Sala HOAS 01', description: 'Treinamento técnico sobre as novas funcionalidades.', type: 'WORKSHOP', category: 'TREINAMENTO', status: 'Agendado' },
-    { id: 3, title: 'Lançamento Evento Inverno 2026', startTime: '09:00', endTime: '10:00', date: '08/05/2026', day: 8, with: 'Marketing HOAS', location: 'Auditório', description: 'Apresentação do KV e plano de mídia.', type: 'EVENTO', category: 'MARKETING', status: 'Agendado' },
-  ]);
-
-  const [todos, setTodos] = useState([
-    { id: 1, task: 'Revisar contratos da TV Alpha', completed: false },
-    { id: 2, task: 'Aprovar novos banners do HOAS Care', completed: true },
-    { id: 3, task: 'Configurar limites de usuários para Coca-Cola', completed: false },
-  ]);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [todos, setTodos] = useState<any[]>([]);
 
   const [newTodo, setNewTodo] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,6 +27,8 @@ export default function PlatformCalendar() {
     endTime: '10:00',
     location: '',
     participants: '',
+    guestEmail: '',
+    sendInvite: false,
     type: 'REUNIÃO',
     category: 'GERAL',
     description: ''
@@ -56,6 +49,8 @@ export default function PlatformCalendar() {
         endTime: app.endTime,
         location: app.location,
         participants: app.with,
+        guestEmail: app.guestEmail || '',
+        sendInvite: false,
         type: app.type,
         category: app.category,
         description: app.description
@@ -68,6 +63,8 @@ export default function PlatformCalendar() {
         endTime: '10:00',
         location: '',
         participants: '',
+        guestEmail: '',
+        sendInvite: false,
         type: 'REUNIÃO',
         category: 'GERAL',
         description: ''
@@ -81,7 +78,7 @@ export default function PlatformCalendar() {
     if (editingApp) {
       setAppointments(prev => prev.map(a => a.id === editingApp.id ? { ...a, ...formData, with: formData.participants, day: selectedDay, date: `${selectedDay < 10 ? '0' + selectedDay : selectedDay}/05/2026` } : a));
     } else {
-      setAppointments([...appointments, { id: Date.now(), ...formData, with: formData.participants, day: selectedDay, date: `${selectedDay < 10 ? '0' + selectedDay : selectedDay}/05/2026`, status: 'Agendado' }]);
+      setAppointments(prev => [...prev, { id: Date.now(), ...formData, with: formData.participants, day: selectedDay, date: `${selectedDay < 10 ? '0' + selectedDay : selectedDay}/05/2026`, status: 'Agendado' }]);
     }
     setIsModalOpen(false);
   };
@@ -122,8 +119,8 @@ export default function PlatformCalendar() {
                 <div className={styles.calendarNav}><button><ChevronLeft size={16} /></button><button><ChevronRight size={16} /></button></div>
               </div>
               <div className={styles.calendarGrid}>
-                {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map(d => <div key={d} className={styles.dayName}>{d}</div>)}
-                {[1, 2, 3, 4, 5].map(p => <div key={`p-${p}`} className={styles.dayEmpty}></div>)}
+                {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, idx) => <div key={`${d}-${idx}`} className={styles.dayName}>{d}</div>)}
+                {Array.from({ length: 5 }).map((_, p) => <div key={`p-${p}`} className={styles.dayEmpty}></div>)}
                 {Array.from({ length: 31 }, (_, i) => i + 1).map(day => {
                   const hasApp = appointments.some(a => a.day === day);
                   return (
@@ -202,7 +199,29 @@ export default function PlatformCalendar() {
               <div className={styles.inputGroup}><label><Tag size={14} /> Tipo</label><select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} style={{fontFamily: 'inherit'}}><option>REUNIÃO</option><option>WORKSHOP</option><option>EVENTO</option><option>WEBINAR</option><option>OUTRO</option></select></div>
               <div className={styles.inputGroup}><label><ShieldCheck size={14} /> Categoria</label><select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} style={{fontFamily: 'inherit'}}><option>GERAL</option><option>ESTRATÉGICO</option><option>TREINAMENTO</option><option>MARKETING</option><option>FINANCEIRO</option></select></div>
               <div className={`${styles.inputGroup} ${styles.fullWidth}`}><label><MapPin size={14} /> Local / Link</label><input type="text" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="Ex: Sala de Reuniões 02 ou link do Meet" style={{fontFamily: 'inherit'}} /></div>
-              <div className={`${styles.inputGroup} ${styles.fullWidth}`}><label><Users size={14} /> Participantes</label><input type="text" value={formData.participants} onChange={e => setFormData({...formData, participants: e.target.value})} placeholder="Ex: Equipe de Vendas, João Silva..." style={{fontFamily: 'inherit'}} /></div>
+              <div className={`${styles.inputGroup} ${styles.fullWidth}`}><label><Users size={14} /> Participantes Internos</label><input type="text" value={formData.participants} onChange={e => setFormData({...formData, participants: e.target.value})} placeholder="Ex: Equipe de Vendas, João Silva..." style={{fontFamily: 'inherit'}} /></div>
+              
+              <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
+                <label><Mail size={14} /> Convidar Externo (E-mail)</label>
+                <div className={styles.inviteRow}>
+                  <input 
+                    type="email" 
+                    value={formData.guestEmail} 
+                    onChange={e => setFormData({...formData, guestEmail: e.target.value})} 
+                    placeholder="email@externo.com" 
+                    style={{fontFamily: 'inherit'}} 
+                  />
+                  <label className={styles.checkboxLabel}>
+                    <input 
+                      type="checkbox" 
+                      checked={formData.sendInvite} 
+                      onChange={e => setFormData({...formData, sendInvite: e.target.checked})} 
+                    />
+                    <span>Enviar Convite</span>
+                  </label>
+                </div>
+              </div>
+
               <div className={`${styles.inputGroup} ${styles.fullWidth}`}><label><AlignLeft size={14} /> Descrição / Notas</label><textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Pauta da reunião ou observações importantes..." rows={3} style={{fontFamily: 'inherit'}} /></div>
             </div>
             <div className={styles.modalActions}>

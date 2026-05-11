@@ -10,18 +10,9 @@ import {
 import styles from './page.module.css';
 
 export default function PlatformEvents() {
-  const [events, setEvents] = useState([
-    { id: 1, title: 'HOAS Summit 2026', date: '15-17 Out, 2026', location: 'São Paulo, SP', attendees: 1200, status: 'Confirmado', category: 'Conferência' },
-    { id: 2, title: 'Workshop de Mídia OOH', date: '22 Set, 2026', location: 'Rio de Janeiro, RJ', attendees: 450, status: 'Em Planejamento', category: 'Workshop' },
-    { id: 3, title: 'Webinar: Futuro do Digital', date: '05 Ago, 2026', location: 'Online', attendees: 3000, status: 'Inscrições Abertas', category: 'Digital' },
-  ]);
+  const [events, setEvents] = useState<any[]>([]);
 
-  const [mockRegistrations] = useState([
-    { id: 101, name: 'Lucas Wagner', email: 'lucas@agenciaglobal.com', org: 'Agência Global', date: '02/05/2026' },
-    { id: 102, name: 'Mariana Silva', email: 'mariana@picpay.com', org: 'PicPay Ads', date: '03/05/2026' },
-    { id: 103, name: 'João Pedro', email: 'joao@tvalpha.com', org: 'TV Alpha', date: '03/05/2026' },
-    { id: 104, name: 'Ana Costa', email: 'ana@cocacola.com', org: 'Coca-Cola Br', date: '04/05/2026' },
-  ]);
+  const [mockRegistrations] = useState<any[]>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -77,9 +68,9 @@ export default function PlatformEvents() {
       </header>
 
       <div className={styles.statsBar}>
-        <div className={styles.miniStat}><Calendar size={18} /><span>Eventos este ano: <strong>12</strong></span></div>
-        <div className={styles.miniStat}><Users size={18} /><span>Total de Inscritos: <strong>4.650</strong></span></div>
-        <div className={styles.miniStat}><TrendingUp size={18} /><span>Crescimento: <strong>+22%</strong></span></div>
+        <div className={styles.miniStat}><Calendar size={18} /><span>Eventos este ano: <strong>0</strong></span></div>
+        <div className={styles.miniStat}><Users size={18} /><span>Total de Inscritos: <strong>0</strong></span></div>
+        <div className={styles.miniStat}><TrendingUp size={18} /><span>Crescimento: <strong>0%</strong></span></div>
       </div>
 
       <div className={styles.eventGrid}>

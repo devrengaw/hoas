@@ -27,35 +27,7 @@ export default function ClientMarketplacePage() {
       return 0;
     });
 
-  const agencies = [
-    {
-      id: 1,
-      name: "Agência Global",
-      specialty: "Marketing de Influência & OOH",
-      match: 98,
-      rating: 4.9,
-      projects: 142,
-      tags: ["High ROI", "Premium Partners"]
-    },
-    {
-      id: 2,
-      name: "XYZ Media",
-      specialty: "Performance & Data Analytics",
-      match: 92,
-      rating: 4.7,
-      projects: 85,
-      tags: ["Retail Focus", "Data Driven"]
-    },
-    {
-      id: 3,
-      name: "Creative Co",
-      specialty: "Branding & Social Ads",
-      match: 88,
-      rating: 4.8,
-      projects: 64,
-      tags: ["Awards Winner", "Gen Z Expert"]
-    }
-  ];
+  const agencies: any[] = [];
 
   const vehicleCategories = ['All', 'Televisão', 'Rádio', 'Out of Home', 'Digital'];
 
@@ -154,7 +126,7 @@ export default function ClientMarketplacePage() {
                   <strong>{a.projects}</strong> projetos entregues via HOAS
                 </div>
                 <div className={styles.tagCloud}>
-                  {a.tags.map(t => <span key={t} className={styles.tag}>{t}</span>)}
+                  {a.tags.map((t: string) => <span key={t} className={styles.tag}>{t}</span>)}
                 </div>
               </div>
               <div className={styles.cardFooter}>

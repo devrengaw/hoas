@@ -180,31 +180,31 @@ export default function PlatformAdmin() {
         <div className={styles.overviewContent}>
           <div className={styles.sectionHeaderWithAction}>
             <div className={styles.goalsRow}>
-              <div className={`${styles.goalCard} ${styles.clickable}`}>
+              <div className={styles.goalCard}>
                 <div className={styles.goalHeader}>
                   <Target size={18} className={styles.goalIcon} />
                   <span>Meta de Receita Global (Mês)</span>
-                  <span className={styles.goalProgress}>82%</span>
+                  <span className={styles.goalProgress}>0%</span>
                 </div>
                 <div className={styles.progressBar}>
-                  <div className={styles.progressFill} style={{ width: '82%' }} />
+                  <div className={styles.progressFill} style={{ width: '0%' }} />
                 </div>
                 <div className={styles.goalFooter}>
-                  <span>R$ 8.2M de R$ 10.0M</span>
+                  <span>R$ 0 de R$ 0</span>
                   <div className={styles.rankingHint}>Ver Detalhes <ChevronRight size={12} /></div>
                 </div>
               </div>
-              <div className={`${styles.goalCard} ${styles.clickable}`}>
+              <div className={styles.goalCard}>
                 <div className={styles.goalHeader}>
                   <TrendingUp size={18} className={styles.goalIcon} />
                   <span>Meta de Expansão (Q2)</span>
-                  <span className={styles.goalProgress}>65%</span>
+                  <span className={styles.goalProgress}>0%</span>
                 </div>
                 <div className={styles.progressBar}>
-                  <div className={styles.progressFill} style={{ width: '65%' }} />
+                  <div className={styles.progressFill} style={{ width: '0%' }} />
                 </div>
                 <div className={styles.goalFooter}>
-                  <span>130 de 200 novas conexões</span>
+                  <span>0 de 0 novas conexões</span>
                   <div className={styles.rankingHint}>Ver Detalhes <ChevronRight size={12} /></div>
                 </div>
               </div>
@@ -220,28 +220,28 @@ export default function PlatformAdmin() {
               <Users size={20} />
               <div>
                 <label>Total de Usuários</label>
-                <strong>4,829</strong>
+                <strong>0</strong>
               </div>
             </div>
             <div className={styles.statMiniCard}>
               <Building2 size={20} />
               <div>
                 <label>Organizações</label>
-                <strong>156</strong>
+                <strong>0</strong>
               </div>
             </div>
             <div className={styles.statMiniCard}>
               <ArrowLeftRight size={20} />
               <div>
                 <label>Transações/Dia</label>
-                <strong>1,204</strong>
+                <strong>0</strong>
               </div>
             </div>
             <div className={styles.statMiniCard}>
               <ShieldCheck size={20} />
               <div>
                 <label>Taxa de Retenção</label>
-                <strong>98.2%</strong>
+                <strong>0%</strong>
               </div>
             </div>
           </div>

@@ -13,11 +13,7 @@ export default function ClientDirectory() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedAgency, setSelectedAgency] = useState<any>(null);
 
-  const agencies = [
-    { id: 1, name: "Agência Global", type: "Full Service", category: "Premium", rating: 4.9, connected: true, bio: "Especialista em grandes contas e marketing de influência.", specialties: ["Influência", "OOH", "TV"] },
-    { id: 2, name: "XYZ Media", type: "Performance", category: "Data Driven", rating: 4.7, connected: false, bio: "Foco total em ROI e análise de dados para varejo.", specialties: ["Retail", "Data Analytics"] },
-    { id: 3, name: "Creative Co", type: "Branding", category: "Creative", rating: 4.8, connected: true, bio: "Transformando marcas através de criatividade e design.", specialties: ["Design", "Social Media"] },
-  ];
+  const agencies: any[] = [];
 
   const filteredAgencies = agencies
     .filter(a => {

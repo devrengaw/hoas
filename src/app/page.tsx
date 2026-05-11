@@ -65,7 +65,6 @@ export default function VehicleLandingPage() {
               <strong>98% Precisão</strong>
             </div>
           </div>
-          <img src="/dashboard-preview.png" alt="Dashboard Preview" className={styles.dashboardMock} />
         </div>
       </section>
 

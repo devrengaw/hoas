@@ -6,34 +6,51 @@ import { useRouter } from "next/navigation";
 import { Sparkles, ArrowRight, Mail, Lock } from "lucide-react";
 import LoadingScreen from '@/components/LoadingScreen';
 import LoginDynamicBackground from '@/components/LoginDynamicBackground';
+import { supabase } from '@/lib/supabase';
 
 export default function Home() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [pendingPath, setPendingPath] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     
-    // Simulate role identification based on email
-    const lowerEmail = email.toLowerCase();
-    let path = '/dashboard';
-    
-    // Admin check with specific password
-    if (lowerEmail === 'contato@rengawdev.com' && password === 'Santos1992*') {
-      path = '/dashboard/platform-admin';
-    } else if (lowerEmail.includes('admin')) {
-      path = '/dashboard/platform-admin';
-    } else if (lowerEmail.includes('agency') || lowerEmail.includes('agencia') || lowerEmail.includes('midia')) {
-      path = '/dashboard/agency';
-    } else if (lowerEmail.includes('client') || lowerEmail.includes('cliente') || lowerEmail.includes('anunciante')) {
-      path = '/dashboard/client';
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        setError("E-mail ou senha incorretos. Por favor, verifique seus dados.");
+        return;
+      }
+
+      // If successful, determine path and THEN start loading animation
+      let path = '/dashboard';
+      const lowerEmail = email.toLowerCase();
+      
+      if (lowerEmail === 'contato@rengawdev.com') {
+        path = '/dashboard/platform-admin';
+      } else if (lowerEmail.includes('admin')) {
+        path = '/dashboard/platform-admin';
+      } else if (lowerEmail.includes('agency') || lowerEmail.includes('agencia') || lowerEmail.includes('midia')) {
+        path = '/dashboard/agency';
+      } else if (lowerEmail.includes('client') || lowerEmail.includes('cliente') || lowerEmail.includes('anunciante')) {
+        path = '/dashboard/client';
+      }
+      
+      setPendingPath(path);
+      setIsLoading(true); 
+    } catch (err) {
+      console.error(err);
+      setError("Ocorreu um erro ao processar o login.");
     }
-    
-    setPendingPath(path);
-    setIsLoading(true);
   };
 
   const handleLoadingFinished = () => {
@@ -49,15 +66,7 @@ export default function Home() {
       <LoginDynamicBackground />
 
       <div className={styles.hero}>
-        <div className={styles.badge + " animate-bounce-subtle"}>
-          <Sparkles size={14} />
-          <span>Inteligência de Mercado B2B</span>
-        </div>
-        <div className={styles.logoWrapper + " animate-fade-in"}>
-          <img src="/identidade visual/hoas_png.png" alt="HOAS Logo" className={styles.mainLogo} />
-        </div>
-        
-        <div className={styles.actions + " animate-fade-in"} style={{ animationDelay: '0.4s' }}>
+        <div className={styles.actions + " animate-fade-in"}>
           <form className={styles.loginForm} onSubmit={handleLogin}>
             <div className={styles.field}>
               <label>E-mail Corporativo</label>
@@ -87,21 +96,12 @@ export default function Home() {
               </div>
             </div>
             
+            {error && <div className={styles.errorMessage + " animate-shake"}>{error}</div>}
+
             <button type="submit" className={styles.primaryButton}>
               Entrar na Plataforma <ArrowRight size={18} />
             </button>
           </form>
-
-          <div className={styles.divider}>ou acesse via SSO</div>
-          
-          <div className={styles.socialAuth}>
-            <button className={styles.socialButton} onClick={() => { setPendingPath('/dashboard'); setIsLoading(true); }}>
-              <img src="https://www.google.com/favicon.ico" alt="Google" width={16} /> Google Workspace
-            </button>
-            <button className={styles.socialButton} onClick={() => { setPendingPath('/dashboard'); setIsLoading(true); }}>
-              <img src="https://www.microsoft.com/favicon.ico" alt="MS" width={16} /> Microsoft 365
-            </button>
-          </div>
 
           <div className={styles.registerLink}>
             <span>Ainda não tem conta?</span>

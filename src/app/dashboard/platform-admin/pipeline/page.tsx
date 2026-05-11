@@ -21,18 +21,18 @@ export default function PlatformPipeline() {
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
           <span>Volume Total</span>
-          <strong>R$ 12.450.000</strong>
-          <small className={styles.up}>+15% este mês</small>
+          <strong>R$ 0</strong>
+          <small>Início do período</small>
         </div>
         <div className={styles.statCard}>
           <span>Negociações Ativas</span>
-          <strong>142</strong>
-          <small>Em 12 agências</small>
+          <strong>0</strong>
+          <small>Nenhuma agência ativa</small>
         </div>
         <div className={styles.statCard}>
           <span>Taxa de Conversão</span>
-          <strong>68%</strong>
-          <small className={styles.up}>+4% vs Jan</small>
+          <strong>0%</strong>
+          <small>Sem dados históricos</small>
         </div>
       </div>
 

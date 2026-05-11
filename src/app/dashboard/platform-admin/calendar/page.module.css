@@ -286,11 +286,13 @@
   background: #0a0f1e;
   border: 1px solid var(--glass-border);
   border-radius: 24px;
-  width: 100%;
-  max-width: 550px;
-  padding: 3rem;
+  width: 90%;
+  max-width: 500px;
+  padding: 2.25rem;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .closeBtn {
@@ -303,7 +305,7 @@
   cursor: pointer;
 }
 
-.modalHeader { text-align: center; margin-bottom: 2.5rem; }
+.modalHeader { text-align: center; margin-bottom: 2rem; }
 .modalIconWrapper {
   background: rgba(99, 102, 241, 0.1);
   color: var(--primary);
@@ -323,7 +325,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .fullWidth { grid-column: span 2; }
@@ -339,7 +341,20 @@
   margin-bottom: 0.6rem;
 }
 
-.inputGroup input, .inputGroup select, .inputGroup textarea {
+.inputGroup input, .inputGroup select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  padding: 0 1rem;
+  height: 44px;
+  border-radius: 12px;
+  color: white;
+  outline: none;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.inputGroup textarea {
   width: 100%;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
@@ -349,6 +364,7 @@
   outline: none;
   font-size: 0.9rem;
   font-family: inherit;
+  resize: none;
 }
 
 .inputGroup textarea { resize: none; }
@@ -420,5 +436,43 @@
   padding: 1rem;
   border-radius: 12px;
   font-weight: 800;
+  cursor: pointer;
+}
+
+.inviteRow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  width: 100%;
+}
+
+.inviteRow input[type="email"] {
+  flex: 1 !important;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--foreground);
+  padding: 0 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+  height: 44px;
+}
+
+.checkboxLabel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--primary);
+}
+
+.checkboxLabel input {
+  width: 16px;
+  height: 16px;
   cursor: pointer;
 }

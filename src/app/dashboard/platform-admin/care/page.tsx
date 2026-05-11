@@ -8,11 +8,7 @@ import {
 import styles from './page.module.css';
 
 export default function PlatformCare() {
-  const [articles, setArticles] = useState([
-    { id: 1, title: 'Manual do Ecossistema HOAS', category: 'Manual', status: 'Publicado', views: 1240, lastUpdate: '2 dias atrás' },
-    { id: 2, title: 'Guia de Bem-estar Profissional', category: 'Bem-estar', status: 'Rascunho', views: 0, lastUpdate: 'Hoje' },
-    { id: 3, title: 'Tendências de Mídia 2026', category: 'Insights', status: 'Publicado', views: 850, lastUpdate: '1 semana atrás' },
-  ]);
+  const [articles, setArticles] = useState<any[]>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<any>(null);
@@ -62,15 +58,15 @@ export default function PlatformCare() {
 
       <div className={styles.statsRow}>
         <div className={styles.miniStat}>
-          <strong>24</strong>
+          <strong>0</strong>
           <span>Artigos Ativos</span>
         </div>
         <div className={styles.miniStat}>
-          <strong>15.2k</strong>
+          <strong>0</strong>
           <span>Visualizações Totais</span>
         </div>
         <div className={styles.miniStat}>
-          <strong>98%</strong>
+          <strong>0%</strong>
           <span>Taxa de Aprovação</span>
         </div>
       </div>

@@ -18,49 +18,49 @@ export default function AgencyDashboard() {
     { 
       id: 'briefings', 
       label: 'Briefings Ativos', 
-      value: '24', 
+      value: '0', 
       icon: ShoppingBag,
       details: [
-        { label: 'Em Negociação', value: '12' },
-        { label: 'Aguardando Veículo', value: '8' }
+        { label: 'Em Negociação', value: '0' },
+        { label: 'Aguardando Veículo', value: '0' }
       ]
     },
     { 
       id: 'ai_matches', 
       label: 'Matches da IA', 
-      value: '+5', 
+      value: '0', 
       icon: Zap,
       details: [
-        { label: 'Alta Afinidade', value: '3' },
-        { label: 'Novos Veículos', value: '2' }
+        { label: 'Alta Afinidade', value: '0' },
+        { label: 'Novos Veículos', value: '0' }
       ]
     },
     { 
       id: 'billing', 
       label: 'Investimento Mês', 
-      value: 'R$ 1.2M', 
+      value: 'R$ 0', 
       icon: TrendingUp,
       details: [
-        { label: 'Budget Total', value: 'R$ 5.0M' },
-        { label: 'Economia via IA', value: 'R$ 45k' }
+        { label: 'Budget Total', value: 'R$ 0' },
+        { label: 'Economia via IA', value: 'R$ 0' }
       ]
     },
     { 
       id: 'partners', 
       label: 'Veículos Conectados', 
-      value: '142', 
+      value: '0', 
       icon: Users,
       details: [
-        { label: 'Favoritos', value: '12' },
-        { label: 'Em Auditoria', value: '4' }
+        { label: 'Favoritos', value: '0' },
+        { label: 'Em Auditoria', value: '0' }
       ]
     },
   ];
 
   const categories = [
-    { id: 'tv', name: 'TV & Vídeo', count: 42, icon: Tv, color: '#6366f1' },
-    { id: 'radio', name: 'Áudio & Podcast', count: 18, icon: Radio, color: '#ec4899' },
-    { id: 'ooh', name: 'Digital & OOH', count: 35, icon: Newspaper, color: '#10b981' },
+    { id: 'tv', name: 'TV & Vídeo', count: 0, icon: Tv, color: '#6366f1' },
+    { id: 'radio', name: 'Áudio & Podcast', count: 0, icon: Radio, color: '#ec4899' },
+    { id: 'ooh', name: 'Digital & OOH', count: 0, icon: Newspaper, color: '#10b981' },
   ];
 
   return (
@@ -143,44 +143,23 @@ export default function AgencyDashboard() {
           <div className={styles.aiRecommendationBox}>
             <div className={styles.aiBadge}>Recomendação Prioritária</div>
             <div className={styles.aiContent}>
-              <div className={styles.aiMatchScore}>95% Match</div>
-              <div>
-                <h3>Projeto: "Caminhos do Sol" - Veículo Alpha</h3>
-                <p>Este projeto tem alta aderência com o briefing "Verão 2026" e atinge 85% do seu público-alvo principal.</p>
-              </div>
-              <button className={styles.aiActionBtn}>Ver Detalhes</button>
+              <p>Nenhuma recomendação disponível para sua agência no momento.</p>
             </div>
           </div>
         </section>
 
         <aside className={styles.sideSection}>
           <div className={styles.sectionHeader}>
-            <h2>Executivo em Destaque</h2>
+            <h2>Destaque da Semana</h2>
           </div>
-          <ProfileCard 
-            name="David Chen"
-            role="VP, Advertising Sales"
-            company="HOAS Media"
-            rating={94}
-            imageUrl="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=400"
-          />
+          <div className={styles.emptyCard}>
+             <Users size={40} opacity={0.2} />
+             <p>Nenhum destaque disponível</p>
+          </div>
           
           <div className={styles.quickTasks}>
             <h3>Ações Pendentes</h3>
-            <div className={styles.taskItem}>
-              <div className={styles.taskIcon}><MessageSquare size={14} /></div>
-              <div className={styles.taskText}>
-                <span>Responder Veículo Beta</span>
-                <p>Sobre PI #2026-042</p>
-              </div>
-            </div>
-            <div className={styles.taskItem}>
-              <div className={styles.taskIcon}><Calendar size={14} /></div>
-              <div className={styles.taskText}>
-                <span>Reunião de Alinhamento</span>
-                <p>Hoje às 16:30</p>
-              </div>
-            </div>
+            <p className={styles.emptyTasks}>Nenhuma ação pendente.</p>
           </div>
         </aside>
       </div>

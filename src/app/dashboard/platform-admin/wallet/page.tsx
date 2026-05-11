@@ -22,7 +22,7 @@ export default function PlatformWallet() {
         <div className={styles.balanceCard}>
           <div className={styles.balanceInfo}>
             <span>Saldo Total em Transações</span>
-            <h2>R$ 842.150,00</h2>
+            <h2>R$ 0,00</h2>
           </div>
           <div className={styles.balanceActions}>
             <button className={styles.withdrawBtn}>Gerar Relatório</button>
@@ -32,16 +32,9 @@ export default function PlatformWallet() {
         <div className={styles.transactions}>
           <h3>Transações Recentes</h3>
           <div className={styles.transactionList}>
-            {[1, 2, 3].map(i => (
-              <div key={i} className={styles.txItem}>
-                <div className={styles.txIcon}><ArrowUpRight size={18} /></div>
-                <div className={styles.txDetails}>
-                  <strong>Assinatura Enterprise - Agência Global</strong>
-                  <span>05 de Maio, 2026</span>
-                </div>
-                <div className={styles.txValue}>+ R$ 5.000,00</div>
-              </div>
-            ))}
+            <div className={styles.emptyTransactions}>
+              <p>Nenhuma transação registrada no sistema.</p>
+            </div>
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ import {
   MessageSquare, Info, Smartphone
 } from 'lucide-react';
 import styles from './page.module.css';
-import { mockVehicles, mockProposals, currentUser, mockOrganizations } from '../../../lib/mockData';
+import { mockVehicles, mockProposals, currentUser, mockOrganizations } from '@/lib/mockData';
 
 export default function AgencyMarketplacePage() {
   const [activeTab, setActiveTab] = useState<'vehicles' | 'clients'>('vehicles');
@@ -65,28 +65,7 @@ export default function AgencyMarketplacePage() {
       return 0;
     });
 
-  const clientNecessities = [
-    {
-      id: 1,
-      client: "Coca-Cola Brasil",
-      title: "Campanha Natal Mágico 2026",
-      budget: "R$ 1M - 2M",
-      description: "Buscamos agência para experiência imersiva de Natal em 15 capitais. Foco em ativações físicas integradas com social media e gamificação em pontos de venda.",
-      match: 98,
-      tags: ["Digital", "OOH"],
-      period: "Novembro - Dezembro 2026"
-    },
-    {
-      id: 2,
-      client: "Samsung Brasil",
-      title: "Lançamento Galaxy S27",
-      budget: "R$ 500k - 1M",
-      description: "Foco em tecnologia e grandes eventos de lançamento simultâneos em São Paulo, Rio de Janeiro e Curitiba. Estratégia multimeios com forte presença em portais tech.",
-      match: 85,
-      tags: ["PR", "Social Media"],
-      period: "Agosto - Setembro 2026"
-    }
-  ];
+  const clientNecessities: any[] = [];
 
   const vehicleCategories = ['All', 'Televisão', 'Rádio', 'Out of Home', 'Digital'];
 
@@ -195,7 +174,7 @@ export default function AgencyMarketplacePage() {
                   <span>Investimento: <strong>{n.budget}</strong></span>
                 </div>
                 <div className={styles.tagCloud}>
-                  {n.tags.map(t => <span key={t} className={styles.tag}>{t}</span>)}
+                  {n.tags.map((t: string) => <span key={t} className={styles.tag}>{t}</span>)}
                 </div>
               </div>
               <div className={styles.cardFooter}>

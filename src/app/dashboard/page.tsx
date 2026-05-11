@@ -53,20 +53,11 @@ export default function DashboardHome() {
     }
   };
 
-  const teamRanking = [
-    { id: 1, name: 'Lucas Wagner', value: 'R$ 320k', progress: 85, avatar: 'LW' },
-    { id: 2, name: 'Ana Oliveira', value: 'R$ 280k', progress: 74, avatar: 'AO' },
-    { id: 3, name: 'Pedro Santos', value: 'R$ 150k', progress: 40, avatar: 'PS' },
-    { id: 4, name: 'Juliana Lima', value: 'R$ 90k', progress: 24, avatar: 'JL' },
-  ];
+  const teamRanking: any[] = [];
 
   const handleUpdateMeeting = (updated: Meeting) => {
     setMeetings(prev => prev.map(m => m.id === updated.id ? updated : m));
     setSelectedMeeting(updated);
-    
-    // Simulação de sincronização com o "backend" (mockMeetings)
-    const idx = mockMeetings.findIndex(m => m.id === updated.id);
-    if (idx !== -1) mockMeetings[idx] = updated;
   };
 
   const toggleMeeting = (e: React.MouseEvent, id: number | string) => {
@@ -85,11 +76,11 @@ export default function DashboardHome() {
     { 
       id: 'pipeline', 
       label: `Pipeline ${viewMode === 'team' ? 'Total' : ''}`, 
-      value: viewMode === 'team' ? 'R$ 8.4M' : 'R$ 2.4M', 
+      value: 'R$ 0', 
       icon: TrendingUp,
       details: [
-        { label: 'Projetos Ativos', value: viewMode === 'team' ? '24' : '6' },
-        { label: 'Conversão Média', value: '18%' }
+        { label: 'Projetos Ativos', value: '0' },
+        { label: 'Conversão Média', value: '0%' }
       ]
     },
     { 
@@ -105,21 +96,21 @@ export default function DashboardHome() {
     { 
       id: 'proposals', 
       label: 'Propostas Enviadas', 
-      value: viewMode === 'team' ? '48' : '12', 
+      value: '0', 
       icon: MessageSquare,
       details: [
-        { label: 'Aguardando', value: '15' },
-        { label: 'Aprovadas', value: '8' }
+        { label: 'Aguardando', value: '0' },
+        { label: 'Aprovadas', value: '0' }
       ]
     },
     { 
       id: 'connections', 
       label: 'Conexões Ativas', 
-      value: viewMode === 'team' ? '124' : '+8', 
+      value: '0', 
       icon: Users,
       details: [
-        { label: 'Novas este mês', value: '+12' },
-        { label: 'Nível Médio', value: 'Sênior' }
+        { label: 'Novas este mês', value: '0' },
+        { label: 'Nível Médio', value: '-' }
       ]
     },
   ];
@@ -128,7 +119,7 @@ export default function DashboardHome() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <h1>Olá, Lucas</h1>
+          <h1>Olá</h1>
           <p>Aqui está o resumo do HOAS para hoje.</p>
         </div>
 
@@ -156,36 +147,34 @@ export default function DashboardHome() {
       {viewMode === 'team' && (
         <div className={styles.goalsRow}>
           <div 
-            className={`${styles.goalCard} ${styles.clickable}`} 
-            onClick={() => { setRankingType('month'); setShowRanking(true); }}
+            className={styles.goalCard} 
           >
             <div className={styles.goalHeader}>
               <Target size={18} className={styles.goalIcon} />
               <span>Meta do Mês (Vendas)</span>
-              <span className={styles.goalProgress}>75%</span>
+              <span className={styles.goalProgress}>0%</span>
             </div>
             <div className={styles.progressBar}>
-              <div className={styles.progressFill} style={{ width: '75%' }} />
+              <div className={styles.progressFill} style={{ width: '0%' }} />
             </div>
             <div className={styles.goalFooter}>
-              <span>R$ 750k de R$ 1.0M</span>
+              <span>R$ 0 de R$ 0</span>
               <div className={styles.rankingHint}>Ver Ranking <ChevronRight size={12} /></div>
             </div>
           </div>
           <div 
-            className={`${styles.goalCard} ${styles.clickable}`}
-            onClick={() => { setRankingType('quarter'); setShowRanking(true); }}
+            className={styles.goalCard}
           >
             <div className={styles.goalHeader}>
               <TrendingUp size={18} className={styles.goalIcon} />
               <span>Meta do Quarter (Q2)</span>
-              <span className={styles.goalProgress}>42%</span>
+              <span className={styles.goalProgress}>0%</span>
             </div>
             <div className={styles.progressBar}>
-              <div className={styles.progressFill} style={{ width: '42%' }} />
+              <div className={styles.progressFill} style={{ width: '0%' }} />
             </div>
             <div className={styles.goalFooter}>
-              <span>R$ 1.26M de R$ 3.0M</span>
+              <span>R$ 0 de R$ 0</span>
               <div className={styles.rankingHint}>Ver Ranking <ChevronRight size={12} /></div>
             </div>
           </div>
@@ -312,9 +301,8 @@ export default function DashboardHome() {
 
           <div className={styles.aiInsightBox}>
             <div className={styles.aiBadge}>Insights da Equipe</div>
-            <h3>Oportunidade na Vertical de Varejo</h3>
-            <p>Identificamos um aumento de 15% nas buscas por campanhas de Black Friday antecipada. Sugerimos abordar a agência **XYZ** para o projeto **Premium Display**.</p>
-            <button className={styles.aiAction}>Ver Estratégia</button>
+            <h3>Inteligência de Mercado</h3>
+            <p>Nenhum insight disponível no momento. As análises de IA aparecerão aqui conforme as atividades da equipe aumentarem.</p>
           </div>
         </section>
 
@@ -322,13 +310,10 @@ export default function DashboardHome() {
           <div className={styles.sectionHeader}>
             <h2>Destaque da Semana</h2>
           </div>
-          <ProfileCard 
-            name="Mariana Silva"
-            role="Diretora de Mídia"
-            company="Agência Global"
-            rating={92}
-            imageUrl="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=300&h=400"
-          />
+          <div className={styles.emptyCard}>
+             <Users size={40} opacity={0.2} />
+             <p>Nenhum destaque disponível</p>
+          </div>
         </aside>
       </div>
     </div>
