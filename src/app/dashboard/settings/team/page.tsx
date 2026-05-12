@@ -127,10 +127,6 @@ export default function TeamPage() {
               <label>Licenças Disponíveis</label>
               <h3>{15 - users.length}</h3>
             </div>
-            <div className={styles.statCard}>
-              <label>Acessos este Mês</label>
-              <h3>142</h3>
-            </div>
           </div>
 
           <section className={styles.tableSection}>
