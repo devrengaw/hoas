@@ -21,6 +21,6 @@
   .pageContent {
     margin-left: 0;
     width: 100%;
-    padding: 5rem 1.5rem 2rem 1.5rem; /* Extra top padding for mobile toggle */
+    padding: 4.5rem 1rem 1.5rem 1rem; /* Slightly less padding to gain space */
   }
 }
