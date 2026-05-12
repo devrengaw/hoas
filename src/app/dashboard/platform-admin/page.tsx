@@ -5,7 +5,8 @@ import {
   ShieldCheck, Search, Users, Building2, Mail, RefreshCw, 
   ChevronRight, ArrowLeftRight, CheckCircle2, Lock, X, 
   AlertCircle, DollarSign, CreditCard, Layout, Globe, MapPin,
-  Trash2, UserPlus, Save, Settings, TrendingUp, Target, BarChart3
+  Trash2, UserPlus, Save, Settings, TrendingUp, Target, BarChart3,
+  Heart
 } from 'lucide-react';
 import styles from './page.module.css';
 import { supabase } from '@/lib/supabase';
@@ -37,11 +38,32 @@ export default function PlatformAdmin() {
   const [successMessage, setSuccessMessage] = useState('');
   const [editingUser, setEditingUser] = useState<any>(null);
   const [activeView, setActiveView] = useState<'OVERVIEW' | 'CONFIG'>('OVERVIEW');
-  const [configSection, setConfigSection] = useState<'ORGS' | 'EMAILS'>('ORGS');
+  const [configSection, setConfigSection] = useState<'ORGS' | 'EMAILS' | 'CONTENT'>('ORGS');
 
   React.useEffect(() => {
     fetchOrgs();
   }, []);
+
+  const [globalEvents, setGlobalEvents] = useState<any[]>([]);
+  const [careCampaigns, setCareCampaigns] = useState<any[]>([]);
+
+  const fetchContent = async () => {
+    try {
+      const { data: events } = await supabase.from('global_events').select('*').order('created_at', { ascending: false });
+      if (events) setGlobalEvents(events);
+      
+      const { data: care } = await supabase.from('global_care_campaigns').select('*').order('created_at', { ascending: false });
+      if (care) setCareCampaigns(care);
+    } catch (error) {
+      console.error('Error fetching content:', error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (configSection === 'CONTENT') {
+      fetchContent();
+    }
+  }, [configSection]);
 
   const fetchOrgs = async () => {
     try {
@@ -157,7 +179,8 @@ export default function PlatformAdmin() {
   };
 
   return (
-    <div className={styles.container}>
+    <>
+      <div className={styles.container}>
       <header className={styles.header}>
         <div>
           <div className={styles.adminBadge}>
@@ -273,6 +296,12 @@ export default function PlatformAdmin() {
             >
               <Mail size={16} /> E-mails & Notificações
             </button>
+            <button 
+              className={`${styles.subTabBtn} ${configSection === 'CONTENT' ? styles.activeSubTab : ''}`}
+              onClick={() => setConfigSection('CONTENT')}
+            >
+              <Layout size={16} /> Gestão de Conteúdo
+            </button>
           </div>
 
           {configSection === 'ORGS' ? (
@@ -326,101 +355,157 @@ export default function PlatformAdmin() {
                 </div>
               </div>
             </>
+          ) : configSection === 'CONTENT' ? (
+            <div className={styles.contentManager}>
+              <div className={styles.contentGrid}>
+                <section className={styles.contentSection}>
+                  <div className={styles.sectionHeader}>
+                    <h3><Globe size={18} /> Eventos do Mercado</h3>
+                    <button className={styles.addBtn} onClick={() => showSuccess('Funcionalidade de adicionar evento em breve!')}>+ Novo Evento</button>
+                  </div>
+                  <div className={styles.contentList}>
+                    {globalEvents.length === 0 ? (
+                      <div className={styles.emptyContent}>Nenhum evento cadastrado.</div>
+                    ) : (
+                      globalEvents.map(event => (
+                        <div key={event.id} className={styles.contentItem}>
+                          <div className={styles.itemInfo}>
+                            <strong>{event.title}</strong>
+                            <span>{event.date} • {event.location}</span>
+                          </div>
+                          <div className={styles.itemActions}>
+                            <button><Settings size={14} /></button>
+                            <button className={styles.deleteBtn}><Trash2 size={14} /></button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </section>
+
+                <section className={styles.contentSection}>
+                  <div className={styles.sectionHeader}>
+                    <h3><Heart size={18} /> HOAS Care (Campanhas)</h3>
+                    <button className={styles.addBtn} onClick={() => showSuccess('Funcionalidade de adicionar campanha em breve!')}>+ Nova Campanha</button>
+                  </div>
+                  <div className={styles.contentList}>
+                    {careCampaigns.length === 0 ? (
+                      <div className={styles.emptyContent}>Nenhuma campanha cadastrada.</div>
+                    ) : (
+                      careCampaigns.map(camp => (
+                        <div key={camp.id} className={styles.contentItem}>
+                          <div className={styles.itemInfo}>
+                            <strong>{camp.title}</strong>
+                            <span>{camp.description.substring(0, 40)}...</span>
+                          </div>
+                          <div className={styles.itemActions}>
+                            <button><Settings size={14} /></button>
+                            <button className={styles.deleteBtn}><Trash2 size={14} /></button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </section>
+              </div>
+            </div>
           ) : (
             <div className={styles.emailManager}>
-          <div className={styles.emailSidebar}>
-            <div className={styles.templateList}>
-              <h3>Templates Disponíveis</h3>
-              <button 
-                className={`${styles.templateItem} ${selectedTemplate === 'welcome' ? styles.activeTemplate : ''}`}
-                onClick={() => setSelectedTemplate('welcome')}
-              >
-                <Mail size={16} />
-                <div>
-                  <strong>Boas-vindas (Novo Cadastro)</strong>
-                  <span>Enviado após o primeiro acesso</span>
+              <div className={styles.emailSidebar}>
+                <div className={styles.templateList}>
+                  <h3>Templates Disponíveis</h3>
+                  <button 
+                    className={`${styles.templateItem} ${selectedTemplate === 'welcome' ? styles.activeTemplate : ''}`}
+                    onClick={() => setSelectedTemplate('welcome')}
+                  >
+                    <Mail size={16} />
+                    <div>
+                      <strong>Boas-vindas (Novo Cadastro)</strong>
+                      <span>Enviado após o primeiro acesso</span>
+                    </div>
+                  </button>
+                  <button 
+                    className={`${styles.templateItem} ${selectedTemplate === 'passwordChange' ? styles.activeTemplate : ''}`}
+                    onClick={() => setSelectedTemplate('passwordChange')}
+                  >
+                    <Lock size={16} />
+                    <div>
+                      <strong>Alteração de Senha</strong>
+                      <span>Enviado por segurança</span>
+                    </div>
+                  </button>
                 </div>
-              </button>
-              <button 
-                className={`${styles.templateItem} ${selectedTemplate === 'passwordChange' ? styles.activeTemplate : ''}`}
-                onClick={() => setSelectedTemplate('passwordChange')}
-              >
-                <Lock size={16} />
-                <div>
-                  <strong>Alteração de Senha</strong>
-                  <span>Enviado por segurança</span>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.emailEditor}>
-            <div className={styles.editorHeader}>
-              <h2>Editar Template: {selectedTemplate === 'welcome' ? 'Boas-vindas' : 'Alteração de Senha'}</h2>
-              <button className={styles.saveTemplateBtn} onClick={() => showSuccess('Template salvo com sucesso!')}>
-                <Save size={18} /> Salvar Template
-              </button>
-            </div>
-
-            <div className={styles.editorFields}>
-              <div className={styles.inputGroup}>
-                <label>Assunto do E-mail</label>
-                <input 
-                  type="text" 
-                  value={emailTemplates[selectedTemplate].subject}
-                  onChange={(e) => {
-                    const newTemplates = { ...emailTemplates };
-                    newTemplates[selectedTemplate].subject = e.target.value;
-                    setEmailTemplates(newTemplates);
-                  }}
-                  className={styles.editorInput}
-                />
               </div>
 
-              <div className={styles.editorContainer}>
-                <div className={styles.textEditor}>
-                  <label>Conteúdo (Markdown/HTML)</label>
-                  <textarea 
-                    value={emailTemplates[selectedTemplate].body}
-                    onChange={(e) => {
-                      const newTemplates = { ...emailTemplates };
-                      newTemplates[selectedTemplate].body = e.target.value;
-                      setEmailTemplates(newTemplates);
-                    }}
-                    placeholder="Escreva seu e-mail aqui..."
-                  />
-                  <div className={styles.tagHint}>
-                    Variáveis: <code>{"{{name}}"}</code>, <code>{"{{email}}"}</code>, <code>{"{{link}}"}</code>
-                  </div>
+              <div className={styles.emailEditor}>
+                <div className={styles.editorHeader}>
+                  <h2>Editar Template: {selectedTemplate === 'welcome' ? 'Boas-vindas' : 'Alteração de Senha'}</h2>
+                  <button className={styles.saveTemplateBtn} onClick={() => showSuccess('Template salvo com sucesso!')}>
+                    <Save size={18} /> Salvar Template
+                  </button>
                 </div>
 
-                <div className={styles.previewPanel}>
-                  <label>Visualização em Tempo Real</label>
-                  <div className={styles.emailPreview}>
-                    <div className={styles.previewContent}>
-                      <div className={styles.previewHeader}>
-                        <img src="/identidade visual/hoas_png.png" alt="HOAS" />
+                <div className={styles.editorFields}>
+                  <div className={styles.inputGroup}>
+                    <label>Assunto do E-mail</label>
+                    <input 
+                      type="text" 
+                      value={emailTemplates[selectedTemplate].subject}
+                      onChange={(e) => {
+                        const newTemplates = { ...emailTemplates };
+                        newTemplates[selectedTemplate].subject = e.target.value;
+                        setEmailTemplates(newTemplates);
+                      }}
+                      className={styles.editorInput}
+                    />
+                  </div>
+
+                  <div className={styles.editorContainer}>
+                    <div className={styles.textEditor}>
+                      <label>Conteúdo (Markdown/HTML)</label>
+                      <textarea 
+                        value={emailTemplates[selectedTemplate].body}
+                        onChange={(e) => {
+                          const newTemplates = { ...emailTemplates };
+                          newTemplates[selectedTemplate].body = e.target.value;
+                          setEmailTemplates(newTemplates);
+                        }}
+                        placeholder="Escreva seu e-mail aqui..."
+                      />
+                      <div className={styles.tagHint}>
+                        Variáveis: <code>{"{{name}}"}</code>, <code>{"{{email}}"}</code>, <code>{"{{link}}"}</code>
                       </div>
-                      <div className={styles.previewBody}>
-                        <h3>{emailTemplates[selectedTemplate].subject}</h3>
-                        <p>{emailTemplates[selectedTemplate].body.replace('{{name}}', 'Lucas Wagner')}</p>
-                        <div className={styles.previewCta}>
-                          Acessar Plataforma
+                    </div>
+
+                    <div className={styles.previewPanel}>
+                      <label>Visualização em Tempo Real</label>
+                      <div className={styles.emailPreview}>
+                        <div className={styles.previewContent}>
+                          <div className={styles.previewHeader}>
+                            <img src="/identidade visual/hoas_png.png" alt="HOAS" />
+                          </div>
+                          <div className={styles.previewBody}>
+                            <h3>{emailTemplates[selectedTemplate].subject}</h3>
+                            <p>{emailTemplates[selectedTemplate].body.replace('{{name}}', 'Lucas Wagner')}</p>
+                            <div className={styles.previewCta}>
+                              Acessar Plataforma
+                            </div>
+                          </div>
+                          <div className={styles.previewFooter}>
+                            © 2026 HOAS Ecosystem. Todos os direitos reservados.
+                          </div>
                         </div>
-                      </div>
-                      <div className={styles.previewFooter}>
-                        © 2026 HOAS Ecosystem. Todos os direitos reservados.
                       </div>
                     </div>
                   </div>
                 </div>
-                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    )}
+          )}
+        </div>
+      )}
+    </div>
+
 
       {/* Organization Details Drawer */}
       {selectedOrg && (
@@ -586,6 +671,6 @@ export default function PlatformAdmin() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

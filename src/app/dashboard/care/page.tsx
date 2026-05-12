@@ -1,8 +1,13 @@
+'use client';
+
 import React from 'react';
 import { Heart, Globe, Users, HandHelping, Award } from 'lucide-react';
 import styles from './page.module.css';
+import { useMVPData } from '@/hooks/useMVPData';
 
 export default function CarePage() {
+  const { data: campaigns, loading } = useMVPData('global_care_campaigns');
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -32,7 +37,7 @@ export default function CarePage() {
           <Award className={styles.statIcon} />
           <div className={styles.statInfo}>
             <span className={styles.statLabel}>Projetos Sociais</span>
-            <span className={styles.statValue}>42</span>
+            <span className={styles.statValue}>{campaigns?.length || 0}</span>
           </div>
         </div>
       </div>
@@ -42,18 +47,32 @@ export default function CarePage() {
           <div className={styles.sectionHeader}>
             <h2>Campanhas Ativas</h2>
           </div>
-          <div className={styles.campaignCard}>
-            <div className={styles.campaignProgress}>
-              <div className={styles.progressBar} style={{ width: '75%' }} />
-            </div>
-            <div className={styles.campaignInfo}>
-              <h3>Natal Solidário do Mercado</h3>
-              <p>Meta: Arrecadar 5.000 kits de alimentação para comunidades carentes.</p>
-              <div className={styles.campaignFooter}>
-                <span><strong>75%</strong> Arrecadado</span>
-                <button className={styles.donateBtn}>Doar Agora</button>
-              </div>
-            </div>
+          
+          <div className={styles.campaignList}>
+            {loading ? (
+              <div className={styles.loading}>Carregando campanhas...</div>
+            ) : !campaigns || campaigns.length === 0 ? (
+              <div className={styles.empty}>Nenhuma campanha ativa no momento.</div>
+            ) : (
+              campaigns.map((camp: any) => {
+                const progress = camp.goal_value ? Math.round((camp.current_value / camp.goal_value) * 100) : 0;
+                return (
+                  <div key={camp.id} className={styles.campaignCard}>
+                    <div className={styles.campaignProgress}>
+                      <div className={styles.progressBar} style={{ width: `${progress}%` }} />
+                    </div>
+                    <div className={styles.campaignInfo}>
+                      <h3>{camp.title}</h3>
+                      <p>{camp.description}</p>
+                      <div className={styles.campaignFooter}>
+                        <span><strong>{progress}%</strong> Arrecadado</span>
+                        <button className={styles.donateBtn}>Doar Agora</button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </section>
 

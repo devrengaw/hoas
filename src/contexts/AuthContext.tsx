@@ -24,13 +24,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*, companies(*)')
-      .eq('id', userId)
-      .single();
-    
-    if (!error) setProfile(data);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*, companies(*)')
+        .eq('id', userId)
+        .single();
+      
+      if (!error && data) {
+        setProfile(data);
+      } else {
+        // Fallback to auth metadata if profile record doesn't exist yet
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.user_metadata) {
+          setProfile({
+            id: userId,
+            full_name: user.user_metadata.full_name || 'Usuário',
+            role: user.user_metadata.role || 'Visitante',
+            company_name: user.user_metadata.company_name
+          });
+        }
+      }
+    } catch (err) {
+      console.error('AuthContext: Profile fetch error', err);
+    }
   };
 
   useEffect(() => {

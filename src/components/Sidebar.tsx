@@ -97,7 +97,12 @@ export default function Sidebar() {
           <div className={styles.userAvatar}>{profile?.full_name?.[0] || 'U'}</div>
           <div className={styles.userInfo}>
             <span className={styles.userName}>{profile?.full_name || 'Usuário'}</span>
-            <span className={styles.userRole}>{profile?.role || 'Visitante'}</span>
+            <span className={styles.userRole}>
+              {profile?.role === 'vehicle' ? 'Veículo' : 
+               profile?.role === 'agency' ? 'Agência' : 
+               profile?.role === 'client' ? 'Anunciante' : 
+               profile?.role === 'platform-admin' ? 'Administrador' : 'Visitante'}
+            </span>
           </div>
         </div>
 
