@@ -85,13 +85,13 @@ export default function PlatformAdmin() {
   const fetchOrgs = async () => {
     try {
       setIsLoading(true);
-      const { data: companies, error: compError } = await supabase
-        .from('companies')
-        .select('*, profiles(*)');
       
-      if (compError) throw compError;
+      const response = await fetch('/api/admin/organizations');
+      const companies = await response.json();
+      
+      if (companies.error) throw new Error(companies.error);
 
-      const mapped: Organization[] = companies.map(c => ({
+      const mapped: Organization[] = companies.map((c: any) => ({
         id: c.id,
         name: c.name,
         type: c.type?.toUpperCase() || 'AGENCY',
