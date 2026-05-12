@@ -82,7 +82,8 @@ export default function RegisterPage() {
             {
               name: formData.company,
               type: role,
-              is_public: false // Start as private until onboarding completes
+              is_public: false, // Start as private until onboarding completes
+              is_test: false // Explicitly production
             }
           ])
           .select()
@@ -101,7 +102,8 @@ export default function RegisterPage() {
             position: role === 'agency' ? formData.rolePosition : null,
             objective: role === 'client' ? formData.objective : null,
             onboarding_completed: false,
-            is_master: true
+            is_master: true,
+            is_test: false // Explicitly production
           }
         ]);
         
