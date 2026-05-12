@@ -44,19 +44,30 @@ export default function MarketplacePage() {
     try {
       setIsLoading(true);
       
-      // Fetch Projects (Opportunities)
+      // Get current profile test status
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_test')
+        .eq('id', user?.id)
+        .single();
+      
+      const isTestUser = profile?.is_test || false;
+
+      // Fetch Projects (Opportunities) - filter by is_test
       const { data: projects, error: projError } = await supabase
         .from('projects')
-        .select('*, companies(name)');
+        .select('*, companies!inner(name, is_test)')
+        .eq('companies.is_test', isTestUser);
       
       if (projError) throw projError;
 
-      const mappedProposals: Proposal[] = projects.map(p => ({
+      const mappedProposals: Proposal[] = (projects || []).map(p => ({
         id: p.id,
         title: p.title,
-        agency: p.companies?.name || 'Agência Parceira',
+        agency: (p.companies as any)?.name || 'Agência Parceira',
         project: p.title,
-        company: p.companies?.name || 'Empresa',
+        company: (p.companies as any)?.name || 'Empresa',
         value: 'R$ ' + (p.budget_value?.toLocaleString('pt-BR') || 'Sob consulta'),
         budget: 'R$ ' + (p.budget_value?.toLocaleString('pt-BR') || 'Sob consulta'),
         status: p.status,
@@ -66,12 +77,13 @@ export default function MarketplacePage() {
         hasConnection: true
       }));
 
-      // Fetch Vehicles (Directory) - only public ones
+      // Fetch Vehicles (Directory) - filter by is_test and is_public
       const { data: vehiclesData, error: vehError } = await supabase
         .from('companies')
         .select('*')
         .eq('type', 'vehicle')
-        .eq('is_public', true);
+        .eq('is_public', true)
+        .eq('is_test', isTestUser);
       
       if (vehError) throw vehError;
 

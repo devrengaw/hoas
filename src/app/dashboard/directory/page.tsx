@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, Filter, Users, CheckCircle, X, Mail, MessageSquare, 
   Phone, Globe, MapPin, Award, TrendingUp, Calendar, ArrowRight,
@@ -9,19 +9,44 @@ import {
 import Link from 'next/link';
 import styles from './page.module.css';
 import { useMVPData } from '@/hooks/useMVPData';
+import { supabase } from '@/lib/supabase';
 
 export default function MediaDirectory() {
+  const [profiles, setProfiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPerson, setSelectedPerson] = useState<any>(null);
 
-  const { data: profiles, loading } = useMVPData('profiles');
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('is_test')
+        .eq('id', user?.id)
+        .single();
+      
+      const isTestUser = currentProfile?.is_test || false;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('*, companies(name)')
+        .eq('is_test', isTestUser);
+      
+      if (data) setProfiles(data);
+      setLoading(false);
+    };
+
+    fetchProfiles();
+  }, []);
 
   const mediaPros = profiles?.map((p: any) => ({
     id: p.id,
     name: p.full_name || 'Usuário HOAS',
     role: p.position || (p.role === 'vehicle' ? 'Veículo' : p.role === 'agency' ? 'Agência' : 'Anunciante'),
-    company: p.company_name || 'Ecosystem Member',
+    company: p.companies?.name || 'Ecosystem Member',
     rating: 90,
     connected: false,
     category: p.role === 'vehicle' ? 'Mídia' : 'Planejamento',
