@@ -75,31 +75,41 @@ export default function RegisterPage() {
       if (signUpError) throw signUpError;
 
       if (data.user) {
-        // Create profile entry
+        // 1. Create Company first
+        const { data: companyData, error: companyError } = await supabase
+          .from('companies')
+          .insert([
+            {
+              name: formData.company,
+              type: role,
+              is_public: false // Start as private until onboarding completes
+            }
+          ])
+          .select()
+          .single();
+
+        if (companyError) throw companyError;
+
+        // 2. Create profile entry with company reference
         const { error: profileError } = await supabase.from('profiles').insert([
           {
             id: data.user.id,
+            company_id: companyData.id,
             full_name: formData.name,
-            company_name: formData.company,
-            cnpj: formData.cnpj,
             role: role,
             media_type: role === 'vehicle' ? formData.mediaType : null,
             position: role === 'agency' ? formData.rolePosition : null,
-            objective: role === 'client' ? formData.objective : null
+            objective: role === 'client' ? formData.objective : null,
+            onboarding_completed: false,
+            is_master: true
           }
         ]);
         
-        if (profileError) console.error('Error creating profile:', profileError);
+        if (profileError) throw profileError;
       }
       
-      // Redirect based on role
-      if (role === 'agency') {
-        router.push('/dashboard/agency');
-      } else if (role === 'client') {
-        router.push('/dashboard/client');
-      } else {
-        router.push('/dashboard');
-      }
+      // Always redirect to onboarding for new registrations
+      router.push('/onboarding');
     } catch (err: any) {
       setError(err.message || 'Erro ao realizar cadastro.');
     } finally {

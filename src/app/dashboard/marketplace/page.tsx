@@ -66,11 +66,12 @@ export default function MarketplacePage() {
         hasConnection: true
       }));
 
-      // Fetch Vehicles (Directory)
+      // Fetch Vehicles (Directory) - only public ones
       const { data: vehiclesData, error: vehError } = await supabase
         .from('companies')
         .select('*')
-        .eq('type', 'vehicle');
+        .eq('type', 'vehicle')
+        .eq('is_public', true);
       
       if (vehError) throw vehError;
 

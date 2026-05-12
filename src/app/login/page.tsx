@@ -31,15 +31,24 @@ export default function Home() {
         return;
       }
 
-      // Fetch role from metadata
+      // Fetch profile for onboarding status
       const user = data.user;
-      const role = user?.user_metadata?.role;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, onboarding_completed, is_master')
+        .eq('id', user?.id)
+        .single();
+
+      const role = profile?.role || user?.user_metadata?.role;
       const lowerEmail = email.toLowerCase();
       
       let path = '/dashboard';
       
       if (lowerEmail === 'contato@rengawdev.com') {
         path = '/dashboard/platform-admin';
+      } else if (profile && !profile.onboarding_completed && profile.is_master) {
+        // Master users must complete onboarding
+        path = '/onboarding';
       } else if (role === 'agency') {
         path = '/dashboard/agency';
       } else if (role === 'client') {
