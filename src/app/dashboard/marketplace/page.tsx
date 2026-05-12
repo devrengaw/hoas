@@ -140,12 +140,40 @@ export default function MarketplacePage() {
     setIsSuccessModalOpen(true);
   };
 
-  const handleAction = (action: string) => {
+  const handleAction = async (action: string, data?: any) => {
     if (action === 'download') showSuccess('Download do material iniciado com sucesso!');
     if (action === 'contact') showSuccess('Solicitação de contato enviada! Em breve a equipe retornará.');
     if (action === 'proposal') {
       setIsBriefingModalOpen(false);
       showSuccess('Proposta enviada para análise da agência!');
+    }
+    if (action === 'connect' && data) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', user?.id).single();
+        
+        if (!profile?.company_id) return;
+
+        const { error } = await supabase
+          .from('company_connections')
+          .insert({
+            requester_id: profile.company_id,
+            receiver_id: data.id,
+            status: 'pending'
+          });
+
+        if (error) {
+          if (error.code === '23505') {
+            showSuccess('Você já enviou uma solicitação para este veículo.');
+          } else {
+            throw error;
+          }
+        } else {
+          showSuccess('Solicitação de conexão enviada com sucesso!');
+        }
+      } catch (e) {
+        console.error('Error connecting:', e);
+      }
     }
   };
 
@@ -264,7 +292,7 @@ export default function MarketplacePage() {
                 <span className={styles.category}>{v.category}</span>
                 <button 
                   className={v.connected ? styles.viewProfileBtn : styles.connectBtn}
-                  onClick={() => handleOpenProfile(v)}
+                  onClick={() => v.connected ? handleOpenProfile(v) : handleAction('connect', v)}
                 >
                   {v.connected ? 'Ver Perfil' : 'Solicitar Conexão'}
                 </button>
