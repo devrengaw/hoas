@@ -1271,6 +1271,12 @@
   .drawerTitle h2 {
     font-size: 1.75rem;
   }
+
+  .blockBtn, .deleteOrgBtn, .transferMasterBtn, .saveBtn {
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+    border-radius: 10px;
+  }
 }
 
 @media (max-width: 480px) {

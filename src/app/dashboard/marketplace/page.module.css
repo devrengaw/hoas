@@ -704,4 +704,10 @@
   .standardHeader {
     padding: 0 1.5rem;
   }
+
+  .primaryBtn, .proposalBtn, .connectBtn, .primaryContactBtn, .downloadBtnFull {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    border-radius: 10px;
+  }
 }

@@ -80,6 +80,10 @@ export default function Home() {
       <LoginDynamicBackground />
 
       <div className={styles.hero}>
+        <div className={styles.logoWrapper}>
+          <img src="/identidade visual/hoas_png.png" alt="HOAS Logo" className={styles.mainLogo} />
+        </div>
+        
         <div className={styles.actions + " animate-fade-in"}>
           <form className={styles.loginForm} onSubmit={handleLogin}>
             <div className={styles.field}>

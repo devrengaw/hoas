@@ -11,7 +11,7 @@
 .backgroundImage {
   position: absolute;
   inset: 0;
-  background-image: url('/identidade visual/Background Login.png');
+  background-image: url('/identidade%20visual/Background%20Login.png');
   background-size: cover;
   background-position: center;
   opacity: 0.8;
