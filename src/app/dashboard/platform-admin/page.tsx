@@ -272,14 +272,14 @@ export default function PlatformAdmin() {
               <Users size={20} />
               <div>
                 <label>Total de Usuários</label>
-                <strong>0</strong>
+                <strong>{allOrgs.reduce((acc, curr) => acc + curr.users.length, 0)}</strong>
               </div>
             </div>
             <div className={styles.statMiniCard}>
               <Building2 size={20} />
               <div>
                 <label>Organizações</label>
-                <strong>0</strong>
+                <strong>{allOrgs.length}</strong>
               </div>
             </div>
             <div className={styles.statMiniCard}>
@@ -293,7 +293,7 @@ export default function PlatformAdmin() {
               <ShieldCheck size={20} />
               <div>
                 <label>Taxa de Retenção</label>
-                <strong>0%</strong>
+                <strong>100%</strong>
               </div>
             </div>
           </div>
