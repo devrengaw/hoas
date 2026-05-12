@@ -8,70 +8,29 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
+import { useMVPData } from '@/hooks/useMVPData';
 
 export default function MediaDirectory() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPerson, setSelectedPerson] = useState<any>(null);
 
-  const mediaPros = [
-    { 
-      id: 1, 
-      name: "Mariana Silva", 
-      role: "Diretora de Mídia", 
-      company: "Agência Global", 
-      rating: 92, 
-      connected: true, 
-      category: "Diretoria",
-      email: "mariana@global.com.br",
-      phone: "(11) 98888-7777",
-      bio: "Especialista em negociações estratégicas de grandes volumes OOH e Digital.",
-      specialties: ["OOH", "Digital", "TV"],
-      performance: 98
-    },
-    { 
-      id: 2, 
-      name: "Pedro Santos", 
-      role: "Planejamento", 
-      company: "XYZ Media", 
-      rating: 88, 
-      connected: false, 
-      category: "Planejamento",
-      email: "pedro@xyzmedia.com",
-      phone: "(11) 97777-6666",
-      bio: "Focado em análise de dados e performance para campanhas de varejo.",
-      specialties: ["Retail", "Data Analytics"],
-      performance: 85
-    },
-    { 
-      id: 3, 
-      name: "Bia Oliveira", 
-      role: "Mídia Online", 
-      company: "Creative Co", 
-      rating: 91, 
-      connected: true, 
-      category: "Mídia",
-      email: "bia@creative.co",
-      phone: "(11) 96666-5555",
-      bio: "Expert em mídias sociais e parcerias com influenciadores.",
-      specialties: ["Social Ads", "Influence"],
-      performance: 94
-    },
-    { 
-      id: 4, 
-      name: "Roberto Lima", 
-      role: "Sócio Diretor", 
-      company: "Impact Agency", 
-      rating: 95, 
-      connected: false, 
-      category: "Diretoria",
-      email: "roberto@impact.com",
-      phone: "(11) 95555-4444",
-      bio: "Liderança executiva com mais de 20 anos no mercado publicitário.",
-      specialties: ["Business Strategy", "Networking"],
-      performance: 99
-    },
-  ];
+  const { data: profiles, loading } = useMVPData('profiles');
+
+  const mediaPros = profiles?.map((p: any) => ({
+    id: p.id,
+    name: p.full_name || 'Usuário HOAS',
+    role: p.position || (p.role === 'vehicle' ? 'Veículo' : p.role === 'agency' ? 'Agência' : 'Anunciante'),
+    company: p.company_name || 'Ecosystem Member',
+    rating: 90,
+    connected: false,
+    category: p.role === 'vehicle' ? 'Mídia' : 'Planejamento',
+    email: p.email,
+    phone: p.phone || 'N/A',
+    bio: p.bio || 'Membro do ecossistema HOAS.',
+    specialties: p.specialties || [],
+    performance: 90
+  })) || [];
 
   const filteredPros = mediaPros
     .filter(p => {
@@ -79,11 +38,6 @@ export default function MediaDirectory() {
                             p.company.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
       return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (a.connected && !b.connected) return -1;
-      if (!a.connected && b.connected) return 1;
-      return 0;
     });
 
   const categories = ['All', 'Diretoria', 'Planejamento', 'Mídia'];

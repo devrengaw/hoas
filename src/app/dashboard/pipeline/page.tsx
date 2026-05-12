@@ -8,17 +8,18 @@ import {
 } from 'lucide-react';
 import styles from './page.module.css';
 import { mockProposals, Proposal } from '@/lib/mockData';
+import { useMVPData } from '@/hooks/useMVPData';
 
 interface Opportunity {
   id: string;
   title: string;
-  client: string;
-  value: string;
+  client_name: string;
+  value: string | number;
   stage: string;
   urgency: 'low' | 'normal' | 'high';
-  proposalId?: string | number;
-  contactName?: string;
-  createdAt: string;
+  proposal_id?: string;
+  contact_name?: string;
+  created_at: string;
 }
 
 const COLUMNS = [
@@ -28,53 +29,17 @@ const COLUMNS = [
   { id: 'closed', title: 'Fechado / Ganho', color: '#10b981' },
 ];
 
-const INITIAL_OPPORTUNITIES: Opportunity[] = [
-  { 
-    id: '1', 
-    title: 'Campanha Verão 2026', 
-    client: 'Agência Global', 
-    value: 'R$ 450.000', 
-    stage: 'negotiation', 
-    urgency: 'high',
-    proposalId: 1,
-    contactName: 'Mariana Silva',
-    createdAt: '2026-04-20'
-  },
-  { 
-    id: '2', 
-    title: 'Lançamento Tech X', 
-    client: 'Alpha Tech', 
-    value: 'R$ 120.000', 
-    stage: 'lead', 
-    urgency: 'normal',
-    createdAt: '2026-05-01'
-  },
-  { 
-    id: '3', 
-    title: 'Black Friday Varejo', 
-    client: 'Big Retail', 
-    value: 'R$ 800.000', 
-    stage: 'briefing', 
-    urgency: 'high',
-    proposalId: 2,
-    contactName: 'Pedro Santos',
-    createdAt: '2026-04-28'
-  },
-  { 
-    id: '4', 
-    title: 'Brand Awareness Q3', 
-    client: 'Eco Style', 
-    value: 'R$ 60.000', 
-    stage: 'closed', 
-    urgency: 'normal',
-    createdAt: '2026-03-15'
-  },
-];
-
 export default function PipelinePage() {
-  const [opportunities, setOpportunities] = useState<Opportunity[]>(INITIAL_OPPORTUNITIES);
+  const { data: realOpps, loading } = useMVPData('pipeline_deals');
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (realOpps) {
+      setOpportunities(realOpps as any);
+    }
+  }, [realOpps]);
   const [draggedOppId, setDraggedOppId] = useState<string | null>(null);
   
   // Modal State
@@ -126,13 +91,13 @@ export default function PipelinePage() {
     const opportunity: Opportunity = {
       id: Date.now().toString(),
       title: newOpp.title,
-      client: proposal ? proposal.agency : newOpp.client,
+      client_name: proposal ? proposal.agency : newOpp.client,
       value: proposal ? proposal.budget : newOpp.value,
       stage: newOpp.stage,
       urgency: newOpp.urgency,
-      proposalId: proposal ? proposal.id : undefined,
-      contactName: proposal ? proposal.contact : undefined,
-      createdAt: new Date().toISOString().split('T')[0]
+      proposal_id: proposal ? String(proposal.id) : undefined,
+      contact_name: proposal ? proposal.contact : undefined,
+      created_at: new Date().toISOString().split('T')[0]
     };
 
     setOpportunities([opportunity, ...opportunities]);
@@ -145,8 +110,8 @@ export default function PipelinePage() {
   };
 
   const totalValue = opportunities.reduce((acc, opp) => {
-    const val = parseInt(opp.value.replace(/[^0-9]/g, '')) || 0;
-    return acc + val;
+    const val = typeof opp.value === 'string' ? parseInt(opp.value.replace(/[^0-9]/g, '')) : (opp.value || 0);
+    return acc + Number(val);
   }, 0);
 
   const formatCurrency = (val: number) => {
@@ -155,7 +120,7 @@ export default function PipelinePage() {
 
   const filteredOpportunities = opportunities.filter(opp => 
     opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    opp.client.toLowerCase().includes(searchTerm.toLowerCase())
+    opp.client_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -251,21 +216,21 @@ export default function PipelinePage() {
                     
                     <div className={styles.cardClient}>
                       <User size={14} />
-                      <span>{opp.client}</span>
+                      <span>{opp.client_name}</span>
                     </div>
 
-                    {opp.proposalId && (
+                    {opp.proposal_id && (
                       <div className={styles.linkedProposal}>
                         <LinkIcon size={12} />
-                        <span>Proposta #{opp.proposalId}</span>
-                        {opp.contactName && <span className={styles.contactName}> • {opp.contactName}</span>}
+                        <span>Proposta #{opp.proposal_id}</span>
+                        {opp.contact_name && <span className={styles.contactName}> • {opp.contact_name}</span>}
                       </div>
                     )}
 
                     <div className={styles.cardFooter}>
                       <div className={styles.value}>
                         <DollarSign size={14} />
-                        <span>{opp.value}</span>
+                        <span>{formatCurrency(Number(opp.value))}</span>
                       </div>
                       <div className={styles.prediction}>
                         <Clock size={12} />

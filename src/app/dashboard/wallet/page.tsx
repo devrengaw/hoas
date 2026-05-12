@@ -18,14 +18,18 @@ import {
   AlertCircle
 } from 'lucide-react';
 import styles from './page.module.css';
+import { useMVPData } from '@/hooks/useMVPData';
 
 export default function FinancialDashboard() {
-  const transactions = [
-    { id: 1, type: 'in', amount: 'R$ 45.000,00', client: 'Coca-Cola', campaign: 'Natal 2026', status: 'Recebido', date: '24/04/2026' },
-    { id: 2, type: 'out', amount: 'R$ 12.400,00', client: 'Google Ads', campaign: 'Performance Q2', status: 'Processando', date: '23/04/2026' },
-    { id: 3, type: 'in', amount: 'R$ 18.000,00', client: 'Samsung', campaign: 'Galaxy S27', status: 'Pendente', date: '20/04/2026' },
-    { id: 4, type: 'out', amount: 'R$ 5.000,00', client: 'Meta Ads', campaign: 'Social Media', status: 'Recebido', date: '18/04/2026' },
-  ];
+  const { data: transactions, loading } = useMVPData('transactions');
+
+  const totalIn = transactions?.filter((t: any) => t.type === 'in').reduce((acc: number, t: any) => acc + Number(t.amount), 0) || 0;
+  const totalOut = transactions?.filter((t: any) => t.type === 'out').reduce((acc: number, t: any) => acc + Number(t.amount), 0) || 0;
+  const balance = totalIn - totalOut;
+
+  const formatBRL = (val: number) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  };
 
   return (
     <div className={styles.container}>
@@ -46,16 +50,16 @@ export default function FinancialDashboard() {
             <div className={styles.statIcon}><Wallet size={20} /></div>
             <span className={styles.trend + " " + styles.up}><TrendingUp size={12} /> 12%</span>
           </div>
-          <div className={styles.statValue}>R$ 284.500,00</div>
+          <div className={styles.statValue}>{formatBRL(balance)}</div>
           <label>Saldo Total em Carteira</label>
         </div>
 
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={styles.statIcon}><ArrowUpRight size={20} /></div>
-            <span className={styles.trend + " " + styles.up}><TrendingUp size={12} /> 8%</span>
+            <span className={styles.trend + " " + styles.up}><TrendingUp size={12} /> 12%</span>
           </div>
-          <div className={styles.statValue}>R$ 1.420.000,00</div>
+          <div className={styles.statValue}>{formatBRL(totalIn)}</div>
           <label>Receita Bruta (Mês)</label>
         </div>
 
@@ -64,7 +68,7 @@ export default function FinancialDashboard() {
             <div className={styles.statIcon}><ArrowDownRight size={20} /></div>
             <span className={styles.trend + " " + styles.down}><TrendingDown size={12} /> 3%</span>
           </div>
-          <div className={styles.statValue}>R$ 940.000,00</div>
+          <div className={styles.statValue}>{formatBRL(totalOut)}</div>
           <label>Investimento em Mídia</label>
         </div>
       </div>
@@ -94,28 +98,34 @@ export default function FinancialDashboard() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((t) => (
-                <tr key={t.id}>
-                  <td>{t.date}</td>
-                  <td>
-                    <div className={styles.entityInfo}>
-                      <div className={t.type === 'in' ? styles.inIcon : styles.outIcon}>
-                        {t.type === 'in' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+              {loading ? (
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>Carregando transações...</td></tr>
+              ) : !transactions || transactions.length === 0 ? (
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>Nenhuma transação encontrada.</td></tr>
+              ) : (
+                transactions.map((t: any) => (
+                  <tr key={t.id}>
+                    <td>{new Date(t.transaction_date).toLocaleDateString('pt-BR')}</td>
+                    <td>
+                      <div className={styles.entityInfo}>
+                        <div className={t.type === 'in' ? styles.inIcon : styles.outIcon}>
+                          {t.type === 'in' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                        </div>
+                        <span>{t.entity_name}</span>
                       </div>
-                      <span>{t.client}</span>
-                    </div>
-                  </td>
-                  <td>{t.campaign}</td>
-                  <td className={t.type === 'in' ? styles.inAmount : styles.outAmount}>{t.amount}</td>
-                  <td>
-                    <div className={`${styles.status} ${styles[t.status.toLowerCase()]}`}>
-                      {t.status === 'Recebido' ? <CheckCircle2 size={12} /> : t.status === 'Processando' ? <Clock size={12} /> : <AlertCircle size={12} />}
-                      {t.status}
-                    </div>
-                  </td>
-                  <td><button className={styles.moreBtn}>Detalhes</button></td>
-                </tr>
-              ))}
+                    </td>
+                    <td>{t.campaign_name || '-'}</td>
+                    <td className={t.type === 'in' ? styles.inAmount : styles.outAmount}>{formatBRL(Number(t.amount))}</td>
+                    <td>
+                      <div className={`${styles.status} ${styles[(t.status || 'Pendente').toLowerCase()]}`}>
+                        {t.status === 'Recebido' ? <CheckCircle2 size={12} /> : t.status === 'Processando' ? <Clock size={12} /> : <AlertCircle size={12} />}
+                        {t.status || 'Pendente'}
+                      </div>
+                    </td>
+                    <td><button className={styles.moreBtn}>Detalhes</button></td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </section>
