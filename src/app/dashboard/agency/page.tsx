@@ -9,14 +9,30 @@ import {
 } from 'lucide-react';
 import styles from './page.module.css';
 import { useMVPData } from '@/hooks/useMVPData';
+import { supabase } from '@/lib/supabase';
 
 export default function AgencyDashboard() {
   const [viewMode, setViewMode] = useState<'personal' | 'team'>('team');
   const [expandedStat, setExpandedStat] = useState<string | null>(null);
+  const [companyId, setCompanyId] = useState<string | null>(null);
 
-  const { data: briefings } = useMVPData('briefings');
-  const { data: meetings } = useMVPData('meetings');
-  const { data: vehicles } = useMVPData('profiles', { role: 'vehicle' });
+  React.useEffect(() => {
+    const fetchCompany = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .single();
+      if (profile?.company_id) setCompanyId(profile.company_id);
+    };
+    fetchCompany();
+  }, []);
+
+  const { data: briefings } = useMVPData<any>('briefings', companyId ? { company_id: companyId } : undefined);
+  const { data: meetings } = useMVPData<any>('meetings', companyId ? { company_id: companyId } : undefined);
+  const { data: vehicles } = useMVPData<any>('profiles', { role: 'vehicle' });
 
   const stats = [
     { 

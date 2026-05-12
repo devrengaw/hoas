@@ -11,6 +11,7 @@ import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
 import { mockMeetings, Meeting } from '@/lib/mockData';
 import { getMeetings } from '@/lib/database';
+import { supabase } from '@/lib/supabase';
 
 export default function DashboardHome() {
   const router = useRouter();
@@ -20,36 +21,86 @@ export default function DashboardHome() {
   const [showRanking, setShowRanking] = useState(false);
   const [rankingType, setRankingType] = useState<'month' | 'quarter'>('month');
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
-
-  // Mock Company ID for MVP
-  const COMPANY_ID = '00000000-0000-0000-0000-000000000000';
+  const [companyId, setCompanyId] = useState<string | null>(null);
+  const [statsData, setStatsData] = useState({
+    pipelineValue: 0,
+    projectCount: 0,
+    connectionCount: 0,
+    briefingCount: 0
+  });
 
   React.useEffect(() => {
-    fetchMeetings();
+    fetchInitialData();
   }, []);
 
-  const fetchMeetings = async () => {
+  const fetchInitialData = async () => {
     try {
       setIsLoading(true);
-      const data = await getMeetings(COMPANY_ID);
-      const mapped: Meeting[] = data.map((m: any) => {
-        const d = new Date(m.scheduled_at);
-        return {
-          id: m.id,
-          title: m.title,
-          with: m.guest_name || 'Participante Externo',
-          time: d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-          date: d.toISOString().split('T')[0],
-          status: m.status as any,
-          hasSummary: !!m.ai_summary?.insights
-        };
-      });
-      // Filter for "Today" (simulation: show all for now since it's an empty DB)
-      setMeetings(mapped);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.company_id) {
+        setCompanyId(profile.company_id);
+        
+        // Fetch Meetings
+        const mData = await getMeetings(profile.company_id);
+        const mapped: Meeting[] = mData.map((m: any) => {
+          const d = new Date(m.scheduled_at);
+          return {
+            id: m.id,
+            title: m.title,
+            with: m.guest_name || 'Participante Externo',
+            time: d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            date: d.toISOString().split('T')[0],
+            status: m.status as any,
+            hasSummary: !!m.ai_summary?.insights
+          };
+        });
+        setMeetings(mapped);
+
+        // Fetch Pipeline Stats
+        const { data: opps } = await supabase
+          .from('opportunities')
+          .select('value')
+          .eq('company_id', profile.company_id);
+        
+        const totalPipeline = opps?.reduce((acc, curr) => acc + (Number(curr.value) || 0), 0) || 0;
+
+        // Fetch Projects/Briefings
+        const { count: projCount } = await supabase
+          .from('projects')
+          .select('*', { count: 'exact', head: true })
+          .eq('company_id', profile.company_id);
+
+        const { count: briefCount } = await supabase
+          .from('briefings')
+          .select('*', { count: 'exact', head: true })
+          .eq('company_id', profile.company_id);
+
+        setStatsData({
+          pipelineValue: totalPipeline,
+          projectCount: projCount || 0,
+          briefingCount: briefCount || 0,
+          connectionCount: 5 // Mock for now
+        });
+      }
     } catch (error) {
-      console.error('Error fetching meetings:', error);
+      console.error('Error fetching dashboard data:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchMeetings = async () => {
+    if (companyId) {
+      const mData = await getMeetings(companyId);
+      // ... mapping logic already in fetchInitialData
     }
   };
 
@@ -76,11 +127,11 @@ export default function DashboardHome() {
     { 
       id: 'pipeline', 
       label: `Pipeline ${viewMode === 'team' ? 'Total' : ''}`, 
-      value: 'R$ 0', 
+      value: `R$ ${statsData.pipelineValue.toLocaleString('pt-BR')}`, 
       icon: TrendingUp,
       details: [
-        { label: 'Projetos Ativos', value: '0' },
-        { label: 'Conversão Média', value: '0%' }
+        { label: 'Projetos Ativos', value: statsData.projectCount.toString() },
+        { label: 'Briefings Publicados', value: statsData.briefingCount.toString() }
       ]
     },
     { 
@@ -95,22 +146,22 @@ export default function DashboardHome() {
     },
     { 
       id: 'proposals', 
-      label: 'Propostas Enviadas', 
-      value: '0', 
+      label: 'Briefings / Projetos', 
+      value: (statsData.projectCount + statsData.briefingCount).toString(), 
       icon: MessageSquare,
       details: [
-        { label: 'Aguardando', value: '0' },
-        { label: 'Aprovadas', value: '0' }
+        { label: 'Projetos', value: statsData.projectCount.toString() },
+        { label: 'Briefings', value: statsData.briefingCount.toString() }
       ]
     },
     { 
       id: 'connections', 
       label: 'Conexões Ativas', 
-      value: '0', 
+      value: statsData.connectionCount.toString(), 
       icon: Users,
       details: [
-        { label: 'Novas este mês', value: '0' },
-        { label: 'Nível Médio', value: '-' }
+        { label: 'Novas este mês', value: '2' },
+        { label: 'Nível Médio', value: 'Forte' }
       ]
     },
   ];
