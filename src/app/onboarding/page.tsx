@@ -109,6 +109,26 @@ export default function OnboardingPage() {
     }
   };
 
+  const handleSkip = async () => {
+    setLoading(true);
+    try {
+      // Mark onboarding as completed even if data is missing
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('id', profile.id);
+
+      if (profileError) throw profileError;
+
+      const basePath = profile?.role === 'agency' ? '/dashboard/agency' : profile?.role === 'client' ? '/dashboard/client' : '/dashboard';
+      router.push(basePath);
+    } catch (err) {
+      console.error('Skip onboarding error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!profile) return <div className={styles.loadingContainer}>Carregando...</div>;
 
   return (
@@ -179,9 +199,12 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <button className={styles.nextBtn} onClick={() => setStep(2)}>
-                Próximo Passo <ChevronRight size={18} />
-              </button>
+              <div className={styles.buttonRow}>
+                <button className={styles.skipBtn} onClick={handleSkip}>Pular e configurar depois</button>
+                <button className={styles.nextBtn} onClick={() => setStep(2)}>
+                  Próximo Passo <ChevronRight size={18} />
+                </button>
+              </div>
             </div>
           )}
 
@@ -256,6 +279,7 @@ export default function OnboardingPage() {
 
               <div className={styles.buttonRow}>
                 <button className={styles.backBtn} onClick={() => setStep(1)}>Voltar</button>
+                <button className={styles.skipBtn} onClick={handleSkip}>Pular Etapa</button>
                 <button className={styles.nextBtn} onClick={() => setStep(3)}>Próximo Passo <ChevronRight size={18} /></button>
               </div>
             </div>
