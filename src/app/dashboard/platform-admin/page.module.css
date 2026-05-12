@@ -1180,3 +1180,45 @@
 .saveBtn:hover {
   filter: brightness(1.1);
 }
+
+.adminActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.blockBtn, .deleteOrgBtn {
+  padding: 1.25rem;
+  border-radius: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+}
+
+.blockBtn {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+
+.blockBtn:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+}
+
+.deleteOrgBtn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.deleteOrgBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+}

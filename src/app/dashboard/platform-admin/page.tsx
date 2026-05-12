@@ -621,6 +621,47 @@ export default function PlatformAdmin() {
             </div>
 
             <div className={styles.drawerFooter}>
+              <div className={styles.adminActions}>
+                <button 
+                  className={styles.blockBtn}
+                  onClick={async () => {
+                    if (!confirm(`Tem certeza que deseja ${selectedOrg.status === 'blocked' ? 'desbloquear' : 'bloquear'} esta organização?`)) return;
+                    try {
+                      const newStatus = selectedOrg.status === 'blocked' ? 'active' : 'blocked';
+                      const res = await fetch('/api/admin/organizations', {
+                        method: 'POST',
+                        body: JSON.stringify({ companyId: selectedOrg.id, status: newStatus })
+                      });
+                      if (res.ok) {
+                        fetchOrgs();
+                        setSelectedOrg(null);
+                        showSuccess(`Organização ${newStatus === 'blocked' ? 'bloqueada' : 'desbloqueada'} com sucesso.`);
+                      }
+                    } catch (e) { console.error(e); }
+                  }}
+                >
+                  <AlertCircle size={18} /> {selectedOrg.status === 'blocked' ? 'Desbloquear Acesso' : 'Bloquear Organização'}
+                </button>
+                <button 
+                  className={styles.deleteOrgBtn}
+                  onClick={async () => {
+                    if (!confirm('ATENÇÃO: Esta ação é irreversível. Deseja excluir permanentemente esta organização e todos os seus dados?')) return;
+                    try {
+                      const res = await fetch('/api/admin/organizations', {
+                        method: 'POST',
+                        body: JSON.stringify({ companyId: selectedOrg.id, status: 'deleted' })
+                      });
+                      if (res.ok) {
+                        fetchOrgs();
+                        setSelectedOrg(null);
+                        showSuccess('Organização marcada para exclusão.');
+                      }
+                    } catch (e) { console.error(e); }
+                  }}
+                >
+                  <Trash2 size={18} /> Excluir permanentemente
+                </button>
+              </div>
               <button 
                 className={styles.transferMasterBtn}
                 onClick={() => setIsTransferModalOpen(true)}

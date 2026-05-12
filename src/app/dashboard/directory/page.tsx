@@ -32,8 +32,9 @@ export default function MediaDirectory() {
 
       const { data } = await supabase
         .from('profiles')
-        .select('*, companies(name)')
-        .eq('is_test', isTestUser);
+        .select('*, companies!inner(name, status)')
+        .eq('is_test', isTestUser)
+        .eq('companies.status', 'active');
       
       if (data) setProfiles(data);
       setLoading(false);

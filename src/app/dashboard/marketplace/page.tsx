@@ -57,8 +57,9 @@ export default function MarketplacePage() {
       // Fetch Projects (Opportunities) - filter by is_test
       const { data: projects, error: projError } = await supabase
         .from('projects')
-        .select('*, companies!inner(name, is_test)')
-        .eq('companies.is_test', isTestUser);
+        .select('*, companies!inner(name, is_test, status)')
+        .eq('companies.is_test', isTestUser)
+        .eq('companies.status', 'active');
       
       if (projError) throw projError;
 
@@ -83,7 +84,8 @@ export default function MarketplacePage() {
         .select('*')
         .eq('type', 'vehicle')
         .eq('is_public', true)
-        .eq('is_test', isTestUser);
+        .eq('is_test', isTestUser)
+        .eq('status', 'active');
       
       if (vehError) throw vehError;
 
