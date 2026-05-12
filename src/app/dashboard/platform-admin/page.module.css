@@ -1222,3 +1222,70 @@
   background: rgba(239, 68, 68, 0.2);
   border-color: #ef4444;
 }
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .goalsRow, .drawerGrid, .contentGrid, .adminActions {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionHeaderWithAction {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .configGoalsBtn {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .header h1 {
+    font-size: 1.75rem;
+  }
+
+  .emailManager {
+    grid-template-columns: 1fr;
+  }
+
+  .editorContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .drawer {
+    padding: 2rem 1rem;
+  }
+
+  .drawerHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .drawerAvatar {
+    margin: 0 auto;
+  }
+
+  .drawerTitle h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabsRow {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+  }
+
+  .tabBtn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}

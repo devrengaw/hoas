@@ -11,6 +11,31 @@
   top: 0;
   z-index: 90;
   margin-left: 260px; /* Offset for sidebar */
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  .topbar {
+    margin-left: 0;
+    padding: 0 1rem;
+    padding-left: 4.5rem; /* Space for mobile menu button */
+  }
+
+  .searchContainer {
+    display: none; /* Hide search on mobile for now or make it a button */
+  }
+
+  .aiStatus span {
+    display: none;
+  }
+  
+  .aiStatus {
+    padding: 0.5rem;
+  }
+
+  .userInfo {
+    display: none;
+  }
 }
 
 .searchContainer {

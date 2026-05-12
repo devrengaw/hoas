@@ -19,8 +19,11 @@ import {
   User,
   Target,
   ShieldCheck,
-  UserPlus
+  UserPlus,
+  Menu,
+  X
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import styles from './Sidebar.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -29,7 +32,13 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, profile, signOut } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   
+  // Close sidebar on navigation
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   const handleLogout = async () => {
     await signOut();
     router.push('/login');
@@ -68,65 +77,75 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <img src="/identidade visual/hoas_png.png" alt="HOAS Logo" className={styles.sidebarLogo} />
-      </div>
+    <>
+      {/* Mobile Toggle */}
+      <button className={styles.mobileToggle} onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
 
-      <nav className={styles.nav}>
-        <div className={styles.sectionLabel}>
-          {isPlatformAdmin ? 'Administração Global' : 'Menu Principal'}
-        </div>
-        {menuItems.filter(item => !item.hidden).map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link 
-              key={item.href} 
-              href={item.href}
-              className={`${styles.navLink} ${isActive ? styles.active : ''}`}
-            >
-              <item.icon size={20} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Overlay */}
+      {isOpen && <div className={styles.overlay} onClick={() => setIsOpen(false)} />}
 
-      <div className={styles.footer}>
-        <div className={styles.userProfile}>
-          <div className={styles.userAvatar}>{profile?.full_name?.[0] || 'U'}</div>
-          <div className={styles.userInfo}>
-            <span className={styles.userName}>{profile?.full_name || 'Usuário'}</span>
-            <span className={styles.userRole}>
-              {profile?.role === 'vehicle' ? 'Veículo' : 
-               profile?.role === 'agency' ? 'Agência' : 
-               profile?.role === 'client' ? 'Anunciante' : 
-               profile?.role === 'platform-admin' ? 'Administrador' : 'Visitante'}
-            </span>
-          </div>
+      <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
+        <div className={styles.logo}>
+          <img src="/identidade visual/hoas_png.png" alt="HOAS Logo" className={styles.sidebarLogo} />
         </div>
 
-        {isPlatformAdmin && (
-          <div className={styles.adminBadge}>
-            <ShieldCheck size={14} />
-            <span>Platform Admin</span>
+        <nav className={styles.nav}>
+          <div className={styles.sectionLabel}>
+            {isPlatformAdmin ? 'Administração Global' : 'Menu Principal'}
           </div>
-        )}
-        
-        {!isPlatformAdmin && (
-          <>
-            <Link href={`${basePath}/settings/team`} className={styles.navLink}>
-              <Settings size={20} />
-              <span>Configurações</span>
-            </Link>
-          </>
-        )}
-        
-        <button className={styles.logoutBtn} onClick={handleLogout}>
-          <LogOut size={20} />
-          <span>Sair</span>
-        </button>
-      </div>
-    </aside>
+          {menuItems.filter(item => !item.hidden).map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link 
+                key={item.href} 
+                href={item.href}
+                className={`${styles.navLink} ${isActive ? styles.active : ''}`}
+              >
+                <item.icon size={20} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className={styles.footer}>
+          <div className={styles.userProfile}>
+            <div className={styles.userAvatar}>{profile?.full_name?.[0] || 'U'}</div>
+            <div className={styles.userInfo}>
+              <span className={styles.userName}>{profile?.full_name || 'Usuário'}</span>
+              <span className={styles.userRole}>
+                {profile?.role === 'vehicle' ? 'Veículo' : 
+                 profile?.role === 'agency' ? 'Agência' : 
+                 profile?.role === 'client' ? 'Anunciante' : 
+                 profile?.role === 'platform-admin' ? 'Administrador' : 'Visitante'}
+              </span>
+            </div>
+          </div>
+
+          {isPlatformAdmin && (
+            <div className={styles.adminBadge}>
+              <ShieldCheck size={14} />
+              <span>Platform Admin</span>
+            </div>
+          )}
+          
+          {!isPlatformAdmin && (
+            <>
+              <Link href={`${basePath}/settings/team`} className={styles.navLink}>
+                <Settings size={20} />
+                <span>Configurações</span>
+              </Link>
+            </>
+          )}
+          
+          <button className={styles.logoutBtn} onClick={handleLogout}>
+            <LogOut size={20} />
+            <span>Sair</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
