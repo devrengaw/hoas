@@ -1,26 +1,61 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserPlus, Mail, Shield, Trash2, CheckCircle, Search, MoreVertical, X, ShieldCheck, Settings, Lock, Users, FileText, Video, MessageSquare, Building2, Zap, DollarSign, Target } from 'lucide-react';
 import styles from './page.module.css';
+import { supabase } from '@/lib/supabase';
 
 export default function TeamPage() {
   const [activeTab, setActiveTab] = useState<'users' | 'permissions'>('users');
   const [showModal, setShowModal] = useState(false);
-  const [showActionsMenu, setShowActionsMenu] = useState<number | null>(null);
-  const [users, setUsers] = useState([
-    { id: 1, name: "Lucas Wagner", email: "lucas@empresa.com.br", role: "Admin", status: "Ativo" },
-    { id: 2, name: "Ana Beatriz", email: "ana@empresa.com.br", role: "Executivo", status: "Ativo" },
-    { id: 3, name: "Carlos Melo", email: "carlos@empresa.com.br", role: "Analista", status: "Pendente" },
-  ]);
+  const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
-  const [userPermissions, setUserPermissions] = useState<Record<number, Record<string, boolean>>>({
-    1: { proposals: true, meetings: true, messages: true, marketplace: true, analytics: true, finance: true },
-    2: { proposals: true, meetings: true, messages: true, marketplace: true, analytics: false, finance: false },
-    3: { proposals: false, meetings: true, messages: true, marketplace: false, analytics: false, finance: false }
-  });
-
+  const [userPermissions, setUserPermissions] = useState<Record<string, Record<string, boolean>>>({});
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Analista' });
+
+  const fetchTeam = async () => {
+    try {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      setCurrentUser(profile);
+
+      if (profile?.company_id) {
+        const { data: team } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('company_id', profile.company_id);
+        
+        if (team) {
+          setUsers(team.map(u => ({
+            id: u.id,
+            name: u.full_name || 'Usuário HOAS',
+            email: u.email,
+            role: u.position || (u.role === 'admin' ? 'Admin' : 'Membro'),
+            status: 'Ativo'
+          })));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching team:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeam();
+  }, []);
 
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,12 +74,12 @@ export default function TeamPage() {
     setNewUser({ name: '', email: '', role: 'Analista' });
   };
 
-  const toggleUserPermission = (userId: number, module: string) => {
+  const toggleUserPermission = (userId: string, module: string) => {
     setUserPermissions(prev => ({
       ...prev,
       [userId]: {
         ...prev[userId],
-        [module]: !prev[userId][module]
+        [module]: !prev[userId]?.[module]
       }
     }));
   };
@@ -117,56 +152,62 @@ export default function TeamPage() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>
-                      <div className={styles.userName}>
-                        <div className={styles.avatar}>{user.name[0]}</div>
-                        <span>{user.name}</span>
-                      </div>
-                    </td>
-                    <td>{user.email}</td>
-                    <td>
-                      <div className={styles.roleBadge}>
-                        <Shield size={12} />
-                        {user.role}
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`${styles.status} ${user.status === 'Ativo' ? styles.active : styles.pending}`}>
-                        {user.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div className={styles.actionsWrapper}>
-                        <button 
-                          className={styles.iconBtn} 
-                          onClick={() => setShowActionsMenu(showActionsMenu === user.id ? null : user.id)}
-                        >
-                          <MoreVertical size={16} />
-                        </button>
-                        
-                        {showActionsMenu === user.id && (
-                          <div className={styles.dropdown}>
-                            <button onClick={() => { setActiveTab('permissions'); setShowActionsMenu(null); }}>
-                              <Shield size={14} />
-                              <span>Configurar Permissões</span>
-                            </button>
-                            <button onClick={() => { window.location.href = '/dashboard/settings/goals'; }}>
-                              <Target size={14} />
-                              <span>Configurar Metas</span>
-                            </button>
-                            <hr />
-                            <button className={styles.deleteOption}>
-                              <Trash2 size={14} />
-                              <span>Excluir Usuário</span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {loading ? (
+                  <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>Carregando equipe...</td></tr>
+                ) : users.length === 0 ? (
+                  <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>Nenhum membro na equipe encontrado.</td></tr>
+                ) : (
+                  users.map((user) => (
+                    <tr key={user.id}>
+                      <td>
+                        <div className={styles.userName}>
+                          <div className={styles.avatar}>{user.name[0]}</div>
+                          <span>{user.name}</span>
+                        </div>
+                      </td>
+                      <td>{user.email}</td>
+                      <td>
+                        <div className={styles.roleBadge}>
+                          <Shield size={12} />
+                          {user.role}
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`${styles.status} ${user.status === 'Ativo' ? styles.active : styles.pending}`}>
+                          {user.status}
+                        </span>
+                      </td>
+                      <td>
+                        <div className={styles.actionsWrapper}>
+                          <button 
+                            className={styles.iconBtn} 
+                            onClick={() => setShowActionsMenu(showActionsMenu === user.id ? null : user.id)}
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+                          
+                          {showActionsMenu === user.id && (
+                            <div className={styles.dropdown}>
+                              <button onClick={() => { setActiveTab('permissions'); setShowActionsMenu(null); }}>
+                                <Shield size={14} />
+                                <span>Configurar Permissões</span>
+                              </button>
+                              <button onClick={() => { window.location.href = '/dashboard/settings/goals'; }}>
+                                <Target size={14} />
+                                <span>Configurar Metas</span>
+                              </button>
+                              <hr />
+                              <button className={styles.deleteOption}>
+                                <Trash2 size={14} />
+                                <span>Excluir Usuário</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </section>
@@ -195,61 +236,67 @@ export default function TeamPage() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>
-                      <div className={styles.userNamePerm}>
-                        <div className={styles.avatarSmall}>{user.name[0]}</div>
-                        <div className={styles.nameInfo}>
-                          <span>{user.name}</span>
-                          <small>{user.role}</small>
+                {loading ? (
+                  <tr><td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>Carregando permissões...</td></tr>
+                ) : users.length === 0 ? (
+                  <tr><td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>Nenhum membro encontrado.</td></tr>
+                ) : (
+                  users.map((user) => (
+                    <tr key={user.id}>
+                      <td>
+                        <div className={styles.userNamePerm}>
+                          <div className={styles.avatarSmall}>{user.name[0]}</div>
+                          <div className={styles.nameInfo}>
+                            <span>{user.name}</span>
+                            <small>{user.role}</small>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <input 
-                        type="checkbox" 
-                        checked={userPermissions[user.id]?.proposals}
-                        onChange={() => toggleUserPermission(user.id, 'proposals')}
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="checkbox" 
-                        checked={userPermissions[user.id]?.meetings}
-                        onChange={() => toggleUserPermission(user.id, 'meetings')}
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="checkbox" 
-                        checked={userPermissions[user.id]?.messages}
-                        onChange={() => toggleUserPermission(user.id, 'messages')}
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="checkbox" 
-                        checked={userPermissions[user.id]?.marketplace}
-                        onChange={() => toggleUserPermission(user.id, 'marketplace')}
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="checkbox" 
-                        checked={userPermissions[user.id]?.analytics}
-                        onChange={() => toggleUserPermission(user.id, 'analytics')}
-                      />
-                    </td>
-                    <td>
-                      <input 
-                        type="checkbox" 
-                        checked={userPermissions[user.id]?.finance}
-                        onChange={() => toggleUserPermission(user.id, 'finance')}
-                      />
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td>
+                        <input 
+                          type="checkbox" 
+                          checked={!!userPermissions[user.id]?.proposals}
+                          onChange={() => toggleUserPermission(user.id, 'proposals')}
+                        />
+                      </td>
+                      <td>
+                        <input 
+                          type="checkbox" 
+                          checked={!!userPermissions[user.id]?.meetings}
+                          onChange={() => toggleUserPermission(user.id, 'meetings')}
+                        />
+                      </td>
+                      <td>
+                        <input 
+                          type="checkbox" 
+                          checked={!!userPermissions[user.id]?.messages}
+                          onChange={() => toggleUserPermission(user.id, 'messages')}
+                        />
+                      </td>
+                      <td>
+                        <input 
+                          type="checkbox" 
+                          checked={!!userPermissions[user.id]?.marketplace}
+                          onChange={() => toggleUserPermission(user.id, 'marketplace')}
+                        />
+                      </td>
+                      <td>
+                        <input 
+                          type="checkbox" 
+                          checked={!!userPermissions[user.id]?.analytics}
+                          onChange={() => toggleUserPermission(user.id, 'analytics')}
+                        />
+                      </td>
+                      <td>
+                        <input 
+                          type="checkbox" 
+                          checked={!!userPermissions[user.id]?.finance}
+                          onChange={() => toggleUserPermission(user.id, 'finance')}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
