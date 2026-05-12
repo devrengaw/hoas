@@ -91,21 +91,23 @@ export default function PlatformAdmin() {
       
       if (companies.error) throw new Error(companies.error);
 
-      const mapped: Organization[] = companies.map((c: any) => ({
-        id: c.id,
-        name: c.name,
-        type: c.type?.toUpperCase() || 'AGENCY',
-        status: 'Ativo',
-        masterName: c.profiles?.[0]?.full_name || 'N/A',
-        masterEmail: c.profiles?.[0]?.email || 'N/A',
-        users: c.profiles?.map((p: any) => ({
-          id: p.id,
-          name: p.full_name,
-          email: p.email,
-          role: p.role,
-          lastAccess: 'Agora'
-        })) || []
-      }));
+      const mapped: Organization[] = (companies || [])
+        .filter((c: any) => c.name !== 'HOAS Ecosystem') // Hide internal admin org
+        .map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          type: (c.type || 'agency').toUpperCase(),
+          status: 'Ativo',
+          masterName: c.profiles?.find((p: any) => p.is_master)?.full_name || c.profiles?.[0]?.full_name || 'N/A',
+          masterEmail: c.profiles?.find((p: any) => p.is_master)?.email || c.profiles?.[0]?.email || 'N/A',
+          users: c.profiles?.map((p: any) => ({
+            id: p.id,
+            name: p.full_name,
+            email: p.email,
+            role: p.role,
+            lastAccess: 'Agora'
+          })) || []
+        }));
 
       setAllOrgs(mapped);
     } catch (error) {
