@@ -41,40 +41,47 @@ export default function ProfilePage() {
   const [connectedApps, setConnectedApps] = useState<string[]>([]);
   const [connectingApp, setConnectingApp] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    fetchIntegrations();
+  }, []);
+
+  const fetchIntegrations = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: integrations } = await supabase
+      .from('user_integrations')
+      .select('provider')
+      .eq('profile_id', user.id)
+      .eq('is_active', true);
+    
+    if (integrations) {
+      setConnectedApps(integrations.map(i => i.provider));
+    }
+  };
+
   const handleConnect = async (app: string) => {
     if (connectedApps.includes(app)) {
-      // Logic for disconnect (would involve clearing tokens in DB)
+      // Disconnect logic
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase
+        .from('user_integrations')
+        .delete()
+        .eq('profile_id', user.id)
+        .eq('provider', app);
+      
       setConnectedApps(prev => prev.filter(a => a !== app));
       return;
     }
 
-    if (app === 'google') {
-      setConnectingApp('google');
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          scopes: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly',
-          redirectTo: `${window.location.origin}/dashboard/settings/profile`
-        }
-      });
-      
-      if (error) {
-        console.error('Error connecting Google:', error);
-        setConnectingApp(null);
-      }
-      return;
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-    // For Zoom and Teams, we simulate for now or redirect to custom OAuth
     setConnectingApp(app);
-    setTimeout(() => {
-      setConnectedApps(prev => [...prev, app]);
-      setConnectingApp(null);
-    }, 1500);
+    // Redirect to our custom OAuth initiation route
+    window.location.href = `/api/auth/integrations/${app}?profileId=${user.id}`;
   };
 
   const handleSave = (e: React.FormEvent) => {
