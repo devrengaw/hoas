@@ -46,6 +46,7 @@ export default function PlatformAdmin() {
 
   const [globalEvents, setGlobalEvents] = useState<any[]>([]);
   const [careCampaigns, setCareCampaigns] = useState<any[]>([]);
+  const [careStats, setCareStats] = useState({ lives_impacted: '0', volunteers: '0' });
 
   const fetchContent = async () => {
     try {
@@ -54,8 +55,24 @@ export default function PlatformAdmin() {
       
       const { data: care } = await supabase.from('global_care_campaigns').select('*').order('created_at', { ascending: false });
       if (care) setCareCampaigns(care);
+
+      const { data: stats } = await supabase.from('global_stats').select('*').eq('id', 'hoas_care').single();
+      if (stats) setCareStats({ lives_impacted: stats.lives_impacted, volunteers: stats.volunteers });
     } catch (error) {
       console.error('Error fetching content:', error);
+    }
+  };
+
+  const handleSaveStats = async () => {
+    try {
+      const { error } = await supabase
+        .from('global_stats')
+        .upsert({ id: 'hoas_care', ...careStats });
+      
+      if (error) throw error;
+      showSuccess('Estatísticas globais atualizadas com sucesso!');
+    } catch (error) {
+      console.error('Error saving stats:', error);
     }
   };
 
@@ -407,6 +424,37 @@ export default function PlatformAdmin() {
                     )}
                   </div>
                 </section>
+              </div>
+
+              <div className={styles.statsManager}>
+                <div className={styles.sectionHeader}>
+                  <h3><TrendingUp size={18} /> Estatísticas Globais (HOAS Care)</h3>
+                </div>
+                <div className={styles.statsForm}>
+                  <div className={styles.inputGroup}>
+                    <label>Vidas Impactadas (Texto)</label>
+                    <input 
+                      type="text" 
+                      placeholder="Ex: 15.000+" 
+                      className={styles.modalInput} 
+                      value={careStats.lives_impacted}
+                      onChange={(e) => setCareStats({ ...careStats, lives_impacted: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label>Voluntários (Texto)</label>
+                    <input 
+                      type="text" 
+                      placeholder="Ex: 1.200" 
+                      className={styles.modalInput} 
+                      value={careStats.volunteers}
+                      onChange={(e) => setCareStats({ ...careStats, volunteers: e.target.value })}
+                    />
+                  </div>
+                  <button className={styles.saveBtn} onClick={handleSaveStats}>
+                    <Save size={16} /> Salvar Estatísticas
+                  </button>
+                </div>
               </div>
             </div>
           ) : (

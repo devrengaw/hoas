@@ -6,7 +6,9 @@ import styles from './page.module.css';
 import { useMVPData } from '@/hooks/useMVPData';
 
 export default function CarePage() {
-  const { data: campaigns, loading } = useMVPData('global_care_campaigns');
+  const { data: campaigns, loading: campaignsLoading } = useMVPData('global_care_campaigns');
+  const { data: statsData } = useMVPData('global_stats', { id: 'hoas_care' });
+  const stats: any = statsData?.[0] || { lives_impacted: '0', volunteers: '0' };
 
   return (
     <div className={styles.container}>
@@ -23,14 +25,14 @@ export default function CarePage() {
           <Users className={styles.statIcon} />
           <div className={styles.statInfo}>
             <span className={styles.statLabel}>Vidas Impactadas</span>
-            <span className={styles.statValue}>15.000+</span>
+            <span className={styles.statValue}>{stats.lives_impacted}</span>
           </div>
         </div>
         <div className={styles.statCard}>
           <HandHelping className={styles.statIcon} />
           <div className={styles.statInfo}>
             <span className={styles.statLabel}>Voluntários</span>
-            <span className={styles.statValue}>1.200</span>
+            <span className={styles.statValue}>{stats.volunteers}</span>
           </div>
         </div>
         <div className={styles.statCard}>
@@ -49,7 +51,7 @@ export default function CarePage() {
           </div>
           
           <div className={styles.campaignList}>
-            {loading ? (
+            {campaignsLoading ? (
               <div className={styles.loading}>Carregando campanhas...</div>
             ) : !campaigns || campaigns.length === 0 ? (
               <div className={styles.empty}>Nenhuma campanha ativa no momento.</div>
