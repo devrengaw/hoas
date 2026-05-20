@@ -112,7 +112,13 @@ export default function Sidebar() {
 
         <div className={styles.footer}>
           <div className={styles.userProfile}>
-            <div className={styles.userAvatar}>{profile?.full_name?.[0] || 'U'}</div>
+            <div className={styles.userAvatar}>
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt={profile.full_name || 'User Avatar'} className={styles.avatarImg} />
+              ) : (
+                profile?.full_name?.[0] || 'U'
+              )}
+            </div>
             <div className={styles.userInfo}>
               <span className={styles.userName}>{profile?.full_name || 'Usuário'}</span>
               <span className={styles.userRole}>

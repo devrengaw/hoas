@@ -27,10 +27,34 @@ export default function RegisterPage() {
     cnpj: '',
     password: '',
     confirmPassword: '',
-    mediaType: 'TV / Vídeo',
     rolePosition: 'Diretor de Mídia',
     objective: 'Brand Awareness'
   });
+
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const [selectedMediaTypes, setSelectedMediaTypes] = useState<string[]>(['TV / Vídeo']);
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setError('A imagem do logo deve ter no máximo 2MB.');
+        return;
+      }
+      setLogoFile(file);
+      const objectUrl = URL.createObjectURL(file);
+      setLogoPreviewUrl(objectUrl);
+    }
+  };
+
+  const toggleMediaType = (type: string) => {
+    setSelectedMediaTypes(prev => 
+      prev.includes(type) 
+        ? prev.filter(t => t !== type) 
+        : [...prev, type]
+    );
+  };
 
   const router = useRouter();
 
@@ -56,6 +80,8 @@ export default function RegisterPage() {
     }
 
     try {
+      const mediaTypesString = role === 'vehicle' ? selectedMediaTypes.join(', ') : null;
+
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -65,7 +91,7 @@ export default function RegisterPage() {
             company_name: formData.company,
             cnpj: formData.cnpj,
             role: role,
-            media_type: role === 'vehicle' ? formData.mediaType : null,
+            media_type: mediaTypesString,
             position: role === 'agency' ? formData.rolePosition : null,
             objective: role === 'client' ? formData.objective : null
           }
@@ -75,6 +101,31 @@ export default function RegisterPage() {
       if (signUpError) throw signUpError;
 
       if (data.user) {
+        // Logo upload logic
+        let logoUrl = null;
+        if (logoFile) {
+          try {
+            const fileExt = logoFile.name.split('.').pop();
+            const fileName = `${data.user.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+            const filePath = `company-logos/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+              .from('logos')
+              .upload(filePath, logoFile);
+
+            if (uploadError) {
+              console.error('Error uploading logo:', uploadError.message);
+            } else {
+              const { data: publicUrlData } = supabase.storage
+                .from('logos')
+                .getPublicUrl(filePath);
+              logoUrl = publicUrlData?.publicUrl || null;
+            }
+          } catch (uploadErr) {
+            console.error('Failed to upload company logo:', uploadErr);
+          }
+        }
+
         // 1. Create Company first
         const { data: companyData, error: companyError } = await supabase
           .from('companies')
@@ -83,7 +134,9 @@ export default function RegisterPage() {
               name: formData.company,
               type: role,
               is_public: false, // Start as private until onboarding completes
-              is_test: false // Explicitly production
+              is_test: false, // Explicitly production
+              logo_url: logoUrl,
+              media_type: mediaTypesString
             }
           ])
           .select()
@@ -98,9 +151,11 @@ export default function RegisterPage() {
             company_id: companyData.id,
             full_name: formData.name,
             role: role,
-            media_type: role === 'vehicle' ? formData.mediaType : null,
+            email: formData.email,
+            media_type: mediaTypesString,
             position: role === 'agency' ? formData.rolePosition : null,
             objective: role === 'client' ? formData.objective : null,
+            avatar_url: logoUrl,
             onboarding_completed: false,
             is_master: true,
             is_test: false // Explicitly production
@@ -191,11 +246,15 @@ export default function RegisterPage() {
 
               <div className={styles.logoUploadSection}>
                 <div className={styles.logoPreview}>
-                  <Building2 size={32} />
+                  {logoPreviewUrl ? (
+                    <img src={logoPreviewUrl} alt="Logo Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px' }} />
+                  ) : (
+                    <Building2 size={32} />
+                  )}
                 </div>
                 <div className={styles.uploadInfo}>
                   <label>Logo da Empresa</label>
-                  <input type="file" accept="image/*" className={styles.fileInput} id="logo-upload" />
+                  <input type="file" accept="image/*" className={styles.fileInput} id="logo-upload" onChange={handleLogoChange} />
                   <label htmlFor="logo-upload" className={styles.uploadBtn}>
                     <ImageIcon size={16} /> Selecionar Logo
                   </label>
@@ -231,14 +290,44 @@ export default function RegisterPage() {
                 </div>
 
                 {role === 'vehicle' && (
-                  <div className={styles.field}>
-                    <label>Tipo de Mídia Principal</label>
-                    <select value={formData.mediaType} onChange={e => setFormData({...formData, mediaType: e.target.value})}>
-                      <option>TV / Vídeo</option>
-                      <option>Digital</option>
-                      <option>OOH</option>
-                      <option>Audio / Rádio</option>
-                    </select>
+                  <div className={styles.field} style={{ gridColumn: 'span 2' }}>
+                    <label>Tipos de Mídia (Escolha uma ou mais)</label>
+                    <div className={styles.mediaTypesGrid}>
+                      {[
+                        'TV / Vídeo',
+                        'Digital / Portais',
+                        'OOH / OOH Digital',
+                        'Rádio / Áudio',
+                        'Mídia Impressa (Jornal e Revista)',
+                        'Streaming'
+                      ].map((type) => {
+                        const isSelected = selectedMediaTypes.includes(type);
+                        return (
+                          <div
+                            key={type}
+                            className={`${styles.mediaTypeCard} ${isSelected ? styles.mediaTypeCardSelected : ''}`}
+                            onClick={() => toggleMediaType(type)}
+                          >
+                            <div
+                              style={{
+                                width: '20px',
+                                height: '20px',
+                                border: '2px solid ' + (isSelected ? 'var(--primary)' : 'rgba(255,255,255,0.2)'),
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: isSelected ? 'var(--primary)' : 'transparent',
+                                transition: 'all 0.2s'
+                              }}
+                            >
+                              {isSelected && <Check size={14} strokeWidth={3} color="white" />}
+                            </div>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{type}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
 

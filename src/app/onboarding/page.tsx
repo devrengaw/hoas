@@ -15,6 +15,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [company, setCompany] = useState<any>(null);
+  const [selectedMediaTypes, setSelectedMediaTypes] = useState<string[]>([]);
   
   const [formData, setFormData] = useState({
     description: '',
@@ -27,6 +28,18 @@ export default function OnboardingPage() {
     specialties: [] as string[],
     is_public: true
   });
+
+  const toggleMediaType = (type: string) => {
+    setSelectedMediaTypes(prev => {
+      const next = prev.includes(type) 
+        ? prev.filter(t => t !== type) 
+        : [...prev, type];
+      
+      // Keep formData.media_type in sync
+      setFormData(f => ({ ...f, media_type: next.join(', ') }));
+      return next;
+    });
+  };
 
   const router = useRouter();
 
@@ -52,6 +65,7 @@ export default function OnboardingPage() {
       setProfile(profileData);
       if (profileData?.companies) {
         setCompany(profileData.companies);
+        const initialMediaType = profileData.companies.media_type || profileData.media_type || '';
         setFormData(prev => ({
           ...prev,
           description: profileData.companies.description || '',
@@ -59,8 +73,16 @@ export default function OnboardingPage() {
           phone: profileData.companies.phone || '',
           city: profileData.companies.city || '',
           state: profileData.companies.state || '',
-          media_type: profileData.companies.media_type || profileData.media_type || '',
+          media_type: initialMediaType,
         }));
+
+        if (initialMediaType) {
+          setSelectedMediaTypes(
+            initialMediaType.split(', ')
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          );
+        }
       }
     };
 
@@ -240,18 +262,44 @@ export default function OnboardingPage() {
 
                 {profile.role === 'vehicle' && (
                   <>
-                    <div className={styles.field}>
-                      <label>Tipo de Mídia Principal</label>
-                      <select 
-                        value={formData.media_type}
-                        onChange={e => setFormData({...formData, media_type: e.target.value})}
-                      >
-                        <option value="">Selecione...</option>
-                        <option value="TV">TV / Vídeo</option>
-                        <option value="Radio">Rádio / Audio</option>
-                        <option value="OOH">OOH / Digital Out of Home</option>
-                        <option value="Digital">Digital / Portais</option>
-                      </select>
+                    <div className={styles.field} style={{ gridColumn: 'span 2' }}>
+                      <label>Tipos de Mídia (Escolha uma ou mais)</label>
+                      <div className={styles.mediaTypesGrid}>
+                        {[
+                          'TV / Vídeo',
+                          'Digital / Portais',
+                          'OOH / OOH Digital',
+                          'Rádio / Áudio',
+                          'Mídia Impressa (Jornal e Revista)',
+                          'Streaming'
+                        ].map((type) => {
+                          const isSelected = selectedMediaTypes.includes(type);
+                          return (
+                            <div
+                              key={type}
+                              className={`${styles.mediaTypeCard} ${isSelected ? styles.mediaTypeCardSelected : ''}`}
+                              onClick={() => toggleMediaType(type)}
+                            >
+                              <div
+                                style={{
+                                  width: '20px',
+                                  height: '20px',
+                                  border: '2px solid ' + (isSelected ? 'var(--primary)' : 'rgba(255,255,255,0.2)'),
+                                  borderRadius: '6px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  background: isSelected ? 'var(--primary)' : 'transparent',
+                                  transition: 'all 0.2s'
+                                }}
+                              >
+                                {isSelected && <Check size={14} strokeWidth={3} color="white" />}
+                              </div>
+                              <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{type}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                     <div className={styles.field}>
                       <label>Estimativa de Alcance (Mensal)</label>

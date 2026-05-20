@@ -1,0 +1,298 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+  background: #050a18;
+}
+
+.hero {
+  text-align: center;
+  z-index: 10;
+  max-width: 480px;
+  width: 100%;
+}
+
+.logoWrapper {
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainLogo {
+  max-width: 320px;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.2));
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  background: rgba(10, 20, 50, 0.7);
+  backdrop-filter: blur(40px) saturate(150%);
+  padding: 3rem;
+  border-radius: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 40px 100px -20px rgba(0, 0, 0, 0.9),
+    inset 0 0 40px rgba(99, 102, 241, 0.05);
+}
+
+.form, .successState {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.successState {
+  align-items: center;
+  text-align: center;
+}
+
+.successIcon {
+  color: #10b981;
+  filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.3));
+  margin-bottom: 0.5rem;
+  animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 0.5rem;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  padding: 0.5rem 1.25rem;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: left;
+}
+
+.field label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  padding-left: 0.25rem;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputWrapper svg {
+  position: absolute;
+  left: 1.25rem;
+  color: #64748b;
+  transition: color 0.3s;
+}
+
+.inputWrapper input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  padding: 1.1rem 1rem 1.1rem 3.2rem;
+  border-radius: 1.25rem;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.inputWrapper input:focus {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.inputWrapper input:focus + svg {
+  color: #6366f1;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  border: none;
+  padding: 1.1rem 2rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+  margin-top: 0.5rem;
+}
+
+.primaryButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 30px -10px rgba(99, 102, 241, 0.6);
+  filter: brightness(1.1);
+}
+
+.primaryButton:active {
+  transform: translateY(-1px);
+}
+
+.errorMessage {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 0.85rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.animatedBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  filter: blur(25px);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 1.0;
+}
+
+.blob:nth-child(1) {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
+  top: -10%; right: -5%;
+  animation: orbit 25s infinite linear;
+}
+
+.blob:nth-child(2) {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+  bottom: -10%; left: -5%;
+  animation: orbit 30s infinite linear reverse;
+}
+
+.blob:nth-child(3) {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
+  top: 40%; left: 30%;
+  animation: pulse 15s infinite ease-in-out;
+}
+
+.blob:nth-child(4) {
+  width: 550px; height: 550px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, transparent 70%);
+  bottom: 20%; right: 10%;
+  animation: orbit 35s infinite linear;
+}
+
+.blob:nth-child(5) {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+  top: 10%; left: 10%;
+  animation: float 12s infinite alternate;
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.4; }
+  50% { transform: scale(1.2) translate(50px, -30px); opacity: 0.7; }
+}
+
+@keyframes float {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(60px, 40px) scale(1.1); }
+}
+
+.backgroundGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  filter: blur(100px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 1.5rem;
+  }
+
+  .card {
+    padding: 2rem 1.5rem;
+    border-radius: 1.5rem;
+  }
+
+  .mainLogo {
+    max-width: 200px;
+  }
+
+  .primaryButton {
+    padding: 0.9rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .inputWrapper input {
+    padding: 0.9rem 1rem 0.9rem 3rem;
+    font-size: 0.9rem;
+  }
+}

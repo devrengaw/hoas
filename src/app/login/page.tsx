@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { Sparkles, ArrowRight, Mail, Lock } from "lucide-react";
 import LoadingScreen from '@/components/LoadingScreen';
-import LoginDynamicBackground from '@/components/LoginDynamicBackground';
+import PlexusBackground from '@/components/PlexusBackground';
 import { supabase } from '@/lib/supabase';
 
 export default function Home() {
@@ -77,7 +77,14 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <LoginDynamicBackground />
+      <PlexusBackground />
+      <div className={styles.animatedBg}>
+        <div className={styles.blob}></div>
+        <div className={styles.blob}></div>
+        <div className={styles.blob}></div>
+        <div className={styles.blob}></div>
+        <div className={styles.blob}></div>
+      </div>
 
       <div className={styles.hero}>
         <div className={styles.logoWrapper}>
@@ -111,6 +118,11 @@ export default function Home() {
                   onChange={(e) => setPassword(e.target.value)}
                   required 
                 />
+              </div>
+              <div className={styles.forgotPassword}>
+                <button type="button" className={styles.linkButton} onClick={() => router.push('/forgot-password')}>
+                  Esqueci minha senha
+                </button>
               </div>
             </div>
             
