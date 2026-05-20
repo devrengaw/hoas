@@ -127,8 +127,8 @@
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(40px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 32px;
-  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  padding: 2.25rem 2rem;
   box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
   position: relative;
   overflow: hidden;
@@ -146,9 +146,9 @@
 }
 
 .roleSelection h1 {
-  font-size: 2.8rem;
+  font-size: 2rem;
   font-weight: 800;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -156,22 +156,22 @@
 
 .roleSelection p {
   color: var(--muted);
-  font-size: 1.1rem;
-  margin-bottom: 4rem;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
 }
 
 .roleGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-bottom: 4rem;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
 }
 
 .roleCard {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 1.5rem 1.25rem;
-  border-radius: 20px;
+  padding: 1.25rem 1rem;
+  border-radius: 16px;
   text-align: center;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -179,7 +179,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   position: relative;
 }
 
@@ -196,15 +196,15 @@
 }
 
 .roleIcon {
-  width: 72px;
-  height: 72px;
+  width: 60px;
+  height: 60px;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 20px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   transition: all 0.3s;
 }
 
@@ -215,15 +215,15 @@
 }
 
 .roleCard h3 {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
 .roleCard p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--muted);
   margin-bottom: 0;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 .nextBtn {
@@ -258,8 +258,8 @@
 .formHeader {
   display: flex;
   align-items: center;
-  gap: 3rem;
-  margin-bottom: 4rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .backBtn {
@@ -282,7 +282,7 @@
 }
 
 .formHeader h2 {
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 800;
   background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
   -webkit-background-clip: text;
@@ -292,8 +292,8 @@
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2.5rem;
-  margin-bottom: 3rem;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 }
 
 .field {
@@ -313,10 +313,10 @@
 .field input, .field select {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.25rem;
-  border-radius: 16px;
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
   color: white;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.2s;
   outline: none;
 }
@@ -327,10 +327,10 @@
 }
 
 .terms {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   background: rgba(255,255,255,0.02);
-  padding: 2rem;
-  border-radius: 20px;
+  padding: 1.25rem;
+  border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.05);
 }
 
@@ -367,9 +367,9 @@
   background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
   color: white;
   border: none;
-  padding: 1rem;
-  border-radius: 16px;
-  font-size: 1.1rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -390,19 +390,19 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   background: rgba(255, 255, 255, 0.02);
-  padding: 1.5rem;
-  border-radius: 20px;
+  padding: 1.1rem;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logoPreview {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   background: rgba(255, 255, 255, 0.03);
   border: 2px dashed rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -454,9 +454,9 @@
 }
 
 .footer {
-  margin-top: 3rem;
+  margin-top: 2rem;
   color: var(--muted);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   position: relative;
   z-index: 10;
 }
